@@ -237,6 +237,14 @@ const routeCorrections: Record<string, { departureSpeed: Record<string, number>;
     departureTracks: {
       'Sn-ZG': 1,
     },
+  },
+  'Włoszczowa Północ': {
+    departureSpeed: {
+      'it19': 100,
+    },
+    departureTracks: {
+      'it19': 1,
+    },
   }
 };
 
