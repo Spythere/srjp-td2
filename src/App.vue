@@ -58,8 +58,6 @@
             </table>
           </td>
 
-          <!-- :class="{ 'border-t-4': i > 0 && computedTimetable[i - 1].sceneryName != row.sceneryName }" -->
-          <!-- :class="{ 'border-ts': i > 0 && computedTimetable[i - 1].sceneryName != row.sceneryName }" -->
           <td class="text-center align-top font-bold p-0 border-l-4" colspan="2">
             <table>
               <tbody>
@@ -77,7 +75,6 @@
                         ? row.arrivalSpeed
                         : '&nbsp;'
                     }}
-                    <!-- {{ row.arrivalTracks }} -->
                   </td>
                   <td v-if="row.arrivalTracks == 2" class="border-l">
                     {{
@@ -87,47 +84,22 @@
                         ? row.arrivalSpeed
                         : '&nbsp;'
                     }}
-                    <!-- {{ row.arrivalTracks }} -->
                   </td>
                 </tr>
                 <tr
-                  class=""
                   :class="{
-                    'border-b': row.departureSpeed != row.arrivalSpeed || i == computedTimetable.length - 1,
-                    'border-t': row.arrivalTracks != row.departureTracks,
-                    'align-bottom': row.arrivalTracks == row.departureTracks,
+                    'border-b': i == computedTimetable.length - 1,
+                    'border-t': row.arrivalTracks != row.departureTracks || row.departureSpeed != row.arrivalSpeed,
+                    'align-top': row.arrivalTracks != row.departureTracks,
                   }"
                 >
                   <td :colspan="row.departureTracks == 2 ? '1' : '2'">
                     {{ row.departureSpeed != row.arrivalSpeed || row.departureTracks != row.arrivalTracks ? row.departureSpeed : '&nbsp;' }}
-                    <!-- {{ row.departureTracks }} -->
                   </td>
                   <td v-if="row.departureTracks == 2" class="border-l">
                     {{ row.departureSpeed != row.arrivalSpeed || row.departureTracks != row.arrivalTracks ? row.departureSpeed : '&nbsp;' }}
-                    <!-- {{ row.departureTracks }} -->
                   </td>
                 </tr>
-                <!-- <tr
-                  class="align-top"
-                  :class="{
-                    'border-b':
-                      row.arrivalSpeed && row.departureSpeed && (row.arrivalSpeed != row.departureSpeed || row.arrivalTracks != row.departureTracks),
-                  }"
-                >
-                  <td :colspan="row.arrivalTracks == 2 ? '1' : '2'">{{ row.arrivalSpeed || ' ' }}</td>
-                  <td v-if="row.arrivalTracks == 2" class="border-l">{{ row.arrivalSpeed || ' ' }}</td>
-                </tr>
-                <tr
-                  class="align-bottom"
-                  :class="{
-                    'border-b':
-                      i < computedTimetable.length - 1 &&
-                      (computedTimetable[i + 1].arrivalSpeed != row.departureSpeed || computedTimetable[i + 1].arrivalTracks != row.departureTracks),
-                  }"
-                >
-                  <td :colspan="row.departureTracks == 2 ? '1' : '2'">{{ row.departureSpeed || ' ' }}</td>
-                  <td v-if="row.departureTracks == 2" class="border-l">{{ row.departureSpeed || ' ' }}</td>
-                </tr> -->
               </tbody>
             </table>
           </td>
@@ -218,6 +190,56 @@ import { useGlobalStore } from './stores/global.store';
 //   sbl4: [],
 // };
 
+const routeCorrections: Record<string, { departureSpeed: Record<string, number>; departureTracks: Record<string, number> }> = {
+  Wielichowo: {
+    departureSpeed: {
+      'WW-Br': 120,
+      'WG-WG(gt)': 100,
+      'WG(gt)-Żak': 120
+    },
+    departureTracks: {},
+  },
+  'LCS Żywiec': {
+    departureSpeed: {
+      'CI-WG': 60,
+      'CD-CI': 70,
+      'RW-CD': 110,
+      'BLp-BBL': 120,
+      'WB-ŁG': 70,
+      'Ło-PŻ': 60,
+      'Że-RW': 120,
+    },
+    departureTracks: {
+      'BLp-BBL': 2,
+      'WB-ŁG': 1,
+      'Że-RW': 1,
+    },
+  },
+  'LCS Kleszczów': {
+    departureSpeed: {
+      it1587_1606: 160,
+      it1551_1568: 160,
+    },
+    departureTracks: {},
+  },
+  'LCS Perzów': {
+    departureSpeed: {
+      'Pz-Ow': 120,
+    },
+    departureTracks: {
+      'Pz-Ow': 2,
+    },
+  },
+  'LCS Sandomierz': {
+    departureSpeed: {
+      'Sn-ZG': 90,
+    },
+    departureTracks: {
+      'Sn-ZG': 1,
+    },
+  }
+};
+
 interface StopRow {
   pointName: string;
   pointKm: string;
@@ -280,6 +302,7 @@ export default defineComponent({
 
         return {
           sceneryName,
+          speedCorrections: routeCorrections[sceneryName] ?? null,
           arrivalLine: arrivalLine ?? '',
           arrivalLineData,
           departureLine: departureLine ?? '',
@@ -301,6 +324,8 @@ export default defineComponent({
       let departureSpeed = currentPath.departureLineData?.routeSpeed ?? 0,
         departureTracks = currentPath.departureLineData?.routeTracks ?? 2;
 
+      console.log('=========== ' + this.selectedTrain.trainNo + ' ===========');
+
       for (const stop of timetable.stopList) {
         if (stop.arrivalLine && stop.arrivalLine == currentPath.arrivalLine) {
           arrivalKm = stop.stopDistance;
@@ -312,6 +337,23 @@ export default defineComponent({
         }
 
         if (/^<strong>|, (podg|po)$|^(!_, pe)$/.test(stop.stopName)) {
+          let correctedDepartureSpeed = 0,
+            correctedDepartureTracks = 0;
+
+          if (stop.departureLine && currentPath.speedCorrections?.departureSpeed !== undefined) {
+            if (currentPath.speedCorrections?.departureSpeed[stop.departureLine] !== undefined) {
+              correctedDepartureSpeed = currentPath.speedCorrections?.departureSpeed[stop.departureLine];
+              departureSpeed = correctedDepartureSpeed;
+            }
+          }
+
+          if (stop.departureLine && currentPath.speedCorrections?.departureTracks !== undefined) {
+            if (currentPath.speedCorrections?.departureTracks[stop.departureLine] !== undefined) {
+              correctedDepartureTracks = currentPath.speedCorrections?.departureTracks[stop.departureLine];
+              departureTracks = correctedDepartureTracks;
+            }
+          }
+
           let rowData: StopRow = {
             isMain: /^<strong>/.test(stop.stopName),
             pointKm: stop.stopDistance.toFixed(3),
@@ -336,7 +378,12 @@ export default defineComponent({
             departureTracks: departureTracks,
           };
 
+          console.log(stop.stopNameRAW, stop.departureLine);
+
           arrivalKm = stop.stopDistance;
+          arrivalSpeed = correctedDepartureSpeed || arrivalSpeed;
+          arrivalTracks = correctedDepartureTracks || arrivalTracks;
+
           if (stop.departureTimestamp) lastDepartureTimestamp = stop.departureTimestamp;
 
           stopRows.push(rowData);
@@ -346,6 +393,7 @@ export default defineComponent({
           // Reverse search for last scenery checkpoint
           for (let i = stopRows.length - 1; i > 0; i--) {
             stopRows[i].departureTracks = currentPath.departureLineData?.routeTracks ?? 0;
+            stopRows[i].departureSpeed = currentPath.departureLineData?.routeSpeed ?? 0;
 
             if (stopRows[i].isMain || stopRows[i].pointName.endsWith(', podg')) {
               stopRows[i].departureSpeed = currentPath.departureLineData?.routeSpeed ?? 0;
@@ -353,6 +401,7 @@ export default defineComponent({
               break;
             }
 
+            stopRows[i].arrivalSpeed = currentPath.departureLineData?.routeSpeed ?? 0;
             stopRows[i].arrivalTracks = currentPath.departureLineData?.routeTracks ?? 0;
           }
 
