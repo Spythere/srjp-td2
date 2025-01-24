@@ -209,14 +209,14 @@
 import { defineComponent } from 'vue';
 import { useGlobalStore } from './stores/global.store';
 
-const additionalData = {
-  // Mijanki
-  passings: ['Stolnica Wielka'],
-  // SHP
-  shpSystems: [],
-  // 4-stawne SBL
-  sbl4: [],
-};
+// const additionalData = {
+//   // Mijanki
+//   passings: ['Stolnica Wielka'],
+//   // SHP
+//   shpSystems: [],
+//   // 4-stawne SBL
+//   sbl4: [],
+// };
 
 interface StopRow {
   pointName: string;
@@ -301,8 +301,6 @@ export default defineComponent({
       let departureSpeed = currentPath.departureLineData?.routeSpeed ?? 0,
         departureTracks = currentPath.departureLineData?.routeTracks ?? 2;
 
-      let checkEntryAsFirst = true;
-
       for (const stop of timetable.stopList) {
         if (stop.arrivalLine && stop.arrivalLine == currentPath.arrivalLine) {
           arrivalKm = stop.stopDistance;
@@ -339,8 +337,6 @@ export default defineComponent({
           };
 
           arrivalKm = stop.stopDistance;
-          checkEntryAsFirst = false;
-
           if (stop.departureTimestamp) lastDepartureTimestamp = stop.departureTimestamp;
 
           stopRows.push(rowData);
@@ -361,7 +357,6 @@ export default defineComponent({
           }
 
           currentPath = timetablePath[++currentPathIndex];
-          checkEntryAsFirst = true;
         }
       }
 
