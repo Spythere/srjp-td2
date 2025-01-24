@@ -181,15 +181,6 @@
 import { defineComponent } from 'vue';
 import { useGlobalStore } from './stores/global.store';
 
-// const additionalData = {
-//   // Mijanki
-//   passings: ['Stolnica Wielka'],
-//   // SHP
-//   shpSystems: [],
-//   // 4-stawne SBL
-//   sbl4: [],
-// };
-
 const routeCorrections: Record<string, { departureSpeed: Record<string, number>; departureTracks: Record<string, number> }> = {
   Wielichowo: {
     departureSpeed: {
