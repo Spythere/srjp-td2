@@ -1,7 +1,20 @@
 <template>
-  <div class="max-h-screen max-w-[800px] mx-auto">
-    <div class="grid print:block p-3 h-screen grid-rows-[auto_1fr]">
-      <select name="trains" id="trains-select" class="mb-2 bg-zinc-800 p-1 rounded-md print:hidden" v-model="selectedTrainId" @change="selectTrain">
+  <div class="min-h-screen bg-zinc-950">
+    <nav class="bg-zinc-900 w-full p-1 print:hidden">
+      <div class="flex items-center">
+        <img src="/favicon.svg" class="size-8 inline" />
+        <b class="ml-2 text-lg">Rozkładownik TD2</b>
+      </div>
+    </nav>
+
+    <main class="grid print:block p-3 mx-auto max-w-[800px] h-screen grid-rows-[auto_1fr_20px] gap-1">
+      <select
+        name="trains"
+        id="trains-select"
+        class="mb-2 bg-zinc-800 p-1 rounded-md print:hidden w-full"
+        v-model="selectedTrainId"
+        @change="selectTrain"
+      >
         <option :value="train.id" v-for="train in activeTimetableTrains">
           {{ train.driverName }} | {{ train.timetable?.category }} {{ train.trainNo }}
         </option>
@@ -199,7 +212,11 @@
           </tbody>
         </table>
       </div>
-    </div>
+
+      <footer v-if="generatedDate" class="text-center text-sm text-zinc-400 mt-1">
+        Wygenerowano w {{ generatedMs }}ms o {{ generatedDate.toLocaleTimeString() }}
+      </footer>
+    </main>
   </div>
 </template>
 
@@ -424,10 +441,6 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.app_container {
-  grid-template-rows: auto 1fr;
-}
-
 table {
   width: 100%;
   border-collapse: collapse;
