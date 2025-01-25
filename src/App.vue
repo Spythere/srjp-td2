@@ -121,7 +121,7 @@
                   <div class="flex flex-col h-full justify-between p-1">
                     <div :class="{ 'font-bold': row.isMain }">
                       {{ row.pointName }}
-                      <span v-if="row.stopType"> ; {{ row.stopType }}</span>
+                      <span v-if="row.stopTime"> ; {{ row.stopType }}</span>
                     </div>
 
                     <div class="flex justify-between">
