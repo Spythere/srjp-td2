@@ -443,7 +443,16 @@ table {
     max-height: 100%;
     padding: 0;
   }
-  
+
+  table {
+    page-break-inside: auto;
+  }
+
+  tr {
+    page-break-inside: avoid;
+    page-break-after: auto;
+  }
+
   select {
     display: none;
   }
