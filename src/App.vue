@@ -2,7 +2,7 @@
   <div class="overflow-hidden max-h-screen max-w-[800px] mx-auto">
     <div class="grid p-3 h-screen grid-rows-[auto_1fr]">
       <select name="trains" id="trains-select" class="mb-2 bg-zinc-800 p-1 rounded-md" v-model="selectedTrainId">
-        <option :value="train.id" v-for="train in timetableTrains">
+        <option :value="train.id" v-for="train in timetableTrains.sort((t1, t2) => t1.driverName.localeCompare(t2.driverName, 'pl-PL'))">
           {{ train.driverName }} | {{ train.timetable?.category }} {{ train.trainNo }}
         </option>
       </select>
