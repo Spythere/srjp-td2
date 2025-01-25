@@ -1,6 +1,6 @@
 <template>
   <div class="overflow-hidden max-h-screen max-w-[800px] mx-auto">
-    <div class="grid p-3 h-screen grid-rows-[auto_1fr] ">
+    <div class="grid p-3 h-screen grid-rows-[auto_1fr]">
       <select name="trains" id="trains-select" class="mb-2 bg-zinc-800 p-1 rounded-md" v-model="selectedTrainId">
         <option :value="train.id" v-for="train in timetableTrains">
           {{ train.driverName }} | {{ train.timetable?.category }} {{ train.trainNo }}
@@ -199,65 +199,7 @@
 import { defineComponent } from 'vue';
 import { useGlobalStore } from './stores/global.store';
 
-const routeCorrections: Record<string, { departureSpeed: Record<string, number>; departureTracks: Record<string, number> }> = {
-  Wielichowo: {
-    departureSpeed: {
-      'WW-Br': 120,
-      'WG-WG(gt)': 100,
-      'WG(gt)-Żak': 120,
-    },
-    departureTracks: {
-      'WW-Br': 2,
-    },
-  },
-  'LCS Żywiec': {
-    departureSpeed: {
-      'CI-WG': 60,
-      'CD-CI': 70,
-      'RW-CD': 110,
-      'BLp-BBL': 120,
-      'WB-ŁG': 70,
-      'Ło-PŻ': 60,
-      'Że-RW': 120,
-    },
-    departureTracks: {
-      'BLp-BBL': 2,
-      'WB-ŁG': 1,
-      'Że-RW': 1,
-    },
-  },
-  'LCS Kleszczów': {
-    departureSpeed: {
-      it1587_1606: 160,
-      it1551_1568: 160,
-    },
-    departureTracks: {},
-  },
-  'LCS Perzów': {
-    departureSpeed: {
-      'Pz-Ow': 120,
-    },
-    departureTracks: {
-      'Pz-Ow': 2,
-    },
-  },
-  'LCS Sandomierz': {
-    departureSpeed: {
-      'Sn-ZG': 90,
-    },
-    departureTracks: {
-      'Sn-ZG': 1,
-    },
-  },
-  'Włoszczowa Północ': {
-    departureSpeed: {
-      it19: 100,
-    },
-    departureTracks: {
-      it19: 1,
-    },
-  },
-};
+import sceneryCorrections from './data/corrections.json';
 
 interface StopRow {
   pointName: string;
@@ -322,11 +264,11 @@ export default defineComponent({
         return {
           sceneryName,
           sceneryData: sceneryData ?? null,
-          speedCorrections: routeCorrections[sceneryName] ?? null,
           arrivalLine: arrivalLine ?? '',
           arrivalLineData,
           departureLine: departureLine ?? '',
           departureLineData,
+          lineCorrections: sceneryCorrections.find((sc) => sc.sceneryName == sceneryName)?.lineCorrections ?? [],
         };
       });
 
@@ -360,18 +302,15 @@ export default defineComponent({
           let correctedDepartureSpeed = 0,
             correctedDepartureTracks = 0;
 
-          if (stop.departureLine && currentPath.speedCorrections?.departureSpeed !== undefined) {
-            if (currentPath.speedCorrections?.departureSpeed[stop.departureLine] !== undefined) {
-              correctedDepartureSpeed = currentPath.speedCorrections?.departureSpeed[stop.departureLine];
-              departureSpeed = correctedDepartureSpeed;
-            }
-          }
+          const lineCorrection =
+            stop.departureLine != null ? currentPath.lineCorrections.find((corr) => corr.lineName == stop.departureLine) : undefined;
 
-          if (stop.departureLine && currentPath.speedCorrections?.departureTracks !== undefined) {
-            if (currentPath.speedCorrections?.departureTracks[stop.departureLine] !== undefined) {
-              correctedDepartureTracks = currentPath.speedCorrections?.departureTracks[stop.departureLine];
-              departureTracks = correctedDepartureTracks;
-            }
+          if (lineCorrection) {
+            correctedDepartureSpeed = lineCorrection.departureSpeed;
+            departureSpeed = lineCorrection.departureSpeed;
+
+            correctedDepartureTracks = lineCorrection.departureTracks;
+            departureTracks = lineCorrection.departureTracks;
           }
 
           let rowData: StopRow = {
@@ -436,7 +375,6 @@ export default defineComponent({
 </script>
 
 <style scoped>
-
 .app_container {
   grid-template-rows: auto 1fr;
 }
