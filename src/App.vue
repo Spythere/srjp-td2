@@ -1,180 +1,196 @@
 <template>
-  <div class="app">
-    <select name="trains" id="trains-select" class="mb-2 bg-zinc-800 p-1 rounded-md" v-model="selectedTrainId">
-      <option :value="train.id" v-for="train in timetableTrains">{{ train.driverName }} | {{ train.timetable?.category }} {{ train.trainNo }}</option>
-    </select>
+  <div class="overflow-hidden max-h-screen max-w-[800px] mx-auto">
+    <div class="grid p-3 h-screen grid-rows-[auto_1fr] ">
+      <select name="trains" id="trains-select" class="mb-2 bg-zinc-800 p-1 rounded-md" v-model="selectedTrainId">
+        <option :value="train.id" v-for="train in timetableTrains">
+          {{ train.driverName }} | {{ train.timetable?.category }} {{ train.trainNo }}
+        </option>
+      </select>
 
-    <div class="table-container">
-      <table class="srjp-table">
-        <thead>
-          <tr>
-            <th width="50" class="border border-white print:border-black">Nr linii</th>
-            <th width="100" class="border border-white print:border-black">Km</th>
-            <th width="40" class="border border-white print:border-black" colspan="2">V<sub>D</sub></th>
-            <th width="250" class="border border-white print:border-black">Stacja</th>
-            <th width="100" class="border border-white print:border-black">Godzina</th>
-            <th width="50" class="border border-white print:border-black text-xs p-0">
-              <table class="header-table">
-                <tbody>
-                  <tr>
-                    <td>Lok I</td>
-                  </tr>
-                  <tr>
-                    <td>Lok II</td>
-                  </tr>
-                  <tr>
-                    <td>Lok III</td>
-                  </tr>
-                </tbody>
-              </table>
-            </th>
-            <th width="60" class="border border-white print:border-black text-xs p-0">
-              <table class="header-table">
-                <tbody>
-                  <tr>
-                    <td>Obc. lok.</td>
-                  </tr>
-                  <tr>
-                    <td>Dł. poc.</td>
-                  </tr>
-                </tbody>
-              </table>
-            </th>
-            <th width="50" class="border border-white print:border-black">Vmax</th>
-          </tr>
-        </thead>
-        <tbody v-if="computedTimetable">
-          <tr v-for="(row, i) in computedTimetable">
-            <td class="text-center align-top border border-white print:border-black">{{ row.realLine }}</td>
-            <td class="border border-white print:border-black">
-              <table>
-                <tbody>
-                  <tr>
-                    <td class="align-top">{{ row.arrivalKm }}</td>
-                  </tr>
-                  <tr>
-                    <td class="align-bottom">{{ row.departureKm }}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </td>
+      <div class="overflow-auto">
+        <table class="table-fixed">
+          <thead>
+            <tr>
+              <th width="50" class="border border-white print:border-black">Nr <br />linii</th>
+              <th width="100" class="border border-white print:border-black">Km</th>
+              <th width="40" class="border border-white print:border-black">V<sub>P</sub></th>
+              <th width="40" class="border border-white print:border-black">V<sub>L</sub></th>
+              <th width="250" class="border border-white print:border-black">Stacja</th>
+              <th width="100" class="border border-white print:border-black">Godzina</th>
+              <th width="50" class="border border-white print:border-black text-xs p-0">
+                <table class="header-table">
+                  <tbody>
+                    <tr>
+                      <td>Lok I</td>
+                    </tr>
+                    <tr>
+                      <td>Lok II</td>
+                    </tr>
+                    <tr>
+                      <td>Lok III</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </th>
+              <th width="60" class="border border-white print:border-black text-xs p-0">
+                <table class="header-table">
+                  <tbody>
+                    <tr>
+                      <td>Obc. lok.</td>
+                    </tr>
+                    <tr>
+                      <td>Dł. poc.</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </th>
+              <th width="50" class="border border-white print:border-black">Vmax</th>
+            </tr>
+          </thead>
+          <tbody v-if="computedTimetable">
+            <tr v-for="(row, i) in computedTimetable">
+              <td class="text-center align-top border border-white print:border-black">{{ row.realLine }}</td>
 
-            <td class="text-center align-top font-bold p-0 border-l-4 print:border-l-black" colspan="2">
-              <table>
-                <tbody>
-                  <tr
-                    :class="{
-                      'align-top': i == 0 || computedTimetable[i - 1].departureTracks == row.arrivalTracks,
-                      'border-t print:border-t-black': i != 0 && computedTimetable[i - 1].departureSpeed != row.arrivalSpeed,
-                    }"
-                  >
-                    <td :colspan="row.arrivalTracks == 2 ? '1' : '2'">
-                      {{
-                        i == 0 ||
-                        computedTimetable[i - 1].departureSpeed != row.arrivalSpeed ||
-                        computedTimetable[i - 1].departureTracks != row.arrivalTracks
-                          ? row.arrivalSpeed
-                          : '&nbsp;'
-                      }}
-                    </td>
-                    <td v-if="row.arrivalTracks == 2" class="border-l print:border-l-black">
-                      {{
-                        i == 0 ||
-                        computedTimetable[i - 1].departureSpeed != row.arrivalSpeed ||
-                        computedTimetable[i - 1].departureTracks != row.arrivalTracks
-                          ? row.arrivalSpeed
-                          : '&nbsp;'
-                      }}
-                    </td>
-                  </tr>
-                  <tr
-                    :class="{
-                      'border-b print:border-b-black': i == computedTimetable.length - 1,
-                      'border-t print:border-t-black': row.arrivalTracks != row.departureTracks || row.departureSpeed != row.arrivalSpeed,
-                      'align-top': row.arrivalTracks != row.departureTracks,
-                    }"
-                  >
-                    <td :colspan="row.departureTracks == 2 ? '1' : '2'">
-                      {{ row.departureSpeed != row.arrivalSpeed || row.departureTracks != row.arrivalTracks ? row.departureSpeed : '&nbsp;' }}
-                    </td>
-                    <td v-if="row.departureTracks == 2" class="border-l print:border-l-black">
-                      {{ row.departureSpeed != row.arrivalSpeed || row.departureTracks != row.arrivalTracks ? row.departureSpeed : '&nbsp;' }}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </td>
-
-            <td class="p-1 border border-white print:border-black">
-              <div class="flex flex-col h-full justify-between">
-                <div :class="{ 'font-bold': row.isMain }">
-                  {{ row.pointName }}
-                  <span v-if="row.stopType"> ; {{ row.stopType }}</span>
+              <td class="border border-white print:border-black relative">
+                <div class="absolute top-0 left-0 w-full h-full p-0.5">
+                  <table class="h-full">
+                    <tbody>
+                      <tr>
+                        <td class="align-top">{{ row.arrivalKm }}</td>
+                      </tr>
+                      <tr>
+                        <td class="align-bottom">{{ row.departureKm }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </div>
+              </td>
 
-                <div class="flex justify-between">
-                  <span>{{ row.pointKm }}</span>
-                  <span>R1, PP</span>
+              <td class="text-center align-top p-0 print:border-l-black relative" colspan="2">
+                <div class="absolute top-0 left-0 w-full h-full">
+                  <table class="h-full">
+                    <tbody>
+                      <tr
+                        :class="{
+                          'align-top': i == 0 || computedTimetable[i - 1].departureTracks == row.arrivalTracks,
+                          'border-t print:border-t-black': i != 0 && computedTimetable[i - 1].departureSpeed != row.arrivalSpeed,
+                        }"
+                      >
+                        <td :colspan="row.arrivalTracks == 2 ? '1' : '2'" class="font-bold" width="40">
+                          {{
+                            i == 0 ||
+                            computedTimetable[i - 1].departureSpeed != row.arrivalSpeed ||
+                            computedTimetable[i - 1].departureTracks != row.arrivalTracks
+                              ? row.arrivalSpeed
+                              : '&nbsp; '
+                          }}
+                        </td>
+                        <td v-if="row.arrivalTracks == 2" class="border-l print:border-l-black" width="40">
+                          {{
+                            i == 0 ||
+                            computedTimetable[i - 1].departureSpeed != row.arrivalSpeed ||
+                            computedTimetable[i - 1].departureTracks != row.arrivalTracks
+                              ? row.arrivalSpeed
+                              : '&nbsp; '
+                          }}
+                        </td>
+                      </tr>
+                      <tr
+                        :class="{
+                          'border-b print:border-b-black': i == computedTimetable.length - 1,
+                          'border-t print:border-t-black': row.arrivalTracks != row.departureTracks || row.departureSpeed != row.arrivalSpeed,
+                          'align-top': row.arrivalTracks != row.departureTracks,
+                        }"
+                      >
+                        <td :colspan="row.departureTracks == 2 ? '1' : '2'">
+                          {{ row.departureSpeed != row.arrivalSpeed || row.departureTracks != row.arrivalTracks ? row.departureSpeed : '&nbsp; ' }}
+                        </td>
+                        <td v-if="row.departureTracks == 2" class="border-l print:border-l-black">
+                          {{ row.departureSpeed != row.arrivalSpeed || row.departureTracks != row.arrivalTracks ? row.departureSpeed : '&nbsp; ' }}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </div>
-              </div>
-            </td>
+              </td>
 
-            <td class="border border-white print:border-black">
-              <table>
-                <tbody>
-                  <tr class="text-center align-top">
-                    <td class="border-r-[1px] border-r-white print:border-r-black" :class="{ 'font-bold': row.stopTime > 0 }">
-                      {{
-                        (row.scheduledArrivalDate?.getTime() || 0) != (row.scheduledDepartureDate?.getTime() || 0)
-                          ? row.scheduledArrivalDate?.toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' })
-                          : '|'
-                      }}
-                    </td>
-                    <td width="30">{{ row.driveTime ? Math.floor(row.driveTime / 60000) : '' }}</td>
-                  </tr>
-                  <tr class="text-center align-bottom">
-                    <td class="border-r-[1px] border-r-white print:border-r-black" :class="{ 'font-bold': row.stopTime > 0 }">
-                      {{ row.scheduledDepartureDate?.toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' }) }}
-                    </td>
-                    <td width="30" class="font-bold">{{ row.stopTime || '' }}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </td>
+              <td class="border border-white print:border-black relative">
+                <div class="absolute top-0 left-0 w-full h-full">
+                  <div class="flex flex-col h-full justify-between p-1">
+                    <div :class="{ 'font-bold': row.isMain }">
+                      {{ row.pointName }}
+                      <span v-if="row.stopType"> ; {{ row.stopType }}</span>
+                    </div>
 
-            <td class="p-0 text-center border border-white print:border-black">
-              <table>
-                <tbody>
-                  <tr class="border-b-[1px] border-b-white print:border-b-black">
-                    <td>{{ selectedTrain!.stockString.split(';')[0].split('-')[0] }}</td>
-                  </tr>
-                  <tr class="border-b-[1px] border-b-white print:border-b-black">
-                    <td>&nbsp;</td>
-                  </tr>
-                  <tr>
-                    <td>&nbsp;</td>
-                  </tr>
-                </tbody>
-              </table>
-            </td>
+                    <div class="flex justify-between">
+                      <span>{{ row.pointKm }}</span>
+                      <span>R1, PP</span>
+                    </div>
+                  </div>
+                </div>
+              </td>
 
-            <td class="p-0 text-center border border-white print:border-black">
-              <table>
-                <tbody>
-                  <tr class="border-b-[1px] border-b-white print:border-b-black">
-                    <td>{{ Math.floor(selectedTrain!.mass / 1000) }}</td>
-                  </tr>
-                  <tr>
-                    <td>{{ selectedTrain!.length }}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </td>
+              <td class="p-0 border border-white print:border-black relative">
+                <div class="absolute top-0 left-0 w-full h-full">
+                  <table class="h-full">
+                    <tbody>
+                      <tr class="text-center align-top h-full">
+                        <td class="border-r-[1px] border-r-white print:border-r-black" :class="{ 'font-bold': row.stopTime > 0 }">
+                          {{
+                            (row.scheduledArrivalDate?.getTime() || 0) != (row.scheduledDepartureDate?.getTime() || 0)
+                              ? row.scheduledArrivalDate?.toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' })
+                              : '|'
+                          }}
+                        </td>
+                        <td width="30">{{ row.driveTime ? Math.floor(row.driveTime / 60000) : '' }}</td>
+                      </tr>
+                      <tr class="text-center align-bottom h-full">
+                        <td class="border-r-[1px] border-r-white print:border-r-black" :class="{ 'font-bold': row.stopTime > 0 }">
+                          {{ row.scheduledDepartureDate?.toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' }) }}
+                        </td>
+                        <td width="30" class="font-bold">{{ row.stopTime || '' }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </td>
 
-            <td class="text-center border border-white print:border-black">70</td>
-          </tr>
-        </tbody>
-      </table>
+              <td class="p-0 text-center border border-white print:border-black relative" style="height: 90px">
+                <table class="h-full">
+                  <tbody>
+                    <tr class="border-b-[1px] border-b-white print:border-b-black">
+                      <td>{{ selectedTrain!.stockString.split(';')[0].split('-')[0] }}</td>
+                    </tr>
+                    <tr class="border-b-[1px] border-b-white print:border-b-black">
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                      <td>&nbsp;</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+
+              <td class="p-0 text-center border border-white print:border-black relative">
+                <div class="absolute top-0 left-0 w-full h-full">
+                  <table class="h-full">
+                    <tbody>
+                      <tr class="border-b-[1px] border-b-white print:border-b-black">
+                        <td>{{ Math.floor(selectedTrain!.mass / 1000) }}</td>
+                      </tr>
+                      <tr>
+                        <td>{{ selectedTrain!.length }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </td>
+
+              <td class="text-center border border-white print:border-black">70</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 </template>
@@ -305,6 +321,7 @@ export default defineComponent({
 
         return {
           sceneryName,
+          sceneryData: sceneryData ?? null,
           speedCorrections: routeCorrections[sceneryName] ?? null,
           arrivalLine: arrivalLine ?? '',
           arrivalLineData,
@@ -381,7 +398,7 @@ export default defineComponent({
             departureTracks: departureTracks,
           };
 
-          console.log(stop.stopNameRAW, stop.departureLine);
+          // console.log(stop.stopNameRAW, stop.departureLine);
 
           arrivalKm = stop.stopDistance;
           arrivalSpeed = correctedDepartureSpeed || arrivalSpeed;
@@ -419,21 +436,18 @@ export default defineComponent({
 </script>
 
 <style scoped>
+
+.app_container {
+  grid-template-rows: auto 1fr;
+}
+
 table {
   width: 100%;
-  height: 100%;
   border-collapse: collapse;
 }
 
-.table-container {
-  max-height: 90vh;
-  overflow-y: auto;
-  overflow-x: hidden;
-  padding: 0.5rem;
-}
-
 .srjp-table {
-  min-width: 750px;
+  table-layout: fixed;
 }
 
 .no-bottom-border {
@@ -441,9 +455,8 @@ table {
 }
 
 @media print {
-  .table-container {
-    max-height: 100%;
-    padding: 0;
+  .main_app {
+    display: block;
   }
 
   table {
