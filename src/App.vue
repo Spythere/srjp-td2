@@ -1,13 +1,13 @@
 <template>
-  <div class="max-h-screen max-w-[750px] mx-auto">
+  <div class="max-h-screen max-w-[800px] mx-auto">
     <div class="grid print:block p-3 h-screen grid-rows-[auto_1fr]">
-      <select name="trains" id="trains-select" class="mb-2 bg-zinc-800 p-1 rounded-md print:hidden" v-model="selectedTrainId">
-        <option :value="train.id" v-for="train in timetableTrains.sort((t1, t2) => t1.driverName.localeCompare(t2.driverName, 'pl-PL'))">
+      <select name="trains" id="trains-select" class="mb-2 bg-zinc-800 p-1 rounded-md print:hidden" v-model="selectedTrainId" @change="selectTrain">
+        <option :value="train.id" v-for="train in activeTimetableTrains">
           {{ train.driverName }} | {{ train.timetable?.category }} {{ train.trainNo }}
         </option>
       </select>
 
-      <div class="overflow-auto">
+      <div class="overflow-auto py-1">
         <table class="table-fixed">
           <thead>
             <tr>
@@ -68,14 +68,20 @@
                 </div>
               </td>
 
-              <td class="text-center align-top p-0 print:border-l-black relative" colspan="2">
+              <td
+                class="text-center align-top p-0 print:border-l-black relative"
+                :class="{
+                  'border-t print:border-t-black': i != 0 && computedTimetable[i - 1].departureSpeed != row.arrivalSpeed,
+                  'border-b print:border-b-black': i == computedTimetable.length - 1,
+                }"
+                colspan="2"
+              >
                 <div class="absolute top-0 left-0 w-full h-full">
                   <table class="h-full">
                     <tbody>
                       <tr
                         :class="{
                           'align-top': i == 0 || computedTimetable[i - 1].departureTracks == row.arrivalTracks,
-                          'border-t print:border-t-black': i != 0 && computedTimetable[i - 1].departureSpeed != row.arrivalSpeed,
                         }"
                       >
                         <td :colspan="row.arrivalTracks == 2 ? '1' : '2'" class="font-bold" width="35">
@@ -99,7 +105,6 @@
                       </tr>
                       <tr
                         :class="{
-                          'border-b print:border-b-black': i == computedTimetable.length - 1,
                           'border-t print:border-t-black': row.arrivalTracks != row.departureTracks || row.departureSpeed != row.arrivalSpeed,
                           'align-top': row.arrivalTracks != row.departureTracks,
                         }"
@@ -107,7 +112,7 @@
                         <td :colspan="row.departureTracks == 2 ? '1' : '2'" class="font-bold" width="35">
                           {{ row.departureSpeed != row.arrivalSpeed || row.departureTracks != row.arrivalTracks ? row.departureSpeed : '&nbsp; ' }}
                         </td>
-                        
+
                         <td v-if="row.departureTracks == 2" class="border-l print:border-l-black" width="35">
                           {{ row.departureSpeed != row.arrivalSpeed || row.departureTracks != row.arrivalTracks ? row.departureSpeed : '&nbsp; ' }}
                         </td>
@@ -203,6 +208,7 @@ import { defineComponent } from 'vue';
 import { useGlobalStore } from './stores/global.store';
 
 import sceneryCorrections from './data/corrections.json';
+import type { ActiveTrain } from './types/common.types';
 
 interface StopRow {
   pointName: string;
@@ -239,19 +245,33 @@ export default defineComponent({
   data: () => ({
     selectedTrainId: '',
     globalStore: useGlobalStore(),
+    selectedTrain: null as ActiveTrain | null,
+
+    generatedMs: 0,
+    generatedDate: null as Date | null,
   }),
 
   mounted() {
     this.globalStore.setupData();
   },
 
-  computed: {
-    timetableTrains() {
-      return this.globalStore.activeData?.trains.filter((train) => train.timetable != undefined) ?? [];
-    },
+  methods: {
+    selectTrain() {
+      if (!this.globalStore.activeData) return;
 
-    selectedTrain() {
-      return this.timetableTrains.find((train) => train.id == this.selectedTrainId);
+      this.selectedTrain = this.activeTimetableTrains.find((train) => train.id == this.selectedTrainId) ?? null;
+
+      if (this.selectTrain != null) this.generatedDate = new Date();
+    },
+  },
+
+  computed: {
+    activeTimetableTrains() {
+      if (!this.globalStore.activeData) return [];
+
+      return this.globalStore.activeData.trains
+        .filter((train) => train.timetable)
+        .sort((t1, t2) => t1.driverName.localeCompare(t2.driverName, 'pl-PL'));
     },
 
     computedTimetable() {
@@ -261,7 +281,13 @@ export default defineComponent({
 
       if (!timetable) return null;
 
-      const headLocos = this.selectedTrain.stockString.split(';').slice(0, 3).filter((s, i) => i == 0 || /-\d+$/.test(s)).map(s => s.slice(0, s.indexOf('-')));
+      let timeFrom = Date.now();
+
+      const headLocos = this.selectedTrain.stockString
+        .split(';')
+        .slice(0, 3)
+        .filter((s, i) => i == 0 || /-\d+$/.test(s))
+        .map((s) => s.slice(0, s.indexOf('-')));
 
       const stockVmax = 70,
         stockMass = Math.floor(this.selectedTrain.mass / 1000),
@@ -387,6 +413,10 @@ export default defineComponent({
         }
       }
 
+      let timeTo = Date.now();
+
+      this.generatedMs = timeTo - timeFrom;
+
       return stopRows;
     },
   },
@@ -420,9 +450,5 @@ table {
   thead {
     display: table-header-group;
   }
-
-  /* select {
-    display: none;
-  } */
 }
 </style>
