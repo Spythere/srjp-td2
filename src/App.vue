@@ -104,10 +104,11 @@
                           'align-top': row.arrivalTracks != row.departureTracks,
                         }"
                       >
-                        <td :colspan="row.departureTracks == 2 ? '1' : '2'">
+                        <td :colspan="row.departureTracks == 2 ? '1' : '2'" class="font-bold" width="35">
                           {{ row.departureSpeed != row.arrivalSpeed || row.departureTracks != row.arrivalTracks ? row.departureSpeed : '&nbsp; ' }}
                         </td>
-                        <td v-if="row.departureTracks == 2" class="border-l print:border-l-black">
+                        
+                        <td v-if="row.departureTracks == 2" class="border-l print:border-l-black" width="35">
                           {{ row.departureSpeed != row.arrivalSpeed || row.departureTracks != row.arrivalTracks ? row.departureSpeed : '&nbsp; ' }}
                         </td>
                       </tr>
@@ -161,13 +162,13 @@
                 <table class="h-full">
                   <tbody>
                     <tr class="border-b-[1px] border-b-white print:border-b-black">
-                      <td>{{ selectedTrain!.stockString.split(';')[0].split('-')[0] }}</td>
+                      <td>{{ row.headLocos[0] }}</td>
                     </tr>
                     <tr class="border-b-[1px] border-b-white print:border-b-black">
-                      <td>&nbsp;</td>
+                      <td>{{ row.headLocos[1] ?? '&nbsp;' }}</td>
                     </tr>
                     <tr>
-                      <td>&nbsp;</td>
+                      <td>{{ row.headLocos[2] ?? '&nbsp;' }}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -178,10 +179,10 @@
                   <table class="h-full">
                     <tbody>
                       <tr class="border-b-[1px] border-b-white print:border-b-black">
-                        <td>{{ Math.floor(selectedTrain!.mass / 1000) }}</td>
+                        <td>{{ row.stockMass }}</td>
                       </tr>
                       <tr>
-                        <td>{{ selectedTrain!.length }}</td>
+                        <td>{{ row.stockLength }}</td>
                       </tr>
                     </tbody>
                   </table>
@@ -227,6 +228,11 @@ interface StopRow {
 
   departureSpeed: number;
   departureTracks: number;
+
+  headLocos: string[];
+  stockVmax: number;
+  stockLength: number;
+  stockMass: number;
 }
 
 export default defineComponent({
@@ -254,6 +260,12 @@ export default defineComponent({
       const timetable = this.selectedTrain.timetable;
 
       if (!timetable) return null;
+
+      const headLocos = this.selectedTrain.stockString.split(';').slice(0, 3).filter((s, i) => i == 0 || /-\d+$/.test(s)).map(s => s.slice(0, s.indexOf('-')));
+
+      const stockVmax = 70,
+        stockMass = Math.floor(this.selectedTrain.mass / 1000),
+        stockLength = this.selectedTrain.length;
 
       const timetablePath = timetable.path.split(';').map((pathEl) => {
         const [arrivalLine, scenery, departureLine] = pathEl.split(',');
@@ -337,6 +349,11 @@ export default defineComponent({
 
             departureSpeed: departureSpeed,
             departureTracks: departureTracks,
+
+            headLocos,
+            stockVmax,
+            stockLength,
+            stockMass,
           };
 
           // console.log(stop.stopNameRAW, stop.departureLine);
