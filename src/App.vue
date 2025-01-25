@@ -190,7 +190,9 @@ const routeCorrections: Record<string, { departureSpeed: Record<string, number>;
       'WG-WG(gt)': 100,
       'WG(gt)-Żak': 120,
     },
-    departureTracks: {},
+    departureTracks: {
+      'WW-Br': 2,
+    },
   },
   'LCS Żywiec': {
     departureSpeed: {
@@ -325,7 +327,7 @@ export default defineComponent({
       let departureSpeed = currentPath.departureLineData?.routeSpeed ?? 0,
         departureTracks = currentPath.departureLineData?.routeTracks ?? 2;
 
-      console.log('=========== ' + this.selectedTrain.trainNo + ' ===========');
+      // console.log('=========== ' + this.selectedTrain.trainNo + ' ===========');
 
       for (const stop of timetable.stopList) {
         if (stop.arrivalLine && stop.arrivalLine == currentPath.arrivalLine) {
