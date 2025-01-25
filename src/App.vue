@@ -58,10 +58,10 @@
                   <table class="h-full">
                     <tbody>
                       <tr>
-                        <td class="align-top">{{ row.arrivalKm }}</td>
+                        <td class="align-top">{{ row.arrivalKm == '0.000' ? '' : row.arrivalKm }}</td>
                       </tr>
                       <tr>
-                        <td class="align-bottom">{{ row.departureKm }}</td>
+                        <td class="align-bottom">{{ row.departureKm == '0.000' ? '' : row.departureKm }}</td>
                       </tr>
                     </tbody>
                   </table>
@@ -121,7 +121,7 @@
                   <div class="flex flex-col h-full justify-between p-1">
                     <div :class="{ 'font-bold': row.isMain }">
                       {{ row.pointName }}
-                      <span v-if="row.stopTime"> ; {{ row.stopType }}</span>
+                      <span v-if="row.stopTime"> ; {{ row.stopType || 'pt' }}</span>
                     </div>
 
                     <div class="flex justify-between">
@@ -157,7 +157,7 @@
                 </div>
               </td>
 
-              <td class="p-0 text-center border border-white print:border-black relative" style="height: 90px">
+              <td class="p-0 text-center border border-white print:border-black relative h-24 text-sm" :class="{ 'text-stone-400 ': i > 0 }">
                 <table class="h-full">
                   <tbody>
                     <tr class="border-b-[1px] border-b-white print:border-b-black">
@@ -173,7 +173,7 @@
                 </table>
               </td>
 
-              <td class="p-0 text-center border border-white print:border-black relative">
+              <td class="p-0 text-center border border-white print:border-black relative" :class="{ 'text-stone-400 ': i > 0 }">
                 <div class="absolute top-0 left-0 w-full h-full">
                   <table class="h-full">
                     <tbody>
@@ -188,7 +188,7 @@
                 </div>
               </td>
 
-              <td class="text-center border border-white print:border-black">70</td>
+              <td class="text-center border border-white print:border-black" :class="{ 'text-stone-400 ': i > 0 }">70</td>
             </tr>
           </tbody>
         </table>
@@ -321,7 +321,7 @@ export default defineComponent({
             pointName: stop.stopNameRAW,
             scheduledArrivalDate: stop.arrivalTimestamp ? new Date(stop.arrivalTimestamp) : null,
             scheduledDepartureDate: stop.departureTimestamp ? new Date(stop.departureTimestamp) : null,
-            stopTime: stop.stopTime ?? 0,
+            stopTime: stop.stopTime ? (stop.departureTimestamp - stop.arrivalTimestamp) / 60000 : 0,
             stopType: stop.stopType,
             sceneryName: currentPath.sceneryName,
             realLine: '-',
