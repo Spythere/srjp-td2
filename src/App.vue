@@ -3,25 +3,41 @@
     <nav class="bg-zinc-900 w-full p-1 print:hidden">
       <div class="flex items-center">
         <img src="/favicon.svg" class="size-8 inline" />
-        <b class="ml-2 text-lg">Rozkładownik TD2</b>
+        <b class="ml-2 text-lg"
+          >Rozkładownik TD2 <sup class="font-semibold text-zinc-300">{{ version }}</sup></b
+        >
       </div>
     </nav>
 
     <main class="grid print:block p-3 mx-auto max-w-[800px] h-screen grid-rows-[auto_1fr_20px] gap-1">
-      <select
-        name="trains"
-        id="trains-select"
-        class="mb-2 bg-zinc-800 p-1 rounded-md print:hidden w-full"
-        v-model="selectedTrainId"
-        @change="selectTrain"
-      >
-        <option :value="train.id" v-for="train in activeTimetableTrains">
-          {{ train.driverName }} | {{ train.timetable?.category }} {{ train.trainNo }}
-        </option>
-      </select>
+      <div class="flex gap-2 mb-2">
+        <select
+          name="trains"
+          id="trains-select"
+          class="bg-zinc-800 p-1 rounded-md print:hidden w-full"
+          v-model="selectedTrainId"
+          @change="selectTrain"
+        >
+          <option :value="train.id" v-for="train in activeTimetableTrains">
+            {{ train.driverName }} | {{ train.timetable?.category }} {{ train.trainNo }}
+          </option>
+        </select>
+
+        <button class="bg-zinc-800 p-1 rounded-md hover:bg-zinc-700" @click="openPrintingWindow">
+          <PrinterIcon class="text-white size-6" />
+        </button>
+
+        <button class="bg-zinc-800 p-1 rounded-md hover:bg-zinc-700" @click="refreshData">
+          <ArrowPathIcon class="text-white size-6" />
+        </button>
+      </div>
 
       <div class="overflow-auto py-1">
-        <table class="table-fixed">
+        <b v-if="selectedTrain" class="my-2"
+          >{{ selectedTrain.timetable!.category }} {{ selectedTrain.trainNo }} Relacja {{ selectedTrain.timetable?.route.replace('|', ' - ') }}</b
+        >
+
+        <table class="table-fixed mt-2">
           <thead>
             <tr>
               <th width="40" class="border border-white print:border-black">Nr <br />linii</th>
@@ -213,8 +229,8 @@
         </table>
       </div>
 
-      <footer v-if="generatedDate" class="text-center text-sm text-zinc-400 mt-1">
-        Wygenerowano w {{ generatedMs }}ms o {{ generatedDate.toLocaleTimeString() }}
+      <footer v-if="generatedDate" class="text-center text-sm text-zinc-400 mt-1 print:hidden">
+        Rozkład wygenerowany w {{ generatedMs }}ms - aktualny dla godziny: {{ generatedDate.toLocaleTimeString() }}
       </footer>
     </main>
   </div>
@@ -226,6 +242,9 @@ import { useGlobalStore } from './stores/global.store';
 
 import sceneryCorrections from './data/corrections.json';
 import type { ActiveTrain } from './types/common.types';
+
+import { version } from '../package.json';
+import { PrinterIcon, ArrowPathIcon } from '@heroicons/vue/16/solid';
 
 interface StopRow {
   pointName: string;
@@ -259,6 +278,7 @@ interface StopRow {
 }
 
 export default defineComponent({
+  components: { PrinterIcon, ArrowPathIcon },
   data: () => ({
     selectedTrainId: '',
     globalStore: useGlobalStore(),
@@ -266,6 +286,7 @@ export default defineComponent({
 
     generatedMs: 0,
     generatedDate: null as Date | null,
+    version,
   }),
 
   mounted() {
@@ -279,6 +300,14 @@ export default defineComponent({
       this.selectedTrain = this.activeTimetableTrains.find((train) => train.id == this.selectedTrainId) ?? null;
 
       if (this.selectTrain != null) this.generatedDate = new Date();
+    },
+
+    openPrintingWindow() {
+      window.print();
+    },
+
+    refreshData() {
+      this.selectTrain();
     },
   },
 
