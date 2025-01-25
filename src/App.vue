@@ -1,7 +1,7 @@
 <template>
-  <div class="overflow-hidden max-h-screen max-w-[800px] mx-auto">
-    <div class="grid p-3 h-screen grid-rows-[auto_1fr]">
-      <select name="trains" id="trains-select" class="mb-2 bg-zinc-800 p-1 rounded-md" v-model="selectedTrainId">
+  <div class="max-h-screen max-w-[750px] mx-auto">
+    <div class="grid print:block p-3 h-screen grid-rows-[auto_1fr]">
+      <select name="trains" id="trains-select" class="mb-2 bg-zinc-800 p-1 rounded-md print:hidden" v-model="selectedTrainId">
         <option :value="train.id" v-for="train in timetableTrains.sort((t1, t2) => t1.driverName.localeCompare(t2.driverName, 'pl-PL'))">
           {{ train.driverName }} | {{ train.timetable?.category }} {{ train.trainNo }}
         </option>
@@ -11,11 +11,11 @@
         <table class="table-fixed">
           <thead>
             <tr>
-              <th width="50" class="border border-white print:border-black">Nr <br />linii</th>
+              <th width="40" class="border border-white print:border-black">Nr <br />linii</th>
               <th width="100" class="border border-white print:border-black">Km</th>
-              <th width="40" class="border border-white print:border-black">V<sub>P</sub></th>
-              <th width="40" class="border border-white print:border-black">V<sub>L</sub></th>
-              <th width="250" class="border border-white print:border-black">Stacja</th>
+              <th width="35" class="border border-white print:border-black">V<sub>P</sub></th>
+              <th width="35" class="border border-white print:border-black">V<sub>L</sub></th>
+              <th width="200" class="border border-white print:border-black">Stacja</th>
               <th width="100" class="border border-white print:border-black">Godzina</th>
               <th width="50" class="border border-white print:border-black text-xs p-0">
                 <table class="header-table">
@@ -32,7 +32,7 @@
                   </tbody>
                 </table>
               </th>
-              <th width="60" class="border border-white print:border-black text-xs p-0">
+              <th width="50" class="border border-white print:border-black text-xs p-0">
                 <table class="header-table">
                   <tbody>
                     <tr>
@@ -76,7 +76,7 @@
                           'border-t print:border-t-black': i != 0 && computedTimetable[i - 1].departureSpeed != row.arrivalSpeed,
                         }"
                       >
-                        <td :colspan="row.arrivalTracks == 2 ? '1' : '2'" class="font-bold" width="40">
+                        <td :colspan="row.arrivalTracks == 2 ? '1' : '2'" class="font-bold" width="35">
                           {{
                             i == 0 ||
                             computedTimetable[i - 1].departureSpeed != row.arrivalSpeed ||
@@ -85,7 +85,7 @@
                               : '&nbsp; '
                           }}
                         </td>
-                        <td v-if="row.arrivalTracks == 2" class="border-l print:border-l-black" width="40">
+                        <td v-if="row.arrivalTracks == 2" class="border-l print:border-l-black" width="35">
                           {{
                             i == 0 ||
                             computedTimetable[i - 1].departureSpeed != row.arrivalSpeed ||
@@ -116,7 +116,7 @@
 
               <td class="border border-white print:border-black relative">
                 <div class="absolute top-0 left-0 w-full h-full">
-                  <div class="flex flex-col h-full justify-between p-1">
+                  <div class="flex flex-col h-full justify-between p-1 text-sm">
                     <div :class="{ 'font-bold': row.isMain }">
                       {{ row.pointName }}
                       <span v-if="row.stopType"> ; {{ row.stopType }}</span>
@@ -384,21 +384,13 @@ table {
   border-collapse: collapse;
 }
 
-.srjp-table {
-  table-layout: fixed;
-}
-
 .no-bottom-border {
   border-bottom-color: transparent;
 }
 
 @media print {
-  .main_app {
-    display: block;
-  }
-
   table {
-    page-break-inside: auto;
+    page-break-after: auto;
   }
 
   tr {
@@ -406,8 +398,12 @@ table {
     page-break-after: auto;
   }
 
-  select {
-    display: none;
+  thead {
+    display: table-header-group;
   }
+
+  /* select {
+    display: none;
+  } */
 }
 </style>
