@@ -20,7 +20,7 @@ import { useApiStore } from '../../stores/api.store';
 import { useGlobalStore } from '../../stores/global.store';
 import TimetableBody from './TimetableBody.vue';
 import TimetableHeader from './TimetableHeader.vue';
-import type { StopRow } from '../../types/common.types';
+import type { SceneryRoute, StopRow } from '../../types/common.types';
 
 const globalStore = useGlobalStore();
 const apiStore = useApiStore();
@@ -70,13 +70,23 @@ const computedTimetable = computed(() => {
   let lastDepartureTimestamp = 0;
 
   let arrivalKm = 0,
-    arrivalSpeed = currentPath.departureLineData?.routeSpeed ?? 0,
-    arrivalTracks = currentPath.departureLineData?.routeTracks ?? 0;
+    arrivalSpeed = 0,
+    arrivalTracks = 0,
+    departureSpeed = 0,
+    departureTracks = 2,
+    realLineNo = 0,
+    abbrevs = [] as string[];
 
-  let departureSpeed = currentPath.departureLineData?.routeSpeed ?? 0,
-    departureTracks = currentPath.departureLineData?.routeTracks ?? 2;
+  if (currentPath.departureLineData) {
+    arrivalSpeed = currentPath.departureLineData.routeSpeed;
+    arrivalTracks = currentPath.departureLineData.routeTracks;
 
-  let realLineNo = currentPath.departureLineData?.realLineNo ?? 0;
+    departureSpeed = currentPath.departureLineData.routeSpeed;
+    departureTracks = currentPath.departureLineData.routeTracks;
+
+    realLineNo = currentPath.departureLineData?.realLineNo ?? 0;
+    abbrevs = getAbbrevs(currentPath.departureLineData);
+  }
 
   // console.debug('=========== ' + this.selectedTrain.trainNo + ' ===========');
 
@@ -88,6 +98,7 @@ const computedTimetable = computed(() => {
         arrivalSpeed = currentPath.arrivalLineData.routeSpeed;
         arrivalTracks = currentPath.arrivalLineData.routeTracks;
         realLineNo = currentPath.arrivalLineData.realLineNo ?? 0;
+        abbrevs = getAbbrevs(currentPath.arrivalLineData);
       }
 
       departureSpeed = arrivalSpeed;
@@ -106,6 +117,7 @@ const computedTimetable = computed(() => {
         correctedDepartureSpeed = internalRouteInfo.routeSpeed;
         departureSpeed = internalRouteInfo.routeSpeed;
         realLineNo = internalRouteInfo.realLineNo ?? realLineNo;
+        abbrevs = getAbbrevs(internalRouteInfo);
 
         correctedDepartureTracks = internalRouteInfo.routeTracks;
         departureTracks = internalRouteInfo.routeTracks;
@@ -122,8 +134,8 @@ const computedTimetable = computed(() => {
         sceneryName: currentPath.sceneryName,
         realLine: realLineNo == 0 ? '' : realLineNo.toString(),
         driveTime: lastDepartureTimestamp ? stop.arrivalTimestamp - lastDepartureTimestamp : 0,
-        additionalAbbrevs: [],
-        controlAbbrevs: [],
+
+        abbrevs,
 
         arrivalKm: arrivalKm.toFixed(3),
         departureKm: stop.stopDistance.toFixed(3),
@@ -162,6 +174,9 @@ const computedTimetable = computed(() => {
           if (stopRows[i].isMain || stopRows[i].pointName.endsWith(', podg')) {
             stopRows[i].departureSpeed = currentPath.departureLineData.routeSpeed;
             stopRows[i].departureTracks = currentPath.departureLineData.routeTracks;
+
+            abbrevs = getAbbrevs(currentPath.departureLineData);
+            stopRows[i].abbrevs = abbrevs;
             break;
           }
 
@@ -180,4 +195,17 @@ const computedTimetable = computed(() => {
 
   return stopRows;
 });
+
+function getAbbrevs(routeData: SceneryRoute) {
+  const abbrevs = [];
+
+  if (routeData.isRouteSBL == true) abbrevs.push(`${routeData.routeSpeed > 130 ? '4' : ''}S${routeData.routeTracks == 2 ? 'S' : ''}`);
+  else if (routeData.routeTracks == 2) abbrevs.push('PP');
+
+  return abbrevs;
+}
+
+// function getRadioChannel() {
+//   return Math.floor(Math.random() * 6 + 1);
+// }
 </script>

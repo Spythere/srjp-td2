@@ -132,8 +132,7 @@ export interface StopRow {
   scheduledDepartureDate: Date | null;
   realLine: string;
   driveTime: number;
-  controlAbbrevs: string[];
-  additionalAbbrevs: string[];
+  abbrevs: string[];
   sceneryName: string;
   arrivalKm: string;
   arrivalSpeed: number;
