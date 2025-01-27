@@ -238,13 +238,13 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { useGlobalStore } from './stores/global.store';
 
 import sceneryCorrections from './data/corrections.json';
 import type { ActiveTrain } from './types/common.types';
 
 import { version } from '../package.json';
 import { PrinterIcon, ArrowPathIcon } from '@heroicons/vue/16/solid';
+import { useApiStore } from './stores/api.store';
 
 interface StopRow {
   pointName: string;
@@ -281,7 +281,7 @@ export default defineComponent({
   components: { PrinterIcon, ArrowPathIcon },
   data: () => ({
     selectedTrainId: '',
-    globalStore: useGlobalStore(),
+    apiStore: useApiStore(),
     selectedTrain: null as ActiveTrain | null,
 
     generatedMs: 0,
@@ -290,12 +290,12 @@ export default defineComponent({
   }),
 
   mounted() {
-    this.globalStore.setupData();
+    this.apiStore.setupAPIData();
   },
 
   methods: {
     selectTrain() {
-      if (!this.globalStore.activeData) return;
+      if (!this.apiStore.activeData) return;
 
       this.selectedTrain = this.activeTimetableTrains.find((train) => train.id == this.selectedTrainId) ?? null;
 
@@ -307,17 +307,16 @@ export default defineComponent({
     },
 
     refreshData() {
+      this.apiStore.fetchActiveData();
       this.selectTrain();
     },
   },
 
   computed: {
     activeTimetableTrains() {
-      if (!this.globalStore.activeData) return [];
+      if (!this.apiStore.activeData) return [];
 
-      return this.globalStore.activeData.trains
-        .filter((train) => train.timetable)
-        .sort((t1, t2) => t1.driverName.localeCompare(t2.driverName, 'pl-PL'));
+      return this.apiStore.activeData.trains.filter((train) => train.timetable).sort((t1, t2) => t1.driverName.localeCompare(t2.driverName, 'pl-PL'));
     },
 
     computedTimetable() {
@@ -343,7 +342,7 @@ export default defineComponent({
         const [arrivalLine, scenery, departureLine] = pathEl.split(',');
         const sceneryName = scenery.split(' ').slice(0, -1).join(' ');
 
-        const sceneryData = this.globalStore.sceneryData?.find((sc) => sc.name == sceneryName) ?? null;
+        const sceneryData = this.apiStore.sceneryData?.find((sc) => sc.name == sceneryName) ?? null;
         const arrivalLineData = arrivalLine ? sceneryData?.routesInfo.find((rt) => rt.routeName == arrivalLine) ?? null : null;
         const departureLineData = departureLine ? sceneryData?.routesInfo.find((rt) => rt.routeName == departureLine) ?? null : null;
 
