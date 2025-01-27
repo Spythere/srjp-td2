@@ -119,4 +119,5 @@ export interface SceneryRoute {
   routeLength: number;
   routeTracks: number;
   hidden?: boolean;
+  realLineNo?: number;
 }

@@ -240,7 +240,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 
-import sceneryCorrections from './data/corrections.json';
 import type { ActiveTrain } from './types/common.types';
 
 import { version } from '../package.json';
@@ -357,7 +356,6 @@ export default defineComponent({
           arrivalLineData,
           departureLine: departureLine ?? '',
           departureLineData,
-          lineCorrections: sceneryCorrections.find((sc) => sc.sceneryName == sceneryName)?.lineCorrections ?? [],
         };
       });
 
@@ -375,13 +373,18 @@ export default defineComponent({
       let departureSpeed = currentPath.departureLineData?.routeSpeed ?? 0,
         departureTracks = currentPath.departureLineData?.routeTracks ?? 2;
 
+      let realLineNo = 0;
+
       // console.log('=========== ' + this.selectedTrain.trainNo + ' ===========');
 
       for (const stop of timetable.stopList) {
         if (stop.arrivalLine && stop.arrivalLine == currentPath.arrivalLine) {
           arrivalKm = stop.stopDistance;
-          arrivalSpeed = currentPath.arrivalLineData?.routeSpeed ?? 0;
-          arrivalTracks = currentPath.arrivalLineData?.routeTracks ?? 2;
+
+          if (currentPath.arrivalLineData) {
+            arrivalSpeed = currentPath.arrivalLineData.routeSpeed;
+            arrivalTracks = currentPath.arrivalLineData.routeTracks;
+          }
 
           departureSpeed = arrivalSpeed;
           departureTracks = arrivalTracks;
@@ -391,15 +394,16 @@ export default defineComponent({
           let correctedDepartureSpeed = 0,
             correctedDepartureTracks = 0;
 
-          const lineCorrection =
-            stop.departureLine != null ? currentPath.lineCorrections.find((corr) => corr.lineName == stop.departureLine) : undefined;
+          const internalRouteInfo = stop.departureLine
+            ? currentPath.sceneryData?.routesInfo.find((route) => route.isInternal && route.routeName == stop.departureLine)
+            : undefined;
 
-          if (lineCorrection) {
-            correctedDepartureSpeed = lineCorrection.departureSpeed;
-            departureSpeed = lineCorrection.departureSpeed;
+          if (internalRouteInfo) {
+            correctedDepartureSpeed = internalRouteInfo.routeSpeed;
+            departureSpeed = internalRouteInfo.routeSpeed;
 
-            correctedDepartureTracks = lineCorrection.departureTracks;
-            departureTracks = lineCorrection.departureTracks;
+            correctedDepartureTracks = internalRouteInfo.routeTracks;
+            departureTracks = internalRouteInfo.routeTracks;
           }
 
           let rowData: StopRow = {
@@ -411,7 +415,7 @@ export default defineComponent({
             stopTime: stop.stopTime ? (stop.departureTimestamp - stop.arrivalTimestamp) / 60000 : 0,
             stopType: stop.stopType,
             sceneryName: currentPath.sceneryName,
-            realLine: '-',
+            realLine: realLineNo == 0 ? ' - ' : realLineNo.toString(),
             driveTime: lastDepartureTimestamp ? stop.arrivalTimestamp - lastDepartureTimestamp : 0,
             additionalAbbrevs: [],
             controlAbbrevs: [],
@@ -445,17 +449,20 @@ export default defineComponent({
         if (stop.departureLine && stop.departureLine == currentPath.departureLine) {
           // Reverse search for last scenery checkpoint
           for (let i = stopRows.length - 1; i > 0; i--) {
-            stopRows[i].departureTracks = currentPath.departureLineData?.routeTracks ?? 0;
-            stopRows[i].departureSpeed = currentPath.departureLineData?.routeSpeed ?? 0;
+            if (currentPath.departureLineData) {
+              stopRows[i].departureTracks = currentPath.departureLineData.routeTracks;
+              stopRows[i].departureSpeed = currentPath.departureLineData.routeSpeed;
+              stopRows[i].realLine = currentPath.departureLineData.realLineNo?.toString() ?? ' - ';
 
-            if (stopRows[i].isMain || stopRows[i].pointName.endsWith(', podg')) {
-              stopRows[i].departureSpeed = currentPath.departureLineData?.routeSpeed ?? 0;
-              stopRows[i].departureTracks = currentPath.departureLineData?.routeTracks ?? 0;
-              break;
+              if (stopRows[i].isMain || stopRows[i].pointName.endsWith(', podg')) {
+                stopRows[i].departureSpeed = currentPath.departureLineData.routeSpeed;
+                stopRows[i].departureTracks = currentPath.departureLineData.routeTracks;
+                break;
+              }
+
+              stopRows[i].arrivalSpeed = currentPath.departureLineData.routeSpeed;
+              stopRows[i].arrivalTracks = currentPath.departureLineData.routeTracks;
             }
-
-            stopRows[i].arrivalSpeed = currentPath.departureLineData?.routeSpeed ?? 0;
-            stopRows[i].arrivalTracks = currentPath.departureLineData?.routeTracks ?? 0;
           }
 
           currentPath = timetablePath[++currentPathIndex];
