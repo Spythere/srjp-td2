@@ -8,9 +8,9 @@
       v-model="selectedTrainId"
       @change="selectTrain"
     >
-      <option value="" disabled>{{ apiStore.activeDataStatus == DataStatus.LOADING ? 'Ładowanie danych...' : 'Wybierz pociąg z listy' }}</option>
+      <option :value="null" disabled>{{ apiStore.activeDataStatus == DataStatus.LOADING ? 'Ładowanie danych...' : 'Wybierz pociąg z listy' }}</option>
       <option :value="train.id" v-for="train in globalStore.activeTimetableTrains">
-        {{ train.driverName }} | {{ train.timetable?.category }} {{ train.trainNo }}
+        {{ train.driverName }} | {{ train.timetable?.category }} {{ train.trainNo }} [{{ getRegionNameById(train.region) }}]
       </option>
     </select>
 
@@ -18,8 +18,9 @@
       <PrinterIcon class="text-white size-6" />
     </button>
 
-    <button class="bg-zinc-800 p-1 rounded-md hover:bg-zinc-700" @click="refreshData">
+    <button class="bg-zinc-800 p-1 rounded-md hover:bg-zinc-700 relative" @click="refreshData">
       <ArrowPathIcon class="text-white size-6" />
+      <div v-if="apiStore.isActiveDataOutdated" class="size-3 bg-green-300 rounded-full absolute -top-1 -right-1"></div>
     </button>
   </div>
 </template>
@@ -30,6 +31,7 @@ import { useApiStore } from '../../stores/api.store';
 import { DataStatus } from '../../types/api.types';
 import { useGlobalStore } from '../../stores/global.store';
 import { PrinterIcon, ArrowPathIcon } from '@heroicons/vue/16/solid';
+import { getRegionNameById } from '../../utils/trainUtils';
 
 // Stores
 const apiStore = useApiStore();
@@ -37,8 +39,6 @@ const globalStore = useGlobalStore();
 
 // Variables & refs
 let selectedTrainId = ref(null) as Ref<string | null>;
-
-// Computed
 
 // Methods
 function selectTrain() {

@@ -8,11 +8,14 @@ export const useApiStore = defineStore('api', {
   state() {
     return {
       client: null as AxiosInstance | null,
-      
+
       activeData: null as ActiveData | null,
       sceneryData: null as SceneryData[] | null,
 
-      activeDataStatus: DataStatus.LOADING
+      outdatedTimerId: -1,
+      isActiveDataOutdated: false,
+
+      activeDataStatus: DataStatus.LOADING,
     };
   },
 
@@ -36,13 +39,13 @@ export const useApiStore = defineStore('api', {
       this.client = axios.create({
         baseURL,
       });
-      
+
       this.fetchSceneriesData();
       this.fetchActiveData();
 
-      setInterval(() => {
-        this.fetchActiveData();
-      }, 20000);
+      // setInterval(() => {
+      //   this.fetchActiveData();
+      // }, 20000);
     },
 
     async fetchActiveData() {
@@ -51,6 +54,13 @@ export const useApiStore = defineStore('api', {
 
         this.activeData = response;
         this.activeDataStatus = DataStatus.SUCCESS;
+        this.isActiveDataOutdated = false;
+
+        if (this.outdatedTimerId != -1) clearTimeout(this.outdatedTimerId);
+
+        this.outdatedTimerId = setTimeout(() => {
+          this.isActiveDataOutdated = true;
+        }, 30000);
       } catch (error) {
         console.error(error);
       }
