@@ -1,12 +1,13 @@
 <template>
   <div class="min-h-screen bg-zinc-950">
-    <nav class="bg-zinc-900 w-full p-1 print:hidden">
+    <nav class="bg-zinc-900 w-full p-1 print:hidden flex justify-between items-center">
       <div class="flex items-center">
         <img src="/favicon.svg" class="size-8 inline" />
         <b class="ml-2 text-lg"
           >Rozkładownik TD2 <sup class="font-semibold text-zinc-300">{{ version }}</sup></b
         >
       </div>
+      <div v-if="apiMode == 'mocking'"><ExclamationTriangleIcon class="size-6 inline mr-1 text-yellow-400" /> API mocking</div>
     </nav>
 
     <main class="grid print:block p-3 mx-auto max-w-[800px] h-screen grid-rows-[auto_1fr_20px] gap-1">
@@ -243,7 +244,7 @@ import sceneryCorrections from './data/corrections.json';
 import type { ActiveTrain } from './types/common.types';
 
 import { version } from '../package.json';
-import { PrinterIcon, ArrowPathIcon } from '@heroicons/vue/16/solid';
+import { PrinterIcon, ArrowPathIcon, ExclamationTriangleIcon } from '@heroicons/vue/16/solid';
 import { useApiStore } from './stores/api.store';
 
 interface StopRow {
@@ -278,7 +279,8 @@ interface StopRow {
 }
 
 export default defineComponent({
-  components: { PrinterIcon, ArrowPathIcon },
+  components: { PrinterIcon, ArrowPathIcon, ExclamationTriangleIcon },
+
   data: () => ({
     selectedTrainId: '',
     apiStore: useApiStore(),
@@ -287,6 +289,8 @@ export default defineComponent({
     generatedMs: 0,
     generatedDate: null as Date | null,
     version,
+
+    apiMode: import.meta.env.VITE_API_MODE,
   }),
 
   mounted() {
