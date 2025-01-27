@@ -121,3 +121,28 @@ export interface SceneryRoute {
   hidden?: boolean;
   realLineNo?: number;
 }
+
+export interface StopRow {
+  pointName: string;
+  pointKm: string;
+  isMain: boolean;
+  stopTime: number;
+  stopType: string;
+  scheduledArrivalDate: Date | null;
+  scheduledDepartureDate: Date | null;
+  realLine: string;
+  driveTime: number;
+  controlAbbrevs: string[];
+  additionalAbbrevs: string[];
+  sceneryName: string;
+  arrivalKm: string;
+  arrivalSpeed: number;
+  arrivalTracks: number;
+  departureKm: string;
+  departureSpeed: number;
+  departureTracks: number;
+  headLocos: string[];
+  stockVmax: number;
+  stockLength: number;
+  stockMass: number;
+}
