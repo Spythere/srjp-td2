@@ -1,7 +1,15 @@
 <template>
   <tbody>
     <tr v-for="(row, i) in computedTimetable">
-      <td class="text-center align-top border border-white print:border-black">{{ row.realLine }}</td>
+      <td
+        class="text-center align-top border-l border-t-white print:border-l-black"
+        :class="{
+          'border-t print:border-t-black': i != 0 && computedTimetable[i - 1].realLine != row.realLine,
+          'border-b': i == computedTimetable.length - 1,
+        }"
+      >
+        {{ i == 0 || computedTimetable[i - 1].realLine != row.realLine ? row.realLine : '&nbsp;' }}
+      </td>
 
       <td class="border border-white print:border-black relative">
         <div class="absolute top-0 left-0 w-full h-full p-0.5">

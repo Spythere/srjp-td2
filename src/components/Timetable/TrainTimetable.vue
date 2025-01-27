@@ -76,7 +76,7 @@ const computedTimetable = computed(() => {
   let departureSpeed = currentPath.departureLineData?.routeSpeed ?? 0,
     departureTracks = currentPath.departureLineData?.routeTracks ?? 2;
 
-  let realLineNo = 0;
+  let realLineNo = currentPath.departureLineData?.realLineNo ?? 0;
 
   // console.debug('=========== ' + this.selectedTrain.trainNo + ' ===========');
 
@@ -87,6 +87,7 @@ const computedTimetable = computed(() => {
       if (currentPath.arrivalLineData) {
         arrivalSpeed = currentPath.arrivalLineData.routeSpeed;
         arrivalTracks = currentPath.arrivalLineData.routeTracks;
+        realLineNo = currentPath.arrivalLineData.realLineNo ?? 0;
       }
 
       departureSpeed = arrivalSpeed;
@@ -104,6 +105,7 @@ const computedTimetable = computed(() => {
       if (internalRouteInfo) {
         correctedDepartureSpeed = internalRouteInfo.routeSpeed;
         departureSpeed = internalRouteInfo.routeSpeed;
+        realLineNo = internalRouteInfo.realLineNo ?? realLineNo;
 
         correctedDepartureTracks = internalRouteInfo.routeTracks;
         departureTracks = internalRouteInfo.routeTracks;
@@ -118,7 +120,7 @@ const computedTimetable = computed(() => {
         stopTime: stop.stopTime ? (stop.departureTimestamp - stop.arrivalTimestamp) / 60000 : 0,
         stopType: stop.stopType,
         sceneryName: currentPath.sceneryName,
-        realLine: realLineNo == 0 ? ' - ' : realLineNo.toString(),
+        realLine: realLineNo == 0 ? '' : realLineNo.toString(),
         driveTime: lastDepartureTimestamp ? stop.arrivalTimestamp - lastDepartureTimestamp : 0,
         additionalAbbrevs: [],
         controlAbbrevs: [],
@@ -155,7 +157,7 @@ const computedTimetable = computed(() => {
         if (currentPath.departureLineData) {
           stopRows[i].departureTracks = currentPath.departureLineData.routeTracks;
           stopRows[i].departureSpeed = currentPath.departureLineData.routeSpeed;
-          stopRows[i].realLine = currentPath.departureLineData.realLineNo?.toString() ?? ' - ';
+          stopRows[i].realLine = currentPath.departureLineData.realLineNo?.toString() ?? '';
 
           if (stopRows[i].isMain || stopRows[i].pointName.endsWith(', podg')) {
             stopRows[i].departureSpeed = currentPath.departureLineData.routeSpeed;
