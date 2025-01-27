@@ -1,7 +1,7 @@
 import type { AxiosInstance } from 'axios';
 import axios from 'axios';
 import { defineStore } from 'pinia';
-import type { ActiveDataResponse, SceneriesDataResponse } from '../types/api.types';
+import { DataStatus, type ActiveDataResponse, type SceneriesDataResponse } from '../types/api.types';
 import type { ActiveData, SceneryData } from '../types/common.types';
 
 export const useApiStore = defineStore('api', {
@@ -11,6 +11,8 @@ export const useApiStore = defineStore('api', {
       
       activeData: null as ActiveData | null,
       sceneryData: null as SceneryData[] | null,
+
+      activeDataStatus: DataStatus.LOADING
     };
   },
 
@@ -34,7 +36,7 @@ export const useApiStore = defineStore('api', {
       this.client = axios.create({
         baseURL,
       });
-
+      
       this.fetchSceneriesData();
       this.fetchActiveData();
 
@@ -48,6 +50,7 @@ export const useApiStore = defineStore('api', {
         const response = (await this.client!.get<ActiveDataResponse>('/api/getActiveData')).data;
 
         this.activeData = response;
+        this.activeDataStatus = DataStatus.SUCCESS;
       } catch (error) {
         console.error(error);
       }

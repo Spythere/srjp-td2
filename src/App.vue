@@ -16,9 +16,11 @@
           name="trains"
           id="trains-select"
           class="bg-zinc-800 p-1 rounded-md print:hidden w-full"
+          :disabled="apiStore.activeDataStatus != DataStatus.SUCCESS"
           v-model="selectedTrainId"
           @change="selectTrain"
         >
+          <option value="" disabled>{{ apiStore.activeDataStatus == DataStatus.LOADING ? 'Ładowanie danych...' : 'Wybierz pociąg z listy' }}</option>
           <option :value="train.id" v-for="train in activeTimetableTrains">
             {{ train.driverName }} | {{ train.timetable?.category }} {{ train.trainNo }}
           </option>
@@ -245,6 +247,7 @@ import type { ActiveTrain } from './types/common.types';
 import { version } from '../package.json';
 import { PrinterIcon, ArrowPathIcon, ExclamationTriangleIcon } from '@heroicons/vue/16/solid';
 import { useApiStore } from './stores/api.store';
+import { DataStatus } from './types/api.types';
 
 interface StopRow {
   pointName: string;
@@ -290,6 +293,7 @@ export default defineComponent({
     version,
 
     apiMode: import.meta.env.VITE_API_MODE,
+    DataStatus,
   }),
 
   mounted() {
