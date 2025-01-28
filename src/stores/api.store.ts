@@ -43,9 +43,9 @@ export const useApiStore = defineStore('api', {
       this.fetchSceneriesData();
       this.fetchActiveData();
 
-      // setInterval(() => {
-      //   this.fetchActiveData();
-      // }, 20000);
+      setInterval(() => {
+        this.fetchActiveData();
+      }, 25000);
     },
 
     async fetchActiveData() {
@@ -60,7 +60,7 @@ export const useApiStore = defineStore('api', {
 
         this.outdatedTimerId = setTimeout(() => {
           this.isActiveDataOutdated = true;
-        }, 30000);
+        }, 60000);
       } catch (error) {
         console.error(error);
       }
