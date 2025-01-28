@@ -46,10 +46,19 @@ function selectTrain() {
 
   globalStore.selectedTrain = globalStore.activeTimetableTrains.find((train) => train.id == selectedTrainId.value) ?? null;
 
-  if (globalStore.selectedTrain != null) globalStore.generatedDate = new Date();
+  if (globalStore.selectedTrain != null) {
+    globalStore.generatedDate = new Date();
+  }
 }
 
 function openPrintingWindow() {
+  if (globalStore.selectedTrain != null) {
+    const date = `${globalStore.generatedDate!.toLocaleDateString('pl-PL').replace(/\./g, '-')}--${globalStore.generatedDate!.toLocaleTimeString('pl-PL').replace(/:/g, '-')}`;
+
+    document.title = `${globalStore.selectedTrain.driverName} ; ${globalStore.selectedTrain.timetable!.category} ${globalStore.selectedTrain.trainNo}
+    ${globalStore.selectedTrain.timetable?.route.replace('|', ' - ')} ; ${date}`;
+  }
+
   window.print();
 }
 
