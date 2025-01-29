@@ -1,10 +1,10 @@
 <template>
   <div
-    id="train-timetable"
     :class="{ dark: globalStore.darkMode }"
+    v-if="globalStore.selectedTrain"
     class="overflow-auto p-1 bg-white print:bg-white dark:bg-zinc-950 print:text-black text-black dark:text-white min-h-full"
   >
-    <div v-if="globalStore.selectedTrain">
+    <div>
       <div class="p-1 font-bold w-max">
         {{ globalStore.selectedTrain.timetable!.category }} {{ globalStore.selectedTrain.trainNo }} Relacja
         {{ globalStore.selectedTrain.timetable?.route.replace('|', ' - ') }}
@@ -15,9 +15,9 @@
         <TimetableBody :computed-timetable="computedTimetable" />
       </table>
     </div>
-
-    <div class="text-center font-bold text-zinc-400 p-2" v-else>Wybierz aktywny pociąg, aby wygenerować SRJP</div>
   </div>
+
+  <div class="overflow-auto text-center font-bold text-zinc-400 p-1 min-h-full" v-else>Wybierz aktywny pociąg, aby wygenerować SRJP</div>
 </template>
 
 <script setup lang="ts">
