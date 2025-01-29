@@ -37,11 +37,7 @@
         <div class="absolute top-0 left-0 w-full h-full">
           <table class="h-full w-full border-collapse">
             <tbody>
-              <tr
-                :class="{
-                  'align-top': i == 0 || computedTimetable[i - 1].departureTracks == row.arrivalTracks,
-                }"
-              >
+              <tr class="align-top">
                 <td :colspan="row.arrivalTracks == 2 ? '1' : '2'" class="font-bold" width="35">
                   {{
                     i == 0 ||
@@ -63,8 +59,8 @@
               </tr>
               <tr
                 :class="{
-                  'border-t border-t-black dark:border-t-white': row.arrivalTracks != row.departureTracks || row.departureSpeed != row.arrivalSpeed,
-                  'align-top': row.arrivalTracks != row.departureTracks,
+                  'border-t border-t-black dark:border-t-white align-top':
+                    row.arrivalTracks != row.departureTracks || row.departureSpeed != row.arrivalSpeed,
                 }"
               >
                 <td :colspan="row.departureTracks == 2 ? '1' : '2'" class="font-bold" width="35">
