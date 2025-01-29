@@ -4,9 +4,9 @@ import type { ActiveTrain } from '../types/common.types';
 
 export const useGlobalStore = defineStore('global', {
   state: () => ({
+    darkMode: false,
+
     selectedTrain: null as ActiveTrain | null,
-
-
     generatedDate: null as Date | null,
     generatedMs: 0,
   }),

@@ -14,6 +14,11 @@
       </option>
     </select>
 
+    <button class="bg-zinc-800 p-1 rounded-md hover:bg-zinc-700" @click="toggleDarkMode">
+      <SunIcon v-if="globalStore.darkMode" class="text-white size-6" />
+      <MoonIcon v-else class="text-white size-6" />
+    </button>
+
     <button class="bg-zinc-800 p-1 rounded-md hover:bg-zinc-700" @click="openPrintingWindow">
       <PrinterIcon class="text-white size-6" />
     </button>
@@ -30,7 +35,7 @@ import { ref, type Ref } from 'vue';
 import { useApiStore } from '../../stores/api.store';
 import { DataStatus } from '../../types/api.types';
 import { useGlobalStore } from '../../stores/global.store';
-import { PrinterIcon, ArrowPathIcon } from '@heroicons/vue/16/solid';
+import { PrinterIcon, ArrowPathIcon, MoonIcon, SunIcon } from '@heroicons/vue/16/solid';
 import { getRegionNameById } from '../../utils/trainUtils';
 
 // Stores
@@ -51,12 +56,20 @@ function selectTrain() {
   }
 }
 
+function toggleDarkMode() {
+  globalStore.darkMode = !globalStore.darkMode;
+
+  window.localStorage.setItem('currentTheme', globalStore.darkMode ? 'dark' : 'light');
+}
+
 function openPrintingWindow() {
   if (globalStore.selectedTrain != null) {
-    const date = `${globalStore.generatedDate!.toLocaleDateString('pl-PL').replace(/\./g, '-')}--${globalStore.generatedDate!.toLocaleTimeString('pl-PL').replace(/:/g, '-')}`;
+    const date = `${globalStore.generatedDate!.toLocaleDateString('pl-PL').replace(/\./g, '-')}--${globalStore
+      .generatedDate!.toLocaleTimeString('pl-PL')
+      .replace(/:/g, '-')}`;
 
     document.title = `${globalStore.selectedTrain.driverName} ; ${globalStore.selectedTrain.timetable!.category} ${globalStore.selectedTrain.trainNo}
-    ${globalStore.selectedTrain.timetable?.route.replace('|', ' - ')} ; ${date}`;
+      ${globalStore.selectedTrain.timetable?.route.replace('|', ' - ')} ; ${date}`;
   }
 
   window.print();

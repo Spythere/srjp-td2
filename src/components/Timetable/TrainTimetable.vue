@@ -1,14 +1,20 @@
 <template>
-  <div class="overflow-auto py-1">
-    <b v-if="globalStore.selectedTrain" class="my-2">
-      {{ globalStore.selectedTrain.timetable!.category }} {{ globalStore.selectedTrain.trainNo }} Relacja
-      {{ globalStore.selectedTrain.timetable?.route.replace('|', ' - ') }}
-    </b>
+  <div
+    id="train-timetable"
+    :class="{ dark: globalStore.darkMode }"
+    class="overflow-auto p-1 bg-white print:bg-white dark:bg-zinc-950 print:text-black text-black dark:text-white min-h-full"
+  >
+    <div v-if="globalStore.selectedTrain">
+      <div class="p-1 font-bold w-max">
+        {{ globalStore.selectedTrain.timetable!.category }} {{ globalStore.selectedTrain.trainNo }} Relacja
+        {{ globalStore.selectedTrain.timetable?.route.replace('|', ' - ') }}
+      </div>
 
-    <table class="table-fixed mt-2 w-full border-collapse" v-if="computedTimetable.length > 0">
-      <TimetableHeader />
-      <TimetableBody :computed-timetable="computedTimetable" />
-    </table>
+      <table class="table-fixed mt-2 w-full border-collapse" v-if="computedTimetable.length > 0">
+        <TimetableHeader />
+        <TimetableBody :computed-timetable="computedTimetable" />
+      </table>
+    </div>
 
     <div class="text-center font-bold text-zinc-400 p-2" v-else>Wybierz aktywny pociąg, aby wygenerować SRJP</div>
   </div>
