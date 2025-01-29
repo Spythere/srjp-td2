@@ -15,6 +15,24 @@ body {
   height: 100vh;
 }
 
+/* Scrollbar */
+/* width */
+::-webkit-scrollbar {
+  width: theme('size.2');
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: theme('colors.stone.900');
+  border-radius: theme('borderRadius.md');
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: theme('colors.stone.400');
+  border-radius: theme('borderRadius.md');
+}
+
 @media print {
   :root {
     color-scheme: light;
