@@ -38,6 +38,7 @@ export interface ActiveTrainTimetable {
   timetableId: number;
   sceneries: string[];
   path: string;
+  trainMaxSpeed: number;
 }
 
 export interface TimetableStop {

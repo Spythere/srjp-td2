@@ -26,23 +26,21 @@ const globalStore = useGlobalStore();
 const apiStore = useApiStore();
 
 const computedTimetable = computed(() => {
-  if (!globalStore.selectedTrain) return [];
+  if (!globalStore.selectedTrain || !globalStore.selectedTrain.timetable) return [];
 
-  const timetable = globalStore.selectedTrain.timetable;
-
-  if (!timetable) return [];
+  const { timetable, stockString, mass, length } = globalStore.selectedTrain;
 
   let timeFrom = Date.now();
 
-  const headLocos = globalStore.selectedTrain.stockString
+  const headLocos = stockString
     .split(';')
     .slice(0, 3)
     .filter((s, i) => i == 0 || /-\d+$/.test(s))
     .map((s) => s.slice(0, s.indexOf('-')));
 
-  const stockVmax = 70,
-    stockMass = Math.floor(globalStore.selectedTrain.mass / 1000),
-    stockLength = globalStore.selectedTrain.length;
+  const stockVmax = timetable.trainMaxSpeed,
+    stockMass = Math.floor(mass / 1000),
+    stockLength = length;
 
   const timetablePath = timetable.path.split(';').map((pathEl) => {
     const [arrivalLine, scenery, departureLine] = pathEl.split(',');
@@ -204,8 +202,4 @@ function getAbbrevs(routeData: SceneryRoute) {
 
   return abbrevs;
 }
-
-// function getRadioChannel() {
-//   return Math.floor(Math.random() * 6 + 1);
-// }
 </script>

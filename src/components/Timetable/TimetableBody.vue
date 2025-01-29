@@ -152,7 +152,7 @@
         </div>
       </td>
 
-      <td class="text-center border border-white print:border-black" :class="{ 'text-stone-400 ': i > 0 }">70</td>
+      <td class="text-center border border-white print:border-black" :class="{ 'text-stone-400 ': i > 0 }">{{ row.stockVmax }}</td>
     </tr>
   </tbody>
 </template>
