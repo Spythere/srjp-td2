@@ -43,9 +43,10 @@
     </button>
 
     <button
-      class="bg-zinc-800 p-1 rounded-md hover:bg-zinc-700"
+      class=" p-1 rounded-md "
       :class="{
-        'bg-green-600': isTimetableSaved,
+        'bg-green-600 hover:bg-green-700': isTimetableSaved,
+        'bg-zinc-800 hover:bg-zinc-700': !isTimetableSaved,
       }"
       @click="saveToStorage"
     >
@@ -73,7 +74,7 @@ let selectedTrainId = ref(null) as Ref<string | null>;
 // Computed
 const isTimetableSaved = computed(() => {
   if (!globalStore.currentTimetableData) return false;
-  
+
   return Object.keys(globalStore.storageTimetables).includes(`${globalStore.currentTimetableData.timetableId}`);
 });
 
