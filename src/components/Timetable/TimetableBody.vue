@@ -121,13 +121,13 @@
         <table class="h-full w-full border-collapse">
           <tbody>
             <tr class="border-b-[1px] border-b-black dark:border-b-white">
-              <td>{{ row.headLocos[0] }}</td>
+              <td>{{ row.headUnits[0] }}</td>
             </tr>
             <tr class="border-b-[1px] border-b-black dark:border-b-white">
-              <td>{{ row.headLocos[1] ?? '&nbsp;' }}</td>
+              <td>{{ row.headUnits[1] ?? '&nbsp;' }}</td>
             </tr>
             <tr>
-              <td>{{ row.headLocos[2] ?? '&nbsp;' }}</td>
+              <td>{{ row.headUnits[2] ?? '&nbsp;' }}</td>
             </tr>
           </tbody>
         </table>

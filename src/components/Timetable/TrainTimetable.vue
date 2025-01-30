@@ -1,70 +1,68 @@
 <template>
   <div
     :class="{ dark: globalStore.darkMode }"
-    v-if="globalStore.selectedTrain"
+    v-if="globalStore.currentTimetableData != null"
     class="overflow-auto p-1 bg-white print:bg-white dark:bg-zinc-950 print:text-black text-black dark:text-white min-h-full"
   >
-    <div>
-      <div class="p-1 font-bold w-max">
-        {{ globalStore.selectedTrain.timetable!.category }} {{ globalStore.selectedTrain.trainNo }} Relacja
-        {{ globalStore.selectedTrain.timetable?.route.replace('|', ' - ') }}
+    <div class="p-1 bg-zinc-900 my-2 print:hidden flex justify-between" v-if="globalStore.currentTimetableData.savedTimestamp">
+      <div>
+        Przeglądasz teraz zapisany rozkład jazdy o ID: <b>#{{ globalStore.currentTimetableData.timetableId }}</b>
       </div>
 
-      <table class="table-fixed mt-2 w-full border-collapse" v-if="computedTimetable.length > 0">
+      <button class="font-bold" @click="globalStore.selectedStorageTimetable = null">Powróć do listy</button>
+    </div>
+
+    <div>
+      <div class="p-1 font-bold w-max">
+        {{ globalStore.currentTimetableData.category }} {{ globalStore.currentTimetableData.trainNo }} Relacja
+        {{ globalStore.currentTimetableData.route.replace('|', ' - ') }}
+      </div>
+
+      <table class="table-fixed mt-2 w-full border-collapse" v-if="computedTimetableRows.length > 0">
         <TimetableHeader />
-        <TimetableBody :computed-timetable="computedTimetable" />
+        <TimetableBody :computed-timetable="computedTimetableRows" />
       </table>
     </div>
   </div>
 
-  <div class="overflow-auto text-center font-bold text-zinc-400 p-1 min-h-full" v-else>Wybierz aktywny pociąg, aby wygenerować SRJP</div>
+  <div class="overflow-auto text-center font-bold text-zinc-400 p-1 min-h-full" v-else>
+    <div v-if="globalStore.viewMode == 'active'">
+      <div>Wybierz aktywny pociąg, aby wygenerować SRJP</div>
+    </div>
+
+    <div v-else>
+      <TimetableStorage />
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed } from 'vue';``
 import { useApiStore } from '../../stores/api.store';
 import { useGlobalStore } from '../../stores/global.store';
 import TimetableBody from './TimetableBody.vue';
 import TimetableHeader from './TimetableHeader.vue';
-import type { SceneryRoute, StopRow } from '../../types/common.types';
+import type { SceneryRoute, StopRow, TimetablePathData } from '../../types/common.types';
+import TimetableStorage from './TimetableStorage.vue';
 
 const globalStore = useGlobalStore();
 const apiStore = useApiStore();
 
-const computedTimetable = computed(() => {
-  if (!globalStore.selectedTrain || !globalStore.selectedTrain.timetable) return [];
+// Tymczasowa tabelka z posterunkami APO
+// const apoNames = ['Stary Kisielin, pe', 'Czerwony Dwór, pe', 'Szczejkowice, pe'];
 
-  const { timetable, stockString, mass, length } = globalStore.selectedTrain;
+const computedTimetableRows = computed(() => {
+  const timetableData = globalStore.currentTimetableData;
+
+  if (!timetableData) return [];
 
   let timeFrom = Date.now();
 
-  const headLocos = stockString
-    .split(';')
-    .slice(0, 3)
-    .filter((s, i) => i == 0 || /-\d+$/.test(s))
-    .map((s) => s.slice(0, s.indexOf('-')));
-
-  const stockVmax = timetable.trainMaxSpeed,
-    stockMass = Math.floor(mass / 1000),
+  const stockVmax = timetableData.trainMaxSpeed,
+    stockMass = Math.floor(timetableData.mass / 1000),
     stockLength = length;
 
-  const timetablePath = timetable.path.split(';').map((pathEl) => {
-    const [arrivalLine, scenery, departureLine] = pathEl.split(',');
-    const sceneryName = scenery.split(' ').slice(0, -1).join(' ');
-
-    const sceneryData = apiStore.sceneryData?.find((sc) => sc.name == sceneryName) ?? null;
-    const arrivalLineData = arrivalLine ? sceneryData?.routesInfo.find((rt) => rt.routeName == arrivalLine) ?? null : null;
-    const departureLineData = departureLine ? sceneryData?.routesInfo.find((rt) => rt.routeName == departureLine) ?? null : null;
-
-    return {
-      sceneryName,
-      sceneryData: sceneryData ?? null,
-      arrivalLine: arrivalLine ?? '',
-      arrivalLineData,
-      departureLine: departureLine ?? '',
-      departureLineData,
-    };
-  });
+  const timetablePath = parseTimetablePath(timetableData.path);
 
   const stopRows: StopRow[] = [];
 
@@ -94,7 +92,9 @@ const computedTimetable = computed(() => {
 
   // console.debug('=========== ' + this.selectedTrain.trainNo + ' ===========');
 
-  for (const stop of timetable.stopList) {
+  const stopList = parseStopListString(timetableData.stopListString);
+
+  for (const stop of stopList) {
     if (stop.arrivalLine && stop.arrivalLine == currentPath.arrivalLine) {
       arrivalKm = stop.stopDistance;
 
@@ -109,7 +109,7 @@ const computedTimetable = computed(() => {
       departureTracks = arrivalTracks;
     }
 
-    if (/^<strong>|, (podg|po)$|^(!_, pe)$/.test(stop.stopName)) {
+    if (stop.mainStop || (/^podg|po|pe$/.test(stop.stopNameRAW) && !/^sbl/i.test(stop.stopNameRAW))) {
       let correctedDepartureSpeed = 0,
         correctedDepartureTracks = 0;
 
@@ -128,7 +128,7 @@ const computedTimetable = computed(() => {
       }
 
       let rowData: StopRow = {
-        isMain: /^<strong>/.test(stop.stopName),
+        isMain: stop.mainStop,
         pointKm: stop.stopDistance.toFixed(3),
         pointName: stop.stopNameRAW,
         scheduledArrivalDate: stop.arrivalTimestamp ? new Date(stop.arrivalTimestamp) : null,
@@ -150,11 +150,13 @@ const computedTimetable = computed(() => {
         departureSpeed: departureSpeed,
         departureTracks: departureTracks,
 
-        headLocos,
+        headUnits: timetableData.headUnits,
         stockVmax,
         stockLength,
         stockMass,
       };
+
+      // if (apoNames.includes(stop.stopNameRAW)) abbrevs.unshift(`APO ${currentPath.sceneryData?.abbr}`);
 
       // console.debug(stop.stopNameRAW, stop.departureLine);
 
@@ -199,6 +201,46 @@ const computedTimetable = computed(() => {
 
   return stopRows;
 });
+
+function parseTimetablePath(path: string): TimetablePathData[] {
+  return path.split(';').map((pathEl) => {
+    const [arrivalLine, scenery, departureLine] = pathEl.split(',');
+    const sceneryName = scenery.split(' ').slice(0, -1).join(' ');
+
+    const sceneryData = apiStore.sceneryData?.find((sc) => sc.name == sceneryName) ?? null;
+    const arrivalLineData = arrivalLine ? sceneryData?.routesInfo.find((rt) => rt.routeName == arrivalLine) ?? null : null;
+    const departureLineData = departureLine ? sceneryData?.routesInfo.find((rt) => rt.routeName == departureLine) ?? null : null;
+
+    return {
+      sceneryName,
+      sceneryData: sceneryData ?? null,
+      arrivalLine: arrivalLine ?? '',
+      departureLine: departureLine ?? '',
+      arrivalLineData,
+      departureLineData,
+    };
+  });
+}
+
+function parseStopListString(stopsString: string) {
+  //${stop.arrivalLine ?? ''};${stop.arrivalTimestamp};${stop.stopNameRAW};${stop.stopTime ? stop.stopTime + '_' + stop.stopType : ''};${stop.mainStop};${stop.stopDistance};${stop.departureTimestamp};${stop.departureLine ?? ''}
+  return stopsString.split('~~').map((stop) => {
+    const [arrivalLine, arrivalTimestamp, stopNameRAW, stopDetails, isMainStop, stopDistance, departureTimestamp, departureLine] = stop.split(';');
+    const [stopTime, stopType] = stopDetails.split('_');
+
+    return {
+      arrivalLine,
+      arrivalTimestamp: parseInt(arrivalTimestamp),
+      stopNameRAW,
+      stopTime: stopTime ?? 0,
+      stopType: stopType ?? null,
+      mainStop: isMainStop == 'true',
+      stopDistance: parseFloat(stopDistance),
+      departureTimestamp: parseInt(departureTimestamp),
+      departureLine,
+    };
+  });
+}
 
 function getAbbrevs(routeData: SceneryRoute) {
   const abbrevs = [];

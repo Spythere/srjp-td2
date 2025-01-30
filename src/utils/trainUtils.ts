@@ -19,3 +19,11 @@ export const getRegionNameById = (id: string) => {
       return 'PL1';
   }
 };
+
+export const unitNameCorrections: Record<string, string> = {
+  '2EN57': 'EN57',
+  '201E': 'ET22',
+  '4E': 'EU07',
+  M62: 'ST44',
+  CTLR4C: 'ST44',
+};

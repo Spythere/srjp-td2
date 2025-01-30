@@ -1,3 +1,5 @@
+export type ViewMode = 'active' | 'storage';
+
 export interface ActiveData {
   trains: ActiveTrain[];
   activeSceneries: ActiveScenery[];
@@ -141,8 +143,121 @@ export interface StopRow {
   departureKm: string;
   departureSpeed: number;
   departureTracks: number;
-  headLocos: string[];
+  headUnits: string[];
   stockVmax: number;
   stockLength: number;
   stockMass: number;
+}
+
+export interface TimetablePathData {
+  sceneryName: string;
+  sceneryData: SceneryData | null;
+  arrivalLine: string;
+  departureLine: string;
+  arrivalLineData: SceneryRoute | null;
+  departureLineData: SceneryRoute | null;
+}
+
+export interface JournalTimetableShort {
+  id: number;
+  allStopsCount: number;
+  confirmedStopsCount: number;
+  createdAt: string;
+  beginDate: string;
+  driverId: number;
+  driverName: string;
+  route: string;
+  routeDistance: number;
+  currentDistance: number;
+  currentLocation: string[];
+  currentSceneryName: string;
+  currentSceneryHash: string;
+  driverLevel: number;
+  fulfilled: boolean;
+  terminated: boolean;
+  driverIsSupporter: boolean;
+  trainCategoryCode: string;
+  trainNo: number;
+  region: string;
+  hasDangerousCargo: boolean;
+  hasExtraDeliveries: boolean;
+  twr: boolean;
+  skr: boolean;
+}
+
+export interface JournalTimetableDetailed extends JournalTimetableShort {
+  id: number;
+  schemaVersion: string;
+  allStopsCount: number;
+  authorId: number;
+  authorName: string;
+  beginDate: string;
+  confirmedStopsCount: number;
+  currentDistance: number;
+  driverId: number;
+  driverName: string;
+  endDate: string;
+  fulfilled: boolean;
+  route: string;
+  routeDistance: number;
+  region: string;
+  sceneriesString: string;
+  scheduledBeginDate: string;
+  scheduledEndDate: string;
+  terminated: boolean;
+  timetableId: number;
+  trainCategoryCode: string;
+  trainNo: number;
+  twr: boolean;
+  skr: boolean;
+  stockString: string;
+  stockMass: number;
+  stockLength: number;
+  maxSpeed: number;
+  trainMaxSpeed: number;
+  hashesString: string;
+  currentSceneryName: string;
+  currentSceneryHash: any;
+  driverIsSupporter: boolean;
+  driverLevel: number;
+  createdAt: string;
+  updatedAt: string;
+  stockHistory: string[];
+  hidden: boolean;
+  routeSceneries: string;
+  checkpointArrivals: any[];
+  checkpointDepartures: any[];
+  checkpointArrivalsScheduled: string[];
+  checkpointDeparturesScheduled: string[];
+  checkpointStopTypes: string[];
+  currentLocation: string[];
+  visitedSceneries: string[];
+  sceneryHashes: string[];
+  sceneryNames: string[];
+  checkpointComments: string[];
+  checkpointNames: string[];
+  path: string;
+  warningNotes: string;
+  hasDangerousCargo: boolean;
+  hasExtraDeliveries: boolean;
+  stopListString: any;
+}
+
+export interface TimetableData {
+  trainNo: number;
+  mass: number;
+  length: number;
+  driverName: string;
+  driverId: number;
+  hasDangerousCargo: boolean;
+  hasExtraDeliveries: boolean;
+  warningNotes: string;
+  category: string;
+  route: string;
+  timetableId: number;
+  path: string;
+  trainMaxSpeed: number;
+  stopListString: string;
+  headUnits: string[];
+  savedTimestamp?: number;
 }

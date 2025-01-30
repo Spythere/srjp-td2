@@ -1,11 +1,23 @@
 <template>
   <div class="flex gap-2 mb-2">
+    <button
+      class="p-1 rounded-md"
+      :class="{
+        'bg-zinc-800 hover:bg-zinc-700': globalStore.viewMode == 'active',
+        'bg-green-500 hover:bg-green-400': globalStore.viewMode == 'storage',
+      }"
+      @click="toggleViewMode"
+    >
+      <ArchiveBoxArrowDownIcon class="size-6" />
+    </button>
+
     <select
       name="trains"
       id="trains-select"
       class="bg-zinc-800 p-1 rounded-md print:hidden w-full"
       :disabled="apiStore.activeDataStatus != DataStatus.SUCCESS"
       v-model="selectedTrainId"
+      v-if="globalStore.viewMode == 'active'"
       @change="selectTrain"
     >
       <option :value="null" disabled>{{ apiStore.activeDataStatus == DataStatus.LOADING ? 'Ładowanie danych...' : 'Wybierz pociąg z listy' }}</option>
@@ -14,29 +26,42 @@
       </option>
     </select>
 
+    <input
+      type="text"
+      v-if="globalStore.viewMode == 'storage'"
+      class="bg-zinc-800 p-1 rounded-md print:hidden w-full"
+      placeholder="Wpisz szczegóły RJ, który chcesz znaleźć (np. numer, relacja)"
+    />
+
     <button class="bg-zinc-800 p-1 rounded-md hover:bg-zinc-700" @click="toggleDarkMode">
-      <SunIcon v-if="globalStore.darkMode" class="text-white size-6" />
-      <MoonIcon v-else class="text-white size-6" />
+      <MoonIcon v-if="globalStore.darkMode" class="text-white size-6" />
+      <SunIcon v-else class="text-white size-6" />
     </button>
 
     <button class="bg-zinc-800 p-1 rounded-md hover:bg-zinc-700" @click="openPrintingWindow">
       <PrinterIcon class="text-white size-6" />
     </button>
 
-    <button class="bg-zinc-800 p-1 rounded-md hover:bg-zinc-700 relative" @click="refreshData">
-      <ArrowPathIcon class="text-white size-6" />
-      <div v-if="apiStore.isActiveDataOutdated" class="size-3 bg-green-300 rounded-full absolute -top-1 -right-1"></div>
+    <button
+      class="bg-zinc-800 p-1 rounded-md hover:bg-zinc-700"
+      :class="{
+        'bg-green-600': isTimetableSaved,
+      }"
+      @click="saveToStorage"
+    >
+      <ArrowDownTrayIcon class="text-white size-6" />
     </button>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, type Ref } from 'vue';
+import { computed, ref, type Ref } from 'vue';
 import { useApiStore } from '../../stores/api.store';
 import { DataStatus } from '../../types/api.types';
 import { useGlobalStore } from '../../stores/global.store';
-import { PrinterIcon, ArrowPathIcon, MoonIcon, SunIcon } from '@heroicons/vue/16/solid';
+import { PrinterIcon, MoonIcon, SunIcon, ArchiveBoxArrowDownIcon, ArrowDownTrayIcon } from '@heroicons/vue/16/solid';
 import { getRegionNameById } from '../../utils/trainUtils';
+import type { TimetableData } from '../../types/common.types';
 
 // Stores
 const apiStore = useApiStore();
@@ -45,15 +70,26 @@ const globalStore = useGlobalStore();
 // Variables & refs
 let selectedTrainId = ref(null) as Ref<string | null>;
 
+// Computed
+const isTimetableSaved = computed(() => {
+  if (!globalStore.currentTimetableData) return false;
+  
+  return Object.keys(globalStore.storageTimetables).includes(`${globalStore.currentTimetableData.timetableId}`);
+});
+
 // Methods
 function selectTrain() {
   if (!apiStore.activeData) return;
 
-  globalStore.selectedTrain = globalStore.activeTimetableTrains.find((train) => train.id == selectedTrainId.value) ?? null;
+  globalStore.selectedActiveTrain = globalStore.activeTimetableTrains.find((train) => train.id == selectedTrainId.value) ?? null;
 
-  if (globalStore.selectedTrain != null) {
+  if (globalStore.selectedActiveTrain != null) {
     globalStore.generatedDate = new Date();
   }
+}
+
+function toggleViewMode() {
+  globalStore.viewMode = globalStore.viewMode == 'active' ? 'storage' : 'active';
 }
 
 function toggleDarkMode() {
@@ -62,21 +98,36 @@ function toggleDarkMode() {
   window.localStorage.setItem('currentTheme', globalStore.darkMode ? 'dark' : 'light');
 }
 
+function saveToStorage() {
+  if (globalStore.currentTimetableData == null) return;
+
+  try {
+    const savedTimetablesStorage = localStorage.getItem('savedTimetables');
+    let savedTimetablesJSON: Record<number, TimetableData> = savedTimetablesStorage ? JSON.parse(savedTimetablesStorage) : {};
+    savedTimetablesJSON[globalStore.currentTimetableData.timetableId] = { ...globalStore.currentTimetableData, savedTimestamp: Date.now() };
+
+    localStorage.setItem('savedTimetables', JSON.stringify(savedTimetablesJSON));
+    globalStore.storageTimetables = savedTimetablesJSON;
+  } catch (error) {}
+}
+
 function openPrintingWindow() {
-  if (globalStore.selectedTrain != null) {
+  if (globalStore.selectedActiveTrain != null) {
     const date = `${globalStore.generatedDate!.toLocaleDateString('pl-PL').replace(/\./g, '-')}--${globalStore
       .generatedDate!.toLocaleTimeString('pl-PL')
       .replace(/:/g, '-')}`;
 
-    document.title = `${globalStore.selectedTrain.driverName} ; ${globalStore.selectedTrain.timetable!.category} ${globalStore.selectedTrain.trainNo}
-      ${globalStore.selectedTrain.timetable?.route.replace('|', ' - ')} ; ${date}`;
+    document.title = `${globalStore.selectedActiveTrain.driverName} ; ${globalStore.selectedActiveTrain.timetable!.category} ${
+      globalStore.selectedActiveTrain.trainNo
+    }
+      ${globalStore.selectedActiveTrain.timetable?.route.replace('|', ' - ')} ; ${date}`;
   }
 
   window.print();
 }
 
-function refreshData() {
-  apiStore.fetchActiveData();
-  selectTrain();
-}
+// function refreshData() {
+//   apiStore.fetchActiveData();
+//   selectTrain();
+// }
 </script>

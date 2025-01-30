@@ -20,13 +20,29 @@ const globalStore = useGlobalStore();
 onMounted(() => {
   apiStore.setupAPIData();
 
-  // Setup dark mode
-  globalStore.darkMode =
-    localStorage.currentTheme === 'dark' || (!('currentTheme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  setupDarkMode();
+  loadStorageTimetables();
+  setupAfterPrintClose();
 });
 
-// Resetting after print dialog is closed
-window.addEventListener('afterprint', () => {
-  document.title = originalDocumentTitle;
-});
+function loadStorageTimetables() {
+  if (!window.localStorage.getItem('savedTimetables')) return;
+
+  try {
+    globalStore.storageTimetables = JSON.parse(window.localStorage.getItem('savedTimetables')!);
+  } catch (error) {
+    alert('Ups! Coś poszło nie tak podczas pobierania zapisanych RJ!');
+  }
+}
+
+function setupDarkMode() {
+  globalStore.darkMode =
+    localStorage.currentTheme === 'dark' || (!('currentTheme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
+}
+
+function setupAfterPrintClose() {
+  window.addEventListener('afterprint', () => {
+    document.title = originalDocumentTitle;
+  });
+}
 </script>
