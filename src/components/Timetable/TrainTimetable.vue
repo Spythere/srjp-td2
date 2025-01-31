@@ -19,7 +19,7 @@
 
   <div class="overflow-auto text-center font-bold text-zinc-400 p-1 min-h-full" v-else>
     <div v-if="globalStore.viewMode == 'active'">
-      <div>{{$t('train-select-info')}}</div>
+      <div>{{ $t('train-select-info') }}</div>
     </div>
 
     <div v-else>
@@ -83,7 +83,7 @@ const computedTimetableRows = computed(() => {
     abbrevs = getAbbrevs(currentPath.departureLineData);
   }
 
-  // console.debug('=========== ' + this.selectedTrain.trainNo + ' ===========');
+  // console.debug('=========== ' + timetableData.trainNo + ' ===========');
 
   const stopList = parseStopListString(timetableData.stopListString);
 

@@ -51,7 +51,7 @@ export const useGlobalStore = defineStore('global', {
           trainMaxSpeed: selectedTrain.timetable.trainMaxSpeed,
           timetableId: selectedTrain.timetable.timetableId,
           stopListString: selectedTrain.timetable.stopList
-            .filter((stop) => stop.mainStop || (/^podg|po|pe$/.test(stop.stopNameRAW) && !/^sbl/i.test(stop.stopNameRAW)))
+            .filter((stop) => stop.mainStop || (/^podg|po|pe$/.test(stop.stopNameRAW)))
             .map(
               (stop) =>
                 `${stop.arrivalLine ?? ''};${stop.arrivalTimestamp};${stop.stopNameRAW};${stop.stopTime ? stop.stopTime + '_' + stop.stopType : ''};${
