@@ -6,7 +6,7 @@
   >
     <div>
       <div class="p-1 font-bold w-max">
-        {{ globalStore.currentTimetableData.category }} {{ globalStore.currentTimetableData.trainNo }} Relacja
+        {{ globalStore.currentTimetableData.category }} {{ globalStore.currentTimetableData.trainNo }} {{ $t('headers.relation') }}
         {{ globalStore.currentTimetableData.route.replace('|', ' - ') }}
       </div>
 
@@ -19,7 +19,7 @@
 
   <div class="overflow-auto text-center font-bold text-zinc-400 p-1 min-h-full" v-else>
     <div v-if="globalStore.viewMode == 'active'">
-      <div>Wybierz aktywny pociąg, aby wygenerować SRJP</div>
+      <div>{{$t('train-select-info')}}</div>
     </div>
 
     <div v-else>

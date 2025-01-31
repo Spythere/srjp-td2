@@ -1,4 +1,26 @@
 {
-   "storage-preview-text": "You're browsing now the saved timetable with ID:",
+   "data-loading-text": "Loading data...",
+   "train-select-placeholder": "Choose active train from the list",
+   "train-select-info": "Choose active train to generate SRJP timetable",
+   "train-search-placeholder": "Enter TT details (number, route, user)",
+
+   "headers": {
+      "line_no": "Line\nno.",
+      "line_km": "Km",
+      "station": "Station",
+      "time": "Time",
+      "loco_1": "Loco I",
+      "loco_2": "Loco II",
+      "loco_3": "Loco III",
+      "mass": "Loco load",
+      "length": "Train len.",
+      "vmax": "Vmax",
+      "relation": "Route"
+   },
+   
+   "storage-empty-header": "SAVED TIMETABLES SEARCH MODE",
+   "storage-empty-info": "Timetables will be shown here after their archiving.",
+
+   "storage-preview-text": "You're browsing now saved timetable with ID:",
    "storage-preview-button-text": "Return"
 }

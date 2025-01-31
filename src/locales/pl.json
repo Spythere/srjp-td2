@@ -1,4 +1,26 @@
 {
+   "data-loading-text": "Ładowanie danych...",
+   "train-select-placeholder": "Wybierz pociąg z listy",
+   "train-select-info": "Wybierz aktywny pociąg, aby wygenerować SRJP",
+   "train-search-placeholder": "Wpisz szczegóły RJ (nr, relacja, gracz)",
+
+   "headers": {
+      "line_no": "Nr\nlinii",
+      "line_km": "Km",
+      "station": "Stacja",
+      "time": "Godzina",
+      "loco_1": "Lok I",
+      "loco_2": "Lok II",
+      "loco_3": "Lok III",
+      "mass": "Obc. lok.",
+      "length": "Dł. poc.",
+      "vmax": "Vmax",
+      "relation": "Relacja"
+   },
+   
+   "storage-empty-header": "TRYB WYSZUKIWANA ZAPISANYCH ROZKŁADÓW JAZDY",
+   "storage-empty-info": "Użyj funkcji zapisu rozkładu jazdy, aby go tutaj wyświetlić.",
+
    "storage-preview-text": "Przeglądasz teraz zapisany rozkład jazdy o ID:",
    "storage-preview-button-text": "Powróć"
 }

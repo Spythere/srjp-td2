@@ -20,7 +20,9 @@
       v-if="globalStore.viewMode == 'active'"
       @change="selectTrain"
     >
-      <option :value="null" disabled>{{ apiStore.activeDataStatus == DataStatus.LOADING ? 'Ładowanie danych...' : 'Wybierz pociąg z listy' }}</option>
+      <option :value="null" disabled>
+        {{ apiStore.activeDataStatus == DataStatus.LOADING ? $t('data-loading-text') : $t('train-select-placeholder') }}
+      </option>
       <option :value="train.id" v-for="train in globalStore.activeTimetableTrains">
         {{ train.driverName }} | {{ train.timetable?.category }} {{ train.trainNo }} [{{ getRegionNameById(train.region) }}]
       </option>
@@ -30,7 +32,7 @@
       type="text"
       v-if="globalStore.viewMode == 'storage'"
       class="bg-zinc-800 p-1 rounded-md print:hidden w-full"
-      placeholder="Wpisz szczegóły RJ, który chcesz znaleźć (np. numer, relacja)"
+      :placeholder="$t('train-select-placeholder')"
     />
 
     <button class="bg-zinc-800 p-1 rounded-md hover:bg-zinc-700" @click="toggleDarkMode">
@@ -43,7 +45,7 @@
     </button>
 
     <button
-      class=" p-1 rounded-md "
+      class="p-1 rounded-md"
       :class="{
         'bg-green-600 hover:bg-green-700': isTimetableSaved,
         'bg-zinc-800 hover:bg-zinc-700': !isTimetableSaved,

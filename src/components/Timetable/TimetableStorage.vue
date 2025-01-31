@@ -1,8 +1,8 @@
 <template>
   <div>
     <div v-if="globalStore.selectedStorageTimetable == null && Object.keys(globalStore.storageTimetables).length == 0">
-      <div class="font-bold text-xl">TRYB WYSZUKIWANA ZAPISANYCH ROZKŁADÓW JAZDY</div>
-      <div>Użyj funkcji zapisu rozkładu jazdy, aby go tutaj wyświetlić.</div>
+      <div class="font-bold text-xl">{{ $t('storage-empty-header') }}</div>
+      <div>{{ $t('storage-empty-info') }}</div>
     </div>
 
     <div v-else>
