@@ -41,12 +41,17 @@
       <SunIcon v-else class="text-white size-6" />
     </button>
 
-    <button class="bg-zinc-800 p-1 rounded-md hover:bg-zinc-700" @click="openPrintingWindow">
+    <button
+      class="bg-zinc-800 p-1 rounded-md hover:bg-zinc-700 disabled:opacity-60 disabled:hover:bg-zinc-800"
+      :disabled="globalStore.currentTimetableData == null"
+      @click="openPrintingWindow"
+    >
       <PrinterIcon class="text-white size-6" />
     </button>
 
     <button
-      class="p-1 rounded-md"
+      class="p-1 rounded-md disabled:opacity-60 disabled:hover:bg-zinc-800"
+      :disabled="globalStore.currentTimetableData == null"
       :class="{
         'bg-green-600 hover:bg-green-700': isTimetableSaved,
         'bg-zinc-800 hover:bg-zinc-700': !isTimetableSaved,
@@ -108,6 +113,14 @@ function saveToStorage() {
   try {
     const savedTimetablesStorage = localStorage.getItem('savedTimetables');
     let savedTimetablesJSON: Record<number, TimetableData> = savedTimetablesStorage ? JSON.parse(savedTimetablesStorage) : {};
+
+    if (savedTimetablesJSON[globalStore.currentTimetableData.timetableId] !== undefined) {
+      globalStore.selectedStorageTimetable = savedTimetablesJSON[globalStore.currentTimetableData.timetableId];
+      globalStore.viewMode = 'storage';
+
+      return;
+    }
+
     savedTimetablesJSON[globalStore.currentTimetableData.timetableId] = { ...globalStore.currentTimetableData, savedTimestamp: Date.now() };
 
     localStorage.setItem('savedTimetables', JSON.stringify(savedTimetablesJSON));

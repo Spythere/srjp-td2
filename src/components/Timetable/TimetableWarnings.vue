@@ -18,6 +18,10 @@
         </i18n-t>
       </div>
 
+      <button class="font-bold bg-zinc-900 p-1 hover:bg-zinc-800" @click="removeTimetable(globalStore.currentTimetableData.timetableId)">
+        <TrashIcon class="text-white size-6" />
+      </button>
+
       <button class="font-bold bg-zinc-900 p-1 hover:bg-zinc-800" @click="globalStore.selectedStorageTimetable = null">
         <ArrowUturnLeftIcon class="text-white size-6" />
       </button>
@@ -26,8 +30,28 @@
 </template>
 
 <script setup lang="ts">
-import { ArrowUturnLeftIcon, InformationCircleIcon } from '@heroicons/vue/16/solid';
+import { ArrowUturnLeftIcon, InformationCircleIcon, TrashIcon } from '@heroicons/vue/16/solid';
 import { useGlobalStore } from '../../stores/global.store';
+import { useI18n } from 'vue-i18n';
+import type { TimetableData } from '../../types/common.types';
 
 const globalStore = useGlobalStore();
+const i18n = useI18n();
+
+function removeTimetable(timetableId: number) {
+  const isConfirmed = confirm(i18n.t('delete-timetable-confirm'));
+
+  if (!isConfirmed) return;
+
+  try {
+    const savedTimetablesStorage = localStorage.getItem('savedTimetables');
+    let savedTimetablesJSON: Record<number, TimetableData> = savedTimetablesStorage ? JSON.parse(savedTimetablesStorage) : {};
+    delete savedTimetablesJSON[timetableId];
+
+    localStorage.setItem('savedTimetables', JSON.stringify(savedTimetablesJSON));
+    globalStore.storageTimetables = savedTimetablesJSON;
+    
+    globalStore.selectedStorageTimetable = null;
+  } catch (error) {}
+}
 </script>

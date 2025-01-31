@@ -9,18 +9,16 @@
       <div class="font-bold text-xl p-2 bg-zinc-700 mb-3">{{ $t('storage-preview-title') }}</div>
       <div class="font-bold p-2 bg-zinc-800 mb-3" v-if="filteredTimetables.length == 0">{{ $t('storage-preview-empty') }}</div>
 
-      <transition-group class="relative" tag="ul" name="list">
-        <li v-for="timetable in filteredTimetables" class="flex gap-1 w-full my-2">
-          <button class="bg-zinc-900 p-2 w-full cursor-pointer hover:bg-zinc-800 text-left" @click="selectTimetable(timetable)">
-            <div class="text-zinc-300">#{{ timetable.timetableId }} &bull; {{ new Date(timetable.savedTimestamp!).toLocaleString() }}</div>
-            <b>{{ timetable.driverName }} | {{ timetable.category }} {{ timetable.trainNo }}</b> {{ timetable.route.replace('|', ' > ') }}
-          </button>
+      <li v-for="timetable in filteredTimetables" class="flex gap-1 w-full my-2">
+        <button class="bg-zinc-900 p-2 w-full cursor-pointer hover:bg-zinc-800 text-left" @click="selectTimetable(timetable)">
+          <div class="text-zinc-300">#{{ timetable.timetableId }} &bull; {{ new Date(timetable.savedTimestamp!).toLocaleString() }}</div>
+          <b>{{ timetable.driverName }} | {{ timetable.category }} {{ timetable.trainNo }}</b> {{ timetable.route.replace('|', ' > ') }}
+        </button>
 
-          <button class="bg-zinc-900 p-2 hover:bg-zinc-800" @click="removeTimetable(timetable.timetableId)">
-            <TrashIcon class="size-5 text-white" />
-          </button>
-        </li>
-      </transition-group>
+        <button class="bg-zinc-900 p-2 hover:bg-zinc-800" @click="removeTimetable(timetable.timetableId)">
+          <TrashIcon class="size-5 text-white" />
+        </button>
+      </li>
     </div>
   </div>
 </template>
@@ -36,10 +34,10 @@ const globalStore = useGlobalStore();
 const i18n = useI18n();
 
 const filteredTimetables = computed(() => {
-  const timetables = Object.values(globalStore.storageTimetables);
+  let timetables = Object.values(globalStore.storageTimetables);
 
   if (globalStore.timetableSearch.length != 0)
-    timetables.filter((st) =>
+    timetables = timetables.filter((st) =>
       `${st.timetableId} ${st.driverName} ${st.route} ${st.category} ${st.trainNo}`
         .toLocaleLowerCase()
         .includes(globalStore.timetableSearch.toLocaleLowerCase())
