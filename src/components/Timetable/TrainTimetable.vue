@@ -4,14 +4,6 @@
     v-if="globalStore.currentTimetableData != null"
     class="overflow-auto p-1 bg-white print:bg-white dark:bg-zinc-950 print:text-black text-black dark:text-white min-h-full"
   >
-    <div class="p-1 bg-zinc-900 my-2 print:hidden flex justify-between" v-if="globalStore.currentTimetableData.savedTimestamp">
-      <div>
-        Przeglądasz teraz zapisany rozkład jazdy o ID: <b>#{{ globalStore.currentTimetableData.timetableId }}</b>
-      </div>
-
-      <button class="font-bold" @click="globalStore.selectedStorageTimetable = null">Powróć do listy</button>
-    </div>
-
     <div>
       <div class="p-1 font-bold w-max">
         {{ globalStore.currentTimetableData.category }} {{ globalStore.currentTimetableData.trainNo }} Relacja
@@ -37,7 +29,8 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';``
+import { computed } from 'vue';
+``;
 import { useApiStore } from '../../stores/api.store';
 import { useGlobalStore } from '../../stores/global.store';
 import TimetableBody from './TimetableBody.vue';

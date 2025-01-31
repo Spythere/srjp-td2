@@ -4,7 +4,7 @@ import localePL from './locales/pl.json';
 import localeEN from './locales/en.json';
 
 const i18n = createI18n({
-  locale: 'pl',
+  locale: 'en',
   fallbackLocale: 'pl',
   legacy: false,
 

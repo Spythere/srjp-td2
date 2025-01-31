@@ -10,8 +10,9 @@ export const useGlobalStore = defineStore('global', {
 
     selectedActiveTrain: null as ActiveTrain | null,
     selectedStorageTimetable: null as TimetableData | null,
-
     storageTimetables: {} as Record<number, TimetableData>,
+
+    timetableWarnings: [] as string[],
 
     generatedDate: null as Date | null,
     generatedMs: 0,
