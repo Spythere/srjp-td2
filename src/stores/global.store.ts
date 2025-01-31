@@ -16,6 +16,8 @@ export const useGlobalStore = defineStore('global', {
 
     generatedDate: null as Date | null,
     generatedMs: 0,
+
+    showSettings: false,
   }),
   getters: {
     activeTimetableTrains() {

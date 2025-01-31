@@ -32,7 +32,7 @@
       type="text"
       v-if="globalStore.viewMode == 'storage'"
       class="bg-zinc-800 p-1 rounded-md print:hidden w-full"
-      :placeholder="$t('train-select-placeholder')"
+      :placeholder="$t('train-search-placeholder')"
     />
 
     <button class="bg-zinc-800 p-1 rounded-md hover:bg-zinc-700" @click="toggleDarkMode">
