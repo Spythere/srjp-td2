@@ -15,6 +15,7 @@ body {
 /* width */
 ::-webkit-scrollbar {
   width: theme('size.2');
+  height: theme('size.2');
 }
 
 /* Track */
@@ -26,6 +27,12 @@ body {
 ::-webkit-scrollbar-thumb {
   background: theme('colors.stone.400');
   border-radius: theme('borderRadius.md');
+}
+
+::-webkit-scrollbar-corner {
+  background: theme('colors.stone.900');
+  border-radius: 0 0 theme('borderRadius.md') 0;
+
 }
 
 /* Tooltips */
