@@ -53,7 +53,7 @@ const computedTimetableRows = computed(() => {
 
   const stockVmax = timetableData.trainMaxSpeed,
     stockMass = Math.floor(timetableData.mass / 1000),
-    stockLength = length;
+    stockLength = timetableData.length;
 
   const timetablePath = parseTimetablePath(timetableData.path);
 
