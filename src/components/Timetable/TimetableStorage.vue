@@ -9,8 +9,8 @@
       <div class="font-bold text-xl p-2 bg-zinc-700 mb-3">{{ $t('storage-preview-title') }}</div>
       <div class="font-bold p-2 bg-zinc-800 mb-3" v-if="filteredTimetables.length == 0">{{ $t('storage-preview-empty') }}</div>
 
-      <ul class="flex flex-col gap-3">
-        <li v-for="timetable in filteredTimetables" class="flex gap-1">
+      <transition-group class="relative" tag="ul" name="list">
+        <li v-for="timetable in filteredTimetables" class="flex gap-1 w-full my-2">
           <button class="bg-zinc-900 p-2 w-full cursor-pointer hover:bg-zinc-800 text-left" @click="selectTimetable(timetable)">
             <div class="text-zinc-300">#{{ timetable.timetableId }} &bull; {{ new Date(timetable.savedTimestamp!).toLocaleString() }}</div>
             <b>{{ timetable.driverName }} | {{ timetable.category }} {{ timetable.trainNo }}</b> {{ timetable.route.replace('|', ' > ') }}
@@ -20,7 +20,7 @@
             <TrashIcon class="size-5 text-white" />
           </button>
         </li>
-      </ul>
+      </transition-group>
     </div>
   </div>
 </template>

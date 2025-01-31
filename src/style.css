@@ -55,6 +55,25 @@ body {
   visibility: visible;
 }
 
+/* Animations */
+.list-move,
+.list-enter-active,
+.list-leave-active {
+  transition: all 0.25s ease;
+}
+
+.list-enter-from,
+.list-leave-to {
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.list-leave-active {
+  position: absolute;
+  width: 100%;
+}
+
+/* Print mode */
 @media print {
   :root {
     color-scheme: light;
