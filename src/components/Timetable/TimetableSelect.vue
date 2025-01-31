@@ -4,7 +4,7 @@
       class="p-1 rounded-md"
       :class="{
         'bg-zinc-800 hover:bg-zinc-700': globalStore.viewMode == 'active',
-        'bg-green-500 hover:bg-green-400': globalStore.viewMode == 'storage',
+        'bg-green-600 hover:bg-green-500': globalStore.viewMode == 'storage',
       }"
       @click="toggleViewMode"
     >
@@ -31,6 +31,7 @@
     <input
       type="text"
       v-if="globalStore.viewMode == 'storage'"
+      v-model="globalStore.timetableSearch"
       class="bg-zinc-800 p-1 rounded-md print:hidden w-full"
       :placeholder="$t('train-search-placeholder')"
     />

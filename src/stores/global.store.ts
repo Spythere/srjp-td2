@@ -17,6 +17,8 @@ export const useGlobalStore = defineStore('global', {
     generatedDate: null as Date | null,
     generatedMs: 0,
 
+    timetableSearch: '',
+
     showSettings: false,
   }),
   getters: {
