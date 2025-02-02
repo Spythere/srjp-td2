@@ -64,7 +64,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, type Ref } from 'vue';
+import { computed } from 'vue';
 import { useApiStore } from '../../stores/api.store';
 import { DataStatus } from '../../types/api.types';
 import { useGlobalStore } from '../../stores/global.store';
