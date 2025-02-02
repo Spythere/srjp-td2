@@ -8,6 +8,7 @@ export const useGlobalStore = defineStore('global', {
     darkMode: false,
     viewMode: 'active' as ViewMode,
 
+    selectedTrainId: null as string | null,
     selectedActiveTrain: null as ActiveTrain | null,
     selectedStorageTimetable: null as TimetableData | null,
     storageTimetables: {} as Record<number, TimetableData>,

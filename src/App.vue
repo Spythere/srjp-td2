@@ -19,13 +19,26 @@ const apiStore = useApiStore();
 const globalStore = useGlobalStore();
 const i18n = useI18n();
 
-onMounted(() => {
-  apiStore.setupAPIData();
-
+onMounted(async () => {
   setupLocale();
   setupDarkMode();
   loadStorageTimetables();
   setupAfterPrintClose();
+
+  await apiStore.setupAPIData();
+
+  const query = new URLSearchParams(window.location.search);
+
+  if (query.has('id')) {
+    const id = query.get('id')!;
+
+    const queryTrain = apiStore.activeData?.trains.find((train) => train.id == id);
+
+    if (queryTrain) {
+      globalStore.selectedTrainId = id;
+      globalStore.selectedActiveTrain = queryTrain;
+    }
+  }
 });
 
 function loadStorageTimetables() {

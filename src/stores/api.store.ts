@@ -41,7 +41,8 @@ export const useApiStore = defineStore('api', {
       });
 
       this.fetchSceneriesData();
-      this.fetchActiveData();
+      await this.fetchActiveData();
+
 
       setInterval(() => {
         this.fetchActiveData();

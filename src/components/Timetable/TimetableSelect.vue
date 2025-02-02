@@ -16,7 +16,7 @@
       id="trains-select"
       class="bg-zinc-800 p-1 rounded-md print:hidden w-full"
       :disabled="apiStore.activeDataStatus != DataStatus.SUCCESS"
-      v-model="selectedTrainId"
+      v-model="globalStore.selectedTrainId"
       v-if="globalStore.viewMode == 'active'"
       @change="selectTrain"
     >
@@ -76,9 +76,6 @@ import type { TimetableData } from '../../types/common.types';
 const apiStore = useApiStore();
 const globalStore = useGlobalStore();
 
-// Variables & refs
-let selectedTrainId = ref(null) as Ref<string | null>;
-
 // Computed
 const isTimetableSaved = computed(() => {
   if (!globalStore.currentTimetableData) return false;
@@ -90,7 +87,7 @@ const isTimetableSaved = computed(() => {
 function selectTrain() {
   if (!apiStore.activeData) return;
 
-  globalStore.selectedActiveTrain = globalStore.activeTimetableTrains.find((train) => train.id == selectedTrainId.value) ?? null;
+  globalStore.selectedActiveTrain = globalStore.activeTimetableTrains.find((train) => train.id == globalStore.selectedTrainId) ?? null;
 
   if (globalStore.selectedActiveTrain != null) {
     globalStore.generatedDate = new Date();
