@@ -42,7 +42,7 @@ const globalStore = useGlobalStore();
 const apiStore = useApiStore();
 
 // Tymczasowa tabelka z posterunkami APO
-// const apoNames = ['Stary Kisielin, pe', 'Czerwony Dwór, pe', 'Szczejkowice, pe'];
+const apoNames = ['Stary Kisielin, pe', 'Czerwony Dwór, pe', 'Szczejkowice, pe'];
 
 const computedTimetableRows = computed(() => {
   const timetableData = globalStore.currentTimetableData;
@@ -120,6 +120,9 @@ const computedTimetableRows = computed(() => {
         departureTracks = internalRouteInfo.routeTracks;
       }
 
+      let pointAbbrevs = [];
+      if (apoNames.includes(stop.stopNameRAW)) pointAbbrevs.unshift(`APO ${currentPath.sceneryData?.abbr}`);
+
       let rowData: StopRow = {
         isMain: stop.mainStop,
         pointKm: stop.stopDistance.toFixed(3),
@@ -132,7 +135,7 @@ const computedTimetableRows = computed(() => {
         realLine: realLineNo == 0 ? '' : realLineNo.toString(),
         driveTime: lastDepartureTimestamp ? stop.arrivalTimestamp - lastDepartureTimestamp : 0,
 
-        abbrevs,
+        abbrevs: [...pointAbbrevs, ...abbrevs],
 
         arrivalKm: arrivalKm.toFixed(3),
         departureKm: stop.stopDistance.toFixed(3),
@@ -149,7 +152,6 @@ const computedTimetableRows = computed(() => {
         stockMass,
       };
 
-      // if (apoNames.includes(stop.stopNameRAW)) abbrevs.unshift(`APO ${currentPath.sceneryData?.abbr}`);
 
       // console.debug(stop.stopNameRAW, stop.departureLine);
 
