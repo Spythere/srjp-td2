@@ -73,11 +73,11 @@ const computedTimetableRows = computed(() => {
     abbrevs = [] as string[];
 
   if (currentPath.departureLineData) {
-    arrivalSpeed = currentPath.departureLineData.routeSpeed;
-    arrivalTracks = currentPath.departureLineData.routeTracks;
-
     departureSpeed = currentPath.departureLineData.routeSpeed;
     departureTracks = currentPath.departureLineData.routeTracks;
+
+    arrivalSpeed = currentPath.departureLineData.routeSpeed;
+    arrivalTracks = currentPath.departureLineData.routeTracks;
 
     realLineNo = currentPath.departureLineData?.realLineNo ?? 0;
     abbrevs = getAbbrevs(currentPath.departureLineData);
@@ -118,6 +118,11 @@ const computedTimetableRows = computed(() => {
 
         correctedDepartureTracks = internalRouteInfo.routeTracks;
         departureTracks = internalRouteInfo.routeTracks;
+
+        if (stopRows.length == 0) {
+          arrivalSpeed = departureSpeed;
+          arrivalTracks = departureTracks;
+        }
       }
 
       let pointAbbrevs = [];
@@ -151,7 +156,6 @@ const computedTimetableRows = computed(() => {
         stockLength,
         stockMass,
       };
-
 
       // console.debug(stop.stopNameRAW, stop.departureLine);
 
