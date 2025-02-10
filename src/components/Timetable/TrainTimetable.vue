@@ -19,12 +19,11 @@
 
   <div class="overflow-auto text-center font-bold text-zinc-400 p-1 min-h-full" v-else>
     <div v-if="globalStore.viewMode == 'active'">
-      <div>{{ $t('train-select-info') }}</div>
+      <div class="text-xl p-2 bg-zinc-900">{{ $t('train-select-info') }}</div>
     </div>
 
-    <div v-else>
-      <TimetableStorage />
-    </div>
+    <TimetableStorage v-else-if="globalStore.viewMode == 'storage'" />
+    <TimetableJournal v-else-if="globalStore.viewMode == 'journal'" />
   </div>
 </template>
 
@@ -37,6 +36,7 @@ import TimetableBody from './TimetableBody.vue';
 import TimetableHeader from './TimetableHeader.vue';
 import type { SceneryRoute, StopRow, TimetablePathData } from '../../types/common.types';
 import TimetableStorage from './TimetableStorage.vue';
+import TimetableJournal from './TimetableJournal.vue';
 
 const globalStore = useGlobalStore();
 const apiStore = useApiStore();

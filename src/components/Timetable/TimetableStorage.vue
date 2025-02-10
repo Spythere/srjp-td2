@@ -1,12 +1,12 @@
 <template>
   <div class="text-white">
     <div v-if="globalStore.selectedStorageTimetable == null && Object.keys(globalStore.storageTimetables).length == 0">
-      <div class="font-bold text-xl">{{ $t('storage-empty-header') }}</div>
-      <div>{{ $t('storage-empty-info') }}</div>
+      <div class="font-bold text-2xl p-1 bg-zinc-800">{{ $t('storage-empty-header') }}</div>
+      <div class="text-md mt-2 p-2 bg-zinc-900">{{ $t('storage-empty-info') }}</div>
     </div>
 
     <div v-else>
-      <div class="font-bold text-xl p-2 bg-zinc-700 mb-3">{{ $t('storage-preview-title') }}</div>
+      <div class="font-bold text-2xl p-2 bg-zinc-800 mb-3">{{ $t('storage-preview-title') }}</div>
       <div class="font-bold p-2 bg-zinc-800 mb-3" v-if="filteredTimetables.length == 0">{{ $t('storage-preview-empty') }}</div>
 
       <li v-for="timetable in filteredTimetables" class="flex gap-1 w-full my-2">
@@ -36,11 +36,11 @@ const i18n = useI18n();
 const filteredTimetables = computed(() => {
   let timetables = Object.values(globalStore.storageTimetables);
 
-  if (globalStore.timetableSearch.length != 0)
+  if (globalStore.storageTimetableSearch.length != 0)
     timetables = timetables.filter((st) =>
       `${st.timetableId} ${st.driverName} ${st.route} ${st.category} ${st.trainNo}`
         .toLocaleLowerCase()
-        .includes(globalStore.timetableSearch.toLocaleLowerCase())
+        .includes(globalStore.storageTimetableSearch.toLocaleLowerCase())
     );
 
   timetables.sort((a, b) => {

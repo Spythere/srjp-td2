@@ -11,6 +11,8 @@ export const useGlobalStore = defineStore('global', {
     selectedTrainId: null as string | null,
     selectedActiveTrain: null as ActiveTrain | null,
     selectedStorageTimetable: null as TimetableData | null,
+    selectedJournalTimetable: null,
+
     storageTimetables: {} as Record<number, TimetableData>,
 
     timetableWarnings: [] as string[],
@@ -18,7 +20,8 @@ export const useGlobalStore = defineStore('global', {
     generatedDate: null as Date | null,
     generatedMs: 0,
 
-    timetableSearch: '',
+    storageTimetableSearch: '',
+    journalTimetableSearch: '',
 
     showSettings: false,
   }),
@@ -52,7 +55,7 @@ export const useGlobalStore = defineStore('global', {
           trainMaxSpeed: selectedTrain.timetable.trainMaxSpeed,
           timetableId: selectedTrain.timetable.timetableId,
           stopListString: selectedTrain.timetable.stopList
-            .filter((stop) => stop.mainStop || (/^podg|po|pe$/.test(stop.stopNameRAW)))
+            .filter((stop) => stop.mainStop || /^podg|po|pe$/.test(stop.stopNameRAW))
             .map(
               (stop) =>
                 `${stop.arrivalLine ?? ''};${stop.arrivalTimestamp};${stop.stopNameRAW};${stop.stopTime ? stop.stopTime + '_' + stop.stopType : ''};${
@@ -70,10 +73,10 @@ export const useGlobalStore = defineStore('global', {
               return unitNameCorrections[unitName] ?? unitName;
             }),
         };
-      } else {
+      } else if (this.viewMode == 'storage') {
         const selectedStorageTimetable = this.selectedStorageTimetable;
         return selectedStorageTimetable;
-      }
+      } else return null;
     },
   },
   actions: {},

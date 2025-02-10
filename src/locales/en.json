@@ -22,5 +22,6 @@
    "storage-preview-empty": "No entries found for given parameters",
    "storage-preview-info": "Archived timetable {id} for user {driverName} from: {date}",
    "storage-preview-button-text": "Return",
-   "delete-timetable-confirm": "Are you sure that you want to delete this timetable?"
+   "delete-timetable-confirm": "Are you sure that you want to delete this timetable?",
+   "journal-search-placeholder": "Driver nickname"
 }

@@ -1,8 +1,11 @@
-import type { ActiveData, SceneryData } from './common.types';
+import type { ActiveData, JournalTimetableDetailed, JournalTimetableShort, SceneryData } from './common.types';
 
 export type ActiveDataResponse = ActiveData;
 
 export type SceneriesDataResponse = SceneryData[];
+
+export type JournalTimetableShortResponse = JournalTimetableShort[];
+export type JournalTimetableDetailedResponse = JournalTimetableDetailed[];
 
 export enum DataStatus {
   'LOADING' = 0,

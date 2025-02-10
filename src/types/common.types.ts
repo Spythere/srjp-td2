@@ -1,4 +1,4 @@
-export type ViewMode = 'active' | 'storage';
+export type ViewMode = 'active' | 'storage' | 'journal';
 
 export interface ActiveData {
   trains: ActiveTrain[];
@@ -240,7 +240,7 @@ export interface JournalTimetableDetailed extends JournalTimetableShort {
   warningNotes: string;
   hasDangerousCargo: boolean;
   hasExtraDeliveries: boolean;
-  stopListString: any;
+  stopListString?: string;
 }
 
 export interface TimetableData {

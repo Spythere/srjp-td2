@@ -1,8 +1,8 @@
 import type { AxiosInstance } from 'axios';
 import axios from 'axios';
 import { defineStore } from 'pinia';
-import { DataStatus, type ActiveDataResponse, type SceneriesDataResponse } from '../types/api.types';
-import type { ActiveData, SceneryData } from '../types/common.types';
+import { DataStatus, type ActiveDataResponse, type JournalTimetableShortResponse, type SceneriesDataResponse } from '../types/api.types';
+import type { ActiveData, JournalTimetableShort, SceneryData } from '../types/common.types';
 
 export const useApiStore = defineStore('api', {
   state() {
@@ -11,6 +11,8 @@ export const useApiStore = defineStore('api', {
 
       activeData: null as ActiveData | null,
       sceneryData: null as SceneryData[] | null,
+
+      journalTimetables: null as JournalTimetableShort[] | null,
 
       outdatedTimerId: -1,
       isActiveDataOutdated: false,
@@ -43,7 +45,6 @@ export const useApiStore = defineStore('api', {
       this.fetchSceneriesData();
       await this.fetchActiveData();
 
-
       setInterval(() => {
         this.fetchActiveData();
       }, 25000);
@@ -72,6 +73,26 @@ export const useApiStore = defineStore('api', {
         const response = (await this.client!.get<SceneriesDataResponse>('/api/getSceneries')).data;
 
         this.sceneryData = response;
+      } catch (error) {
+        console.error(error);
+      }
+    },
+
+    async fetchTimetableHistoryList() {
+      try {
+        const response = (
+          await this.client!.get<JournalTimetableShortResponse>('/api/getTimetables', {
+            params: {
+              driverName: 'Spythere',
+              returnType: 'short',
+              hasStopsDetails: 1
+            },
+          })
+        ).data;
+
+        this.journalTimetables = response;
+
+        // this.sceneryData = response;
       } catch (error) {
         console.error(error);
       }
