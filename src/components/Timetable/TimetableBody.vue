@@ -11,15 +11,39 @@
         {{ i == 0 || computedTimetable[i - 1].realLine != row.realLine ? row.realLine : '&nbsp;' }}
       </td>
 
-      <td class="border border-black dark:border-white relative">
-        <div class="absolute top-0 left-0 w-full h-full p-0.5">
+      <td
+        class="border border-black dark:border-white border-t-1 border-b-1 relative p-0"
+        :class="{
+          'border-t-0':
+            i == 0 ||
+            (computedTimetable[i - 1].departureSpeed == row.arrivalSpeed &&
+              computedTimetable[i - 1].departureTracks == row.arrivalTracks &&
+              computedTimetable[i - 1].realLine == row.realLine),
+          'border-b-0': i != computedTimetable.length - 1,
+        }"
+      >
+        <div class="absolute top-0 left-0 w-full h-full">
           <table class="h-full w-full border-collapse">
             <tbody>
-              <tr>
-                <td class="align-top">{{ row.arrivalKm == '0.000' ? '' : row.arrivalKm }}</td>
+              <tr
+                class="text-transparent"
+                :class="{
+                  'align-top text-inherit':
+                    i > 0 &&
+                    (computedTimetable[i - 1].departureSpeed != row.arrivalSpeed ||
+                      computedTimetable[i - 1].departureTracks != row.arrivalTracks ||
+                      computedTimetable[i - 1].realLine != row.realLine),
+                }"
+              >
+                <td>{{ row.arrivalKm }}</td>
               </tr>
-              <tr>
-                <td class="align-bottom">{{ row.departureKm == '0.000' ? '' : row.departureKm }}</td>
+              <tr
+                :class="{
+                  'border-t align-top': row.arrivalTracks != row.departureTracks || row.departureSpeed != row.arrivalSpeed,
+                  hidden: row.arrivalTracks == row.departureTracks && row.departureSpeed == row.arrivalSpeed,
+                }"
+              >
+                <td>{{ row.departureKm == '0.000' ? '' : row.departureKm }}</td>
               </tr>
             </tbody>
           </table>

@@ -89,7 +89,9 @@ const computedTimetableRows = computed(() => {
 
   for (const stop of stopList) {
     if (stop.arrivalLine && stop.arrivalLine == currentPath.arrivalLine) {
-      arrivalKm = stop.stopDistance;
+      console.log('arrivalKm', arrivalKm, stop.stopDistance);
+
+      if (arrivalKm >= stop.stopDistance) arrivalKm = stop.stopDistance;
 
       if (currentPath.arrivalLineData) {
         arrivalSpeed = currentPath.arrivalLineData.routeSpeed;
@@ -170,8 +172,13 @@ const computedTimetableRows = computed(() => {
 
     if (stop.departureLine && stop.departureLine == currentPath.departureLine) {
       // Reverse search for last scenery checkpoint
-      for (let i = stopRows.length - 1; i > 0; i--) {
-        if (currentPath.departureLineData) {
+      if (currentPath.departureLineData) {
+        console.log(stop.departureLine, currentPath.sceneryName, stop.stopDistance, currentPath.departureLineData.routeLength);
+
+        if (currentPath.departureLineData.isRouteSBL) arrivalKm = stop.stopDistance + (currentPath.departureLineData.routeSpeed <= 130 ? 1.0 : 2.0);
+        else arrivalKm = stop.stopDistance + currentPath.departureLineData.routeLength / 1000;
+
+        for (let i = stopRows.length - 1; i > 0; i--) {
           stopRows[i].departureTracks = currentPath.departureLineData.routeTracks;
           stopRows[i].departureSpeed = currentPath.departureLineData.routeSpeed;
           stopRows[i].realLine = currentPath.departureLineData.realLineNo?.toString() ?? '';
