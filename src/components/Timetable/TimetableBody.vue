@@ -26,20 +26,21 @@
           <table class="h-full w-full border-collapse">
             <tbody>
               <tr
-                class="text-transparent"
-                :class="{
-                  'align-top text-inherit':
-                    i > 0 &&
-                    (computedTimetable[i - 1].departureSpeed != row.arrivalSpeed ||
-                      computedTimetable[i - 1].departureTracks != row.arrivalTracks ||
-                      computedTimetable[i - 1].realLine != row.realLine),
-                }"
+                :class="`align-top ${
+                  i == 0 ||
+                  (computedTimetable[i - 1].departureSpeed == row.arrivalSpeed &&
+                    computedTimetable[i - 1].departureTracks == row.arrivalTracks &&
+                    computedTimetable[i - 1].realLine == row.realLine)
+                    ? 'text-transparent'
+                    : 'text-inherit'
+                }`"
               >
                 <td>{{ row.arrivalKm }}</td>
               </tr>
               <tr
                 :class="{
-                  'border-t align-top': row.arrivalTracks != row.departureTracks || row.departureSpeed != row.arrivalSpeed,
+                  'border-black dark:border-white  border-t align-top':
+                    row.arrivalTracks != row.departureTracks || row.departureSpeed != row.arrivalSpeed,
                   hidden: row.arrivalTracks == row.departureTracks && row.departureSpeed == row.arrivalSpeed,
                 }"
               >
