@@ -89,7 +89,10 @@ const computedTimetableRows = computed(() => {
 
   for (const stop of stopList) {
     if (stop.arrivalLine && stop.arrivalLine == currentPath.arrivalLine) {
-      arrivalKm = stop.stopDistance;
+      console.log('arrivalKm', arrivalKm);
+      console.log('stopDistance', stop.stopDistance);
+
+      if (arrivalKm >= stop.stopDistance) arrivalKm = (Number(stopRows[stopRows.length - 1].departureKm ?? '0') + stop.stopDistance) / 2;
 
       if (currentPath.arrivalLineData) {
         arrivalSpeed = currentPath.arrivalLineData.routeSpeed;
@@ -169,9 +172,17 @@ const computedTimetableRows = computed(() => {
     }
 
     if (stop.departureLine && stop.departureLine == currentPath.departureLine) {
+      arrivalKm = stop.stopDistance;
+
       // Reverse search for last scenery checkpoint
-      for (let i = stopRows.length - 1; i > 0; i--) {
-        if (currentPath.departureLineData) {
+      if (currentPath.departureLineData) {
+        if (currentPath.departureLineData.routeLength != 0 && !currentPath.departureLineData.isRouteSBL)
+          arrivalKm = stop.stopDistance + currentPath.departureLineData.routeLength / 1000;
+
+        if (stopRows[stopRows.length - 1].isMain && currentPath.departureLineData.isRouteSBL && stop.departureLine == currentPath.departureLine)
+          arrivalKm = stop.stopDistance + currentPath.departureLineData.routeLength / 1000;
+
+        for (let i = stopRows.length - 1; i >= 0; i--) {
           stopRows[i].departureTracks = currentPath.departureLineData.routeTracks;
           stopRows[i].departureSpeed = currentPath.departureLineData.routeSpeed;
           stopRows[i].realLine = currentPath.departureLineData.realLineNo?.toString() ?? '';
@@ -179,6 +190,19 @@ const computedTimetableRows = computed(() => {
           if (stopRows[i].isMain || stopRows[i].pointName.endsWith(', podg')) {
             stopRows[i].departureSpeed = currentPath.departureLineData.routeSpeed;
             stopRows[i].departureTracks = currentPath.departureLineData.routeTracks;
+
+            console.log(
+              stop.departureLine,
+              currentPath.sceneryName,
+              stop.stopDistance,
+              currentPath.departureLineData.routeLength,
+              currentPath.departureLineData.isRouteSBL
+            );
+
+            /* 
+            if (currentPath.departureLineData.isRouteSBL)
+              arrivalKm = stop.stopDistance + (currentPath.departureLineData.routeSpeed <= 130 ? 1.0 : 2.0);
+            else */
 
             abbrevs = getAbbrevs(currentPath.departureLineData);
             stopRows[i].abbrevs = abbrevs;
