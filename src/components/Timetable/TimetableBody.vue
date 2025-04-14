@@ -1,6 +1,7 @@
 <template>
   <tbody>
     <tr v-for="(row, i) in computedTimetable">
+      <!-- Line no. -->
       <td
         class="text-center align-top border-l border-l-black dark:border-l-white"
         :class="{
@@ -11,6 +12,7 @@
         {{ i == 0 || computedTimetable[i - 1].realLine != row.realLine ? row.realLine : '&nbsp;' }}
       </td>
 
+      <!-- Km -->
       <td
         class="border border-black dark:border-white border-t-1 border-b-1 relative p-0"
         :class="{
@@ -25,6 +27,8 @@
         <div class="absolute top-0 left-0 w-full h-full">
           <table class="h-full w-full border-collapse">
             <tbody>
+
+              <!-- Arrival Km -->
               <tr
                 :class="`align-top ${
                   i == 0 ||
@@ -37,9 +41,11 @@
               >
                 <td>{{ row.arrivalKm }}</td>
               </tr>
+
+              <!-- Departure Km -->
               <tr
                 :class="{
-                  'border-black dark:border-white  border-t align-top':
+                  'border-black dark:border-white border-t align-top':
                     row.arrivalTracks != row.departureTracks || row.departureSpeed != row.arrivalSpeed,
                   hidden: row.arrivalTracks == row.departureTracks && row.departureSpeed == row.arrivalSpeed,
                 }"
@@ -50,7 +56,8 @@
           </table>
         </div>
       </td>
-
+    
+      <!--  Vp, Vl -->
       <td
         class="text-center align-top p-0 border-l-black dark:border-l-white relative"
         :class="{
@@ -72,6 +79,7 @@
                       : '&nbsp; '
                   }}
                 </td>
+                
                 <td v-if="row.arrivalTracks == 2" class="border-l border-l-black dark:border-l-white" width="35">
                   {{
                     i == 0 ||
@@ -82,6 +90,7 @@
                   }}
                 </td>
               </tr>
+
               <tr
                 :class="{
                   'border-t border-t-black dark:border-t-white align-top':
@@ -101,6 +110,7 @@
         </div>
       </td>
 
+      <!-- Station -->
       <td class="border border-black dark:border-white relative">
         <div class="absolute top-0 left-0 w-full h-full">
           <div class="flex flex-col h-full justify-between p-1">
@@ -117,6 +127,7 @@
         </div>
       </td>
 
+      <!-- Time -->
       <td class="p-0 border border-black dark:border-white relative">
         <div class="absolute top-0 left-0 w-full h-full">
           <table class="h-full w-full border-collapse">
@@ -142,6 +153,7 @@
         </div>
       </td>
 
+      <!-- Locos -->
       <td class="p-0 text-center border border-black dark:border-white relative h-24 text-sm" :class="{ 'text-stone-400 ': i > 0 }">
         <table class="h-full w-full border-collapse">
           <tbody>
@@ -158,6 +170,7 @@
         </table>
       </td>
 
+      <!-- Load / Length -->
       <td class="p-0 text-center border border-black dark:border-white relative" :class="{ 'text-stone-400 ': i > 0 }">
         <div class="absolute top-0 left-0 w-full h-full">
           <table class="h-full w-full border-collapse">
@@ -173,6 +186,7 @@
         </div>
       </td>
 
+      <!-- Vmax-->
       <td class="text-center border border-black dark:border-white" :class="{ 'text-stone-400 ': i > 0 }">{{ row.stockVmax }}</td>
     </tr>
   </tbody>

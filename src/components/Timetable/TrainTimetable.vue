@@ -89,8 +89,8 @@ const computedTimetableRows = computed(() => {
 
   for (const stop of stopList) {
     if (stop.arrivalLine && stop.arrivalLine == currentPath.arrivalLine) {
-      console.log('arrivalKm', arrivalKm);
-      console.log('stopDistance', stop.stopDistance);
+      // console.log('arrivalKm', arrivalKm);
+      // console.log('stopDistance', stop.stopDistance);
 
       if (arrivalKm >= stop.stopDistance) arrivalKm = (Number(stopRows[stopRows.length - 1].departureKm ?? '0') + stop.stopDistance) / 2;
 
@@ -191,13 +191,13 @@ const computedTimetableRows = computed(() => {
             stopRows[i].departureSpeed = currentPath.departureLineData.routeSpeed;
             stopRows[i].departureTracks = currentPath.departureLineData.routeTracks;
 
-            console.log(
-              stop.departureLine,
-              currentPath.sceneryName,
-              stop.stopDistance,
-              currentPath.departureLineData.routeLength,
-              currentPath.departureLineData.isRouteSBL
-            );
+            // console.log(
+            //   stop.departureLine,
+            //   currentPath.sceneryName,
+            //   stop.stopDistance,
+            //   currentPath.departureLineData.routeLength,
+            //   currentPath.departureLineData.isRouteSBL
+            // );
 
             /* 
             if (currentPath.departureLineData.isRouteSBL)
