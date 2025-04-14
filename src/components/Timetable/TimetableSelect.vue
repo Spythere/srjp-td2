@@ -1,5 +1,5 @@
 <template>
-  <div class="flex gap-2 mb-2">
+  <div class="flex gap-2 mb-2 print:hidden">
     <button
       class="p-1 rounded-md"
       :class="{
