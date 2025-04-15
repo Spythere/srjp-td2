@@ -73,10 +73,10 @@ const computedTimetableRows = computed(() => {
     abbrevs = [] as string[];
 
   if (currentPath.departureLineData) {
-    departureSpeed = currentPath.departureLineData.routeSpeed;
+    departureSpeed = Math.min(currentPath.departureLineData.routeSpeed, stockVmax);
     departureTracks = currentPath.departureLineData.routeTracks;
 
-    arrivalSpeed = currentPath.departureLineData.routeSpeed;
+    arrivalSpeed = Math.min(currentPath.departureLineData.routeSpeed, stockVmax);
     arrivalTracks = currentPath.departureLineData.routeTracks;
 
     realLineNo = currentPath.departureLineData?.realLineNo ?? 0;
@@ -95,7 +95,7 @@ const computedTimetableRows = computed(() => {
       if (arrivalKm >= stop.stopDistance) arrivalKm = (Number(stopRows[stopRows.length - 1].departureKm ?? '0') + stop.stopDistance) / 2;
 
       if (currentPath.arrivalLineData) {
-        arrivalSpeed = currentPath.arrivalLineData.routeSpeed;
+        arrivalSpeed = Math.min(currentPath.arrivalLineData.routeSpeed, stockVmax);
         arrivalTracks = currentPath.arrivalLineData.routeTracks;
         realLineNo = currentPath.arrivalLineData.realLineNo ?? 0;
         abbrevs = getAbbrevs(currentPath.arrivalLineData);
@@ -114,8 +114,8 @@ const computedTimetableRows = computed(() => {
         : undefined;
 
       if (internalRouteInfo) {
-        correctedDepartureSpeed = internalRouteInfo.routeSpeed;
-        departureSpeed = internalRouteInfo.routeSpeed;
+        correctedDepartureSpeed = Math.min(internalRouteInfo.routeSpeed, stockVmax);
+        departureSpeed = Math.min(internalRouteInfo.routeSpeed, stockVmax);
         realLineNo = internalRouteInfo.realLineNo ?? realLineNo;
         abbrevs = getAbbrevs(internalRouteInfo);
 
@@ -184,11 +184,11 @@ const computedTimetableRows = computed(() => {
 
         for (let i = stopRows.length - 1; i >= 0; i--) {
           stopRows[i].departureTracks = currentPath.departureLineData.routeTracks;
-          stopRows[i].departureSpeed = currentPath.departureLineData.routeSpeed;
+          stopRows[i].departureSpeed = Math.min(currentPath.departureLineData.routeSpeed, stockVmax);
           stopRows[i].realLine = currentPath.departureLineData.realLineNo?.toString() ?? '';
 
           if (stopRows[i].isMain || stopRows[i].pointName.endsWith(', podg')) {
-            stopRows[i].departureSpeed = currentPath.departureLineData.routeSpeed;
+            stopRows[i].departureSpeed = Math.min(currentPath.departureLineData.routeSpeed, stockVmax);
             stopRows[i].departureTracks = currentPath.departureLineData.routeTracks;
 
             // console.log(
@@ -209,7 +209,7 @@ const computedTimetableRows = computed(() => {
             break;
           }
 
-          stopRows[i].arrivalSpeed = currentPath.departureLineData.routeSpeed;
+          stopRows[i].arrivalSpeed = Math.min(currentPath.departureLineData.routeSpeed, stockVmax);
           stopRows[i].arrivalTracks = currentPath.departureLineData.routeTracks;
         }
       }
