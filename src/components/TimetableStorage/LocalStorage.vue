@@ -1,14 +1,8 @@
 <template>
-  <div class="text-white">
-    <div v-if="globalStore.selectedStorageTimetable == null && Object.keys(globalStore.storageTimetables).length == 0">
-      <div class="font-bold text-xl">{{ $t('storage-empty-header') }}</div>
-      <div>{{ $t('storage-empty-info') }}</div>
-    </div>
+  <div>
+    <div class="font-bold p-2 bg-zinc-800 mb-3" v-if="filteredTimetables.length == 0">{{ $t('storage-preview-empty') }}</div>
 
-    <div v-else>
-      <div class="font-bold text-xl p-2 bg-zinc-700 mb-3">{{ $t('storage-preview-title') }}</div>
-      <div class="font-bold p-2 bg-zinc-800 mb-3" v-if="filteredTimetables.length == 0">{{ $t('storage-preview-empty') }}</div>
-
+    <ul>
       <li v-for="timetable in filteredTimetables" class="flex gap-1 w-full my-2">
         <button class="bg-zinc-900 p-2 w-full cursor-pointer hover:bg-zinc-800 text-left" @click="selectTimetable(timetable)">
           <div class="text-zinc-300">#{{ timetable.timetableId }} &bull; {{ new Date(timetable.savedTimestamp!).toLocaleString() }}</div>
@@ -19,16 +13,16 @@
           <TrashIcon class="size-5 text-white" />
         </button>
       </li>
-    </div>
+    </ul>
   </div>
 </template>
 
 <script setup lang="ts">
-import { TrashIcon } from '@heroicons/vue/16/solid';
-import { useGlobalStore } from '../../stores/global.store';
-import type { TimetableData } from '../../types/common.types';
 import { useI18n } from 'vue-i18n';
+import { useGlobalStore } from '../../stores/global.store';
 import { computed } from 'vue';
+import { TrashIcon } from '@heroicons/vue/16/solid';
+import type { TimetableData } from '../../types/common.types';
 
 const globalStore = useGlobalStore();
 const i18n = useI18n();
@@ -69,5 +63,3 @@ function removeTimetable(timetableId: number) {
   } catch (error) {}
 }
 </script>
-
-<style scoped></style>

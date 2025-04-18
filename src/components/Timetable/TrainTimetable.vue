@@ -23,7 +23,7 @@
     </div>
 
     <div v-else>
-      <TimetableStorage />
+      <StorageView />
     </div>
   </div>
 </template>
@@ -36,7 +36,7 @@ import { useGlobalStore } from '../../stores/global.store';
 import TimetableBody from './TimetableBody.vue';
 import TimetableHeader from './TimetableHeader.vue';
 import type { SceneryRoute, StopRow, TimetablePathData } from '../../types/common.types';
-import TimetableStorage from './TimetableStorage.vue';
+import StorageView from '../TimetableStorage/StorageView.vue';
 
 const globalStore = useGlobalStore();
 const apiStore = useApiStore();

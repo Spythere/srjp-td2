@@ -22,5 +22,9 @@
    "storage-preview-empty": "Nie znaleziono żadnych wpisów dla podanych parametrów",
    "storage-preview-info": "Rozkład archiwalny {id} maszynisty {driverName} z dnia {date}",
    "storage-preview-button-text": "Powróć",
-   "delete-timetable-confirm": "Czy na pewno chcesz usunąć ten rozkład jazdy z archiwum?"
+   "delete-timetable-confirm": "Czy na pewno chcesz usunąć ten rozkład jazdy z archiwum?",
+   "storage-mode": {
+      "local": "LOKALNIE",
+      "api": "STACJOWNIK"
+   }
 }

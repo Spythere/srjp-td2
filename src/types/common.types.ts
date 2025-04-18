@@ -1,5 +1,10 @@
 export type ViewMode = 'active' | 'storage';
 
+export enum StorageMode {
+  LOCAL = 'local',
+  API = 'api'
+}
+
 export interface ActiveData {
   trains: ActiveTrain[];
   activeSceneries: ActiveScenery[];
