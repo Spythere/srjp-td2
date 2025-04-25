@@ -1,4 +1,4 @@
-export type ViewMode = 'active' | 'storage';
+export type ViewMode = 'active' | 'storage' | 'journal';
 
 export enum StorageMode {
   LOCAL = 'local',
@@ -245,7 +245,7 @@ export interface JournalTimetableDetailed extends JournalTimetableShort {
   warningNotes: string;
   hasDangerousCargo: boolean;
   hasExtraDeliveries: boolean;
-  stopListString: any;
+  stopListString?: string;
 }
 
 export interface TimetableData {
@@ -265,4 +265,5 @@ export interface TimetableData {
   stopListString: string;
   headUnits: string[];
   savedTimestamp?: number;
+  journalCreatedAt?: number;
 }

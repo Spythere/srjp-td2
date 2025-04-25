@@ -1,6 +1,12 @@
 import { defineStore } from 'pinia';
 import { useApiStore } from './api.store';
-import type { ActiveTrain, TimetableData, ViewMode } from '../types/common.types';
+import type {
+  ActiveTrain,
+  JournalTimetableDetailed,
+  JournalTimetableShort,
+  TimetableData,
+  ViewMode
+} from '../types/common.types';
 import { unitNameCorrections } from '../utils/trainUtils';
 
 export const useGlobalStore = defineStore('global', {
@@ -11,6 +17,8 @@ export const useGlobalStore = defineStore('global', {
     selectedTrainId: null as string | null,
     selectedActiveTrain: null as ActiveTrain | null,
     selectedStorageTimetable: null as TimetableData | null,
+    selectedJournalTimetable: null as JournalTimetableDetailed | null,
+
     storageTimetables: {} as Record<number, TimetableData>,
 
     timetableWarnings: [] as string[],
@@ -18,9 +26,10 @@ export const useGlobalStore = defineStore('global', {
     generatedDate: null as Date | null,
     generatedMs: 0,
 
-    timetableSearch: '',
+    localTimetableSearch: '',
+    journalTimetableSearch: '',
 
-    showSettings: false,
+    showSettings: false
   }),
   getters: {
     activeTimetableTrains() {
@@ -28,7 +37,9 @@ export const useGlobalStore = defineStore('global', {
 
       if (!apiStore.activeData) return [];
 
-      return apiStore.activeData.trains.filter((train) => train.timetable).sort((t1, t2) => t1.driverName.localeCompare(t2.driverName, 'pl-PL'));
+      return apiStore.activeData.trains
+        .filter((train) => train.timetable)
+        .sort((t1, t2) => t1.driverName.localeCompare(t2.driverName, 'pl-PL'));
     },
 
     currentTimetableData(): TimetableData | null {
@@ -52,12 +63,14 @@ export const useGlobalStore = defineStore('global', {
           trainMaxSpeed: selectedTrain.timetable.trainMaxSpeed,
           timetableId: selectedTrain.timetable.timetableId,
           stopListString: selectedTrain.timetable.stopList
-            .filter((stop) => stop.mainStop || (/^podg|po|pe$/.test(stop.stopNameRAW)))
+            .filter((stop) => stop.mainStop || /^podg|po|pe$/.test(stop.stopNameRAW))
             .map(
               (stop) =>
-                `${stop.arrivalLine ?? ''};${stop.arrivalTimestamp};${stop.stopNameRAW};${stop.stopTime ? stop.stopTime + '_' + stop.stopType : ''};${
-                  stop.mainStop
-                };${stop.stopDistance};${stop.departureTimestamp};${stop.departureLine ?? ''}`
+                `${stop.arrivalLine ?? ''};${stop.arrivalTimestamp};${stop.stopNameRAW};${
+                  stop.stopTime ? stop.stopTime + '_' + stop.stopType : ''
+                };${stop.mainStop};${stop.stopDistance};${stop.departureTimestamp};${
+                  stop.departureLine ?? ''
+                }`
             )
             .join('~~'),
           headUnits: selectedTrain.stockString
@@ -68,13 +81,43 @@ export const useGlobalStore = defineStore('global', {
               const unitName = s.slice(0, s.indexOf('-'));
 
               return unitNameCorrections[unitName] ?? unitName;
-            }),
+            })
+        };
+      } else if (this.viewMode == 'journal') {
+        const selectedTimetable = this.selectedJournalTimetable;
+
+        if (!selectedTimetable || !selectedTimetable.stopListString) return null;
+
+        return {
+          journalCreatedAt: new Date(selectedTimetable.createdAt).getTime(),
+          trainNo: selectedTimetable.trainNo,
+          mass: selectedTimetable.stockMass,
+          length: selectedTimetable.stockLength,
+          driverId: selectedTimetable.driverId,
+          driverName: selectedTimetable.driverName,
+          category: selectedTimetable.trainCategoryCode,
+          hasDangerousCargo: selectedTimetable.hasDangerousCargo,
+          hasExtraDeliveries: selectedTimetable.hasExtraDeliveries,
+          warningNotes: selectedTimetable.warningNotes,
+          path: selectedTimetable.path,
+          route: selectedTimetable.route,
+          trainMaxSpeed: selectedTimetable.trainMaxSpeed,
+          timetableId: selectedTimetable.id,
+          stopListString: selectedTimetable.stopListString,
+          headUnits: selectedTimetable.stockString
+            .split(';')
+            .slice(0, 3)
+            .filter((s, i) => i == 0 || /-\d+$/.test(s))
+            .map((s) => {
+              const unitName = s.slice(0, s.indexOf('-'));
+
+              return unitNameCorrections[unitName] ?? unitName;
+            })
         };
       } else {
-        const selectedStorageTimetable = this.selectedStorageTimetable;
-        return selectedStorageTimetable;
+        return this.selectedStorageTimetable;
       }
-    },
+    }
   },
-  actions: {},
+  actions: {}
 });

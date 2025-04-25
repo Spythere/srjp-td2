@@ -1,12 +1,11 @@
 <template>
-  <div
-    :class="{ dark: globalStore.darkMode }"
-    v-if="globalStore.currentTimetableData != null"
-    class="overflow-auto p-1 bg-white print:bg-white dark:bg-zinc-950 print:text-black text-black dark:text-white min-h-full"
-  >
+  <!-- Timetable render based on current view mode -->
+  <div :class="{ dark: globalStore.darkMode }" v-if="globalStore.currentTimetableData != null"
+    class="overflow-auto p-1 bg-white print:bg-white dark:bg-zinc-950 print:text-black text-black dark:text-white min-h-full">
     <div>
       <div class="p-1 font-bold w-max">
-        {{ globalStore.currentTimetableData.category }} {{ globalStore.currentTimetableData.trainNo }} {{ $t('headers.relation') }}
+        {{ globalStore.currentTimetableData.category }} {{ globalStore.currentTimetableData.trainNo }} {{
+    $t('headers.relation') }}
         {{ globalStore.currentTimetableData.route.replace('|', ' - ') }}
       </div>
 
@@ -22,9 +21,8 @@
       <div>{{ $t('train-select-info') }}</div>
     </div>
 
-    <div v-else>
-      <StorageView />
-    </div>
+    <LocalStorageView v-else-if="globalStore.viewMode == 'storage'" />
+    <JournalStorageView v-else />
   </div>
 </template>
 
@@ -35,8 +33,9 @@ import { useApiStore } from '../../stores/api.store';
 import { useGlobalStore } from '../../stores/global.store';
 import TimetableBody from './TimetableBody.vue';
 import TimetableHeader from './TimetableHeader.vue';
-import type { SceneryRoute, StopRow, TimetablePathData } from '../../types/common.types';
-import StorageView from '../TimetableStorage/StorageView.vue';
+import { type SceneryRoute, type StopRow, type TimetablePathData } from '../../types/common.types';
+import LocalStorageView from '../TimetableViews/LocalStorageView.vue';
+import JournalStorageView from '../TimetableViews/JournalStorageView.vue';
 
 const globalStore = useGlobalStore();
 const apiStore = useApiStore();

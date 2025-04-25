@@ -1,30 +1,36 @@
 {
-   "data-loading-text": "Ładowanie danych...",
-   "train-select-placeholder": "Wybierz pociąg z listy",
-   "train-select-info": "Wybierz aktywny pociąg, aby wygenerować SRJP",
-   "train-search-placeholder": "Wpisz szczegóły RJ (nr, relacja, gracz)",
-   "headers": {
-      "line_no": "Nr\nlinii",
-      "line_km": "Km",
-      "station": "Stacja",
-      "time": "Godzina",
-      "loco_1": "Lok I",
-      "loco_2": "Lok II",
-      "loco_3": "Lok III",
-      "mass": "Obc. lok.",
-      "length": "Dł. poc.",
-      "vmax": "Vmax",
-      "relation": "Relacja"
-   },
-   "storage-empty-header": "TRYB WYSZUKIWANA ZAPISANYCH ROZKŁADÓW JAZDY",
-   "storage-empty-info": "Użyj funkcji zapisu rozkładu jazdy, aby go tutaj wyświetlić.",
-   "storage-preview-title": "ZAPISANE ROZKŁADY JAZDY",
-   "storage-preview-empty": "Nie znaleziono żadnych wpisów dla podanych parametrów",
-   "storage-preview-info": "Rozkład archiwalny {id} maszynisty {driverName} z dnia {date}",
-   "storage-preview-button-text": "Powróć",
-   "delete-timetable-confirm": "Czy na pewno chcesz usunąć ten rozkład jazdy z archiwum?",
-   "storage-mode": {
-      "local": "LOKALNIE",
-      "api": "STACJOWNIK"
-   }
+  "data-loading-text": "Ładowanie danych...",
+  "data-loading-error-text": "Ups! Wystąpił błąd podczas pobierania danych z serwera!",
+  "train-select-placeholder": "Wybierz pociąg z listy",
+  "train-select-info": "Wybierz aktywny pociąg, aby wygenerować SRJP",
+  "train-search-placeholder": "Wpisz szczegóły RJ (nr, relacja, gracz)",
+  "headers": {
+    "line_no": "Nr\nlinii",
+    "line_km": "Km",
+    "station": "Stacja",
+    "time": "Godzina",
+    "loco_1": "Lok I",
+    "loco_2": "Lok II",
+    "loco_3": "Lok III",
+    "mass": "Obc. lok.",
+    "length": "Dł. poc.",
+    "vmax": "Vmax",
+    "relation": "Relacja"
+  },
+  "storage-empty-header": "TRYB WYSZUKIWANA ZAPISANYCH ROZKŁADÓW JAZDY",
+  "storage-empty-info": "Użyj funkcji zapisu rozkładu jazdy, aby go tutaj wyświetlić.",
+  "storage-preview-title": "ZAPISANE ROZKŁADY JAZDY",
+  "storage-preview-empty": "Nie znaleziono żadnych wpisów dla podanych parametrów",
+  "storage-preview-info": "Rozkład archiwalny {id} maszynisty {driverName} z dnia {date}",
+  "storage-preview-button-text": "Powróć",
+  "delete-timetable-confirm": "Czy na pewno chcesz usunąć ten rozkład jazdy z archiwum?",
+
+  "journal-preview-title": "DZIENNIK ROZKŁADÓW JAZDY",
+  "journal-empty-info": "Wpisz dane rozkładu korzystając z pola tekstowego powyżej - mogą nimi być: <br> id (#numer); nickname (nick:Spythere); data (date:11.01.2025); punkt startowy (from:Krnów)<br>W przypadku wielu rozkładów jazdy wyświetli się maks. 15 najnowszych.",
+  "journal-search-placeholder": "nick:Spythere date:02.04.2025 from:Krnów to:Biała_Sudecka",
+  "journal-preview-info": "Rozkład historyczny {id} maszynisty {driverName} z dnia {date}",
+
+  "journal-no-data": "Brak wyników dla obecnego wyszukiwania! Sprawdź czy wpisałeś poprawnie dane.",
+  "journal-reminder-text": "Uwaga: szczegółowe rozkłady jazdy są zapisywane od 1 lutego 2025r. wyłącznie dla osób wspierających projekt Stacjownika!",
+  "journal-footer-text": "Szczegółowe dane o rozkładach jazdy do wygenerowania SRJP są zbierane od 1 lutego 2025r. wyłącznie dla maszynistów wspierających projekt Stacjownika!"
 }

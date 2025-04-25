@@ -1,30 +1,36 @@
 {
-   "data-loading-text": "Loading data...",
-   "train-select-placeholder": "Choose active train from the list",
-   "train-select-info": "Choose active train to generate SRJP timetable",
-   "train-search-placeholder": "Enter TT details (number, route, user)",
-   "headers": {
-      "line_no": "Line\nno.",
-      "line_km": "Km",
-      "station": "Station",
-      "time": "Time",
-      "loco_1": "Loco I",
-      "loco_2": "Loco II",
-      "loco_3": "Loco III",
-      "mass": "Loco load",
-      "length": "Train len.",
-      "vmax": "Vmax",
-      "relation": "Route"
-   },
-   "storage-empty-header": "ARCHIVED TIMETABLES SEARCH MODE",
-   "storage-empty-info": "Timetables will be shown here after their archiving.",
-   "storage-preview-title": "ARCHIVED TIMETABLES",
-   "storage-preview-empty": "No entries found for given parameters",
-   "storage-preview-info": "Archived timetable {id} for user {driverName} from: {date}",
-   "storage-preview-button-text": "Return",
-   "delete-timetable-confirm": "Are you sure that you want to delete this timetable?",
-   "storage-mode": {
-      "local": "LOCALLY",
-      "api": "STACJOWNIK"
-   }
+  "data-loading-text": "Loading data...",
+  "data-loading-error-text": "Oops! An error occurent while loading data from the server!",
+  "train-select-placeholder": "Choose active train from the list",
+  "train-select-info": "Choose active train to generate SRJP timetable",
+  "train-search-placeholder": "Enter TT details (number, route, user)",
+  "headers": {
+    "line_no": "Line\nno.",
+    "line_km": "Km",
+    "station": "Station",
+    "time": "Time",
+    "loco_1": "Loco I",
+    "loco_2": "Loco II",
+    "loco_3": "Loco III",
+    "mass": "Loco load",
+    "length": "Train len.",
+    "vmax": "Vmax",
+    "relation": "Route"
+  },
+  "storage-empty-header": "ARCHIVED TIMETABLES SEARCH MODE",
+  "storage-empty-info": "Timetables will be shown here after their archiving.",
+  "storage-preview-title": "ARCHIVED TIMETABLES",
+  "storage-preview-empty": "No entries found for given parameters",
+  "storage-preview-info": "Archived timetable {id} for user {driverName} from: {date}",
+  "storage-preview-button-text": "Return",
+  "delete-timetable-confirm": "Are you sure that you want to delete this timetable?",
+
+  "journal-preview-title": "TIMETABLES JOURNAL",
+  "journal-empty-info": "Enter timetable details in the text field above - it may be: <br> id (#number); nickname (nick:Spythere); date (date:11.01.2025); starting point (from:Krnów)<br>Up to 15 newest timetables will be shown.",
+  "journal-search-placeholder": "nick:Spythere date:02.04.2025 from:Krnów to:Biała_Sudecka",
+  "journal-preview-info": "Historical timetable {id} for user {driverName} from: {date}",
+
+  "journal-no-data": "No data for the current search! Check if the data you entered is correct.",
+  "journal-reminder-text": "Warning: detailed timetables data for SRJP purpose are collected since 1st February 2025 and only for users who support Stacjownik project!",
+  "journal-footer-text": "Detailed timetables data for SRJP purpose are collected since 1st February 2025 and only for users who support Stacjownik project!"
 }
