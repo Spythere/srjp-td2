@@ -14,7 +14,12 @@
             <b>{{ globalStore.currentTimetableData.driverName }}</b>
           </template>
           <template v-slot:date>
-            <b>{{ new Date(globalStore.currentTimetableData.savedTimestamp).toLocaleString() }}</b>
+            <b>{{
+              new Date(
+                globalStore.currentTimetableData?.journalCreatedAt ??
+                  globalStore.currentTimetableData.savedTimestamp
+              ).toLocaleString()
+            }}</b>
           </template>
         </i18n-t>
       </div>
@@ -36,7 +41,7 @@
   </div>
 
   <!-- Journal -->
-  <div class="my-2 print:hidden" v-if="globalStore.currentTimetableData?.journalCreatedAt">
+  <div class="my-2 print:hidden" v-else-if="globalStore.currentTimetableData?.journalCreatedAt">
     <div class="flex gap-2">
       <div class="flex items-center gap-2 bg-zinc-900 p-1 w-full">
         <div>
