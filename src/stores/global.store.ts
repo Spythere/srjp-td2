@@ -3,7 +3,6 @@ import { useApiStore } from './api.store';
 import type {
   ActiveTrain,
   JournalTimetableDetailed,
-  JournalTimetableShort,
   TimetableData,
   ViewMode
 } from '../types/common.types';
