@@ -4,7 +4,11 @@
       {{ $t('journal-preview-title') }}
     </h2>
 
-    <div v-if="apiStore.journalDataStatus == DataStatus.LOADING" class="bg-zinc-900 p-2">
+    <div v-if="apiStore.connectionMode == 'offline'" class="bg-red-500 p-2">
+      {{ $t('data-offline-mode') }}
+    </div>
+
+    <div v-else-if="apiStore.journalDataStatus == DataStatus.LOADING" class="bg-zinc-900 p-2">
       {{ $t('data-loading-text') }}
     </div>
 

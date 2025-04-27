@@ -18,7 +18,8 @@
 
   <div class="overflow-auto text-center font-bold text-zinc-400 p-1 min-h-full" v-else>
     <div v-if="globalStore.viewMode == 'active'">
-      <div>{{ $t('train-select-info') }}</div>
+      <div v-if="apiStore.connectionMode == 'online'">{{ $t('train-select-info') }}</div>
+      <div v-else class="bg-red-500 text-white p-2">{{ $t('data-offline-mode') }}</div>
     </div>
 
     <LocalStorageView v-else-if="globalStore.viewMode == 'storage'" />

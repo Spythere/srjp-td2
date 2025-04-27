@@ -99,9 +99,14 @@
     <input
       type="text"
       v-else-if="globalStore.viewMode == 'journal'"
-      v-model="globalStore.journalTimetableSearch"
       @change="fetchJournalTimetables"
-      class="bg-zinc-800 p-1 rounded-md print:hidden w-full"
+      v-model="globalStore.journalTimetableSearch"
+      :class="`bg-zinc-800 p-1 rounded-md print:hidden w-full ${
+        apiStore.connectionMode == 'offline' ? 'opacity-35' : ''
+      }`"
+      :disabled="
+        apiStore.journalDataStatus == DataStatus.LOADING || apiStore.connectionMode == 'offline'
+      "
       :placeholder="$t('journal-search-placeholder')"
     />
   </div>

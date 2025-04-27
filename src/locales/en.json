@@ -4,6 +4,14 @@
   "train-select-placeholder": "Choose active train from the list",
   "train-select-info": "Choose active train to generate SRJP timetable",
   "train-search-placeholder": "Enter TT details (number, route, user)",
+
+  "update-prompt": {
+    "line1": "New version of SRJP is available!",
+    "line2": "Click here to update the app!"
+  },
+
+  "data-offline-mode": "You're currently using the offline mode of the SRJP app - server data is unavailable!",
+  
   "headers": {
     "line_no": "Line\nno.",
     "line_km": "Km",
@@ -17,6 +25,7 @@
     "vmax": "Vmax",
     "relation": "Route"
   },
+
   "storage-empty-header": "ARCHIVED TIMETABLES SEARCH MODE",
   "storage-empty-info": "Timetables will be shown here after their archiving.",
   "storage-preview-title": "ARCHIVED TIMETABLES",

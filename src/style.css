@@ -32,7 +32,6 @@ body {
 ::-webkit-scrollbar-corner {
   background: theme('colors.stone.900');
   border-radius: 0 0 theme('borderRadius.md') 0;
-
 }
 
 /* Tooltips */
@@ -85,4 +84,16 @@ body {
   :root {
     color-scheme: light;
   }
+}
+
+/* Animations */
+.slide-anim-enter-active,
+.slide-anim-leave-active {
+  transition: all 250ms ease-in-out;
+  transform: translateY(0);
+}
+
+.slide-anim-enter-from,
+.slide-anim-leave-to {
+  transform: translateY(100%);
 }

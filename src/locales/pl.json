@@ -4,6 +4,14 @@
   "train-select-placeholder": "Wybierz pociąg z listy",
   "train-select-info": "Wybierz aktywny pociąg, aby wygenerować SRJP",
   "train-search-placeholder": "Wpisz szczegóły RJ (nr, relacja, gracz)",
+
+  "update-prompt": {
+    "line1": "Nowa wersja SRJP jest dostępna!",
+    "line2": "Kliknij, aby zaktualizować aplikację!"
+  },
+
+  "data-offline-mode": "Korzystasz z trybu offline aplikacji SRJP - dane serwerowe są niedostępne!",
+
   "headers": {
     "line_no": "Nr\nlinii",
     "line_km": "Km",
@@ -17,6 +25,7 @@
     "vmax": "Vmax",
     "relation": "Relacja"
   },
+
   "storage-empty-header": "TRYB WYSZUKIWANA ZAPISANYCH ROZKŁADÓW JAZDY",
   "storage-empty-info": "Użyj funkcji zapisu rozkładu jazdy, aby go tutaj wyświetlić.",
   "storage-preview-title": "ZAPISANE ROZKŁADY JAZDY",
