@@ -53,7 +53,9 @@ function loadStorageTimetables() {
 
 function setupDarkMode() {
   globalStore.darkMode =
-    localStorage.currentTheme === 'dark' || (!('currentTheme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    localStorage.currentTheme === 'dark' ||
+    (!('currentTheme' in localStorage) &&
+      window.matchMedia('(prefers-color-scheme: dark)').matches);
 }
 
 function setupAfterPrintClose() {

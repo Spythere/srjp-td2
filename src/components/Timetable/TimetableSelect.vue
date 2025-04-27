@@ -123,6 +123,7 @@ import {
 } from '@heroicons/vue/16/solid';
 import { getRegionNameById } from '../../utils/trainUtils';
 import type { TimetableData, ViewMode } from '../../types/common.types';
+import { watch } from 'vue';
 
 // Stores
 const apiStore = useApiStore();
@@ -137,6 +138,16 @@ const isTimetableSaved = computed(() => {
   );
 });
 
+// Watchers
+watch(
+  () => globalStore.selectedActiveTrain,
+  (curr) => {
+    if (curr != null) {
+      globalStore.generatedDate = new Date();
+    }
+  }
+);
+
 // Methods
 function selectTrain() {
   if (!apiStore.activeData) return;
@@ -144,10 +155,6 @@ function selectTrain() {
   globalStore.selectedActiveTrain =
     globalStore.activeTimetableTrains.find((train) => train.id == globalStore.selectedTrainId) ??
     null;
-
-  if (globalStore.selectedActiveTrain != null) {
-    globalStore.generatedDate = new Date();
-  }
 }
 
 function toggleViewMode(viewMode: ViewMode) {
