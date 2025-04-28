@@ -26,7 +26,12 @@ export const useGlobalStore = defineStore('global', {
     generatedMs: 0,
 
     localTimetableSearch: '',
-    journalTimetableSearch: '',
+
+    journalTimetableSearch: {
+      driverName: '',
+      date: '',
+      route: ''
+    },
 
     showSettings: false
   }),

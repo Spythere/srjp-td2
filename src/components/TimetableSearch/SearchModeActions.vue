@@ -1,5 +1,5 @@
 <template>
-  <div class="flex gap-2 justify-between flex-wrap mb-2 print:hidden">
+  <div class="flex justify-between gap-2">
     <div class="flex gap-2">
       <button
         :class="`p-1 rounded-md ${
@@ -61,62 +61,10 @@
         <ArrowDownTrayIcon class="text-white size-6" />
       </button>
     </div>
-
-    <!-- Active Data Search -->
-    <select
-      name="trains"
-      id="trains-select"
-      class="bg-zinc-800 p-1 rounded-md print:hidden w-full"
-      :disabled="apiStore.activeDataStatus != DataStatus.SUCCESS"
-      v-model="globalStore.selectedTrainId"
-      v-if="globalStore.viewMode == 'active'"
-      @change="selectTrain"
-    >
-      <option :value="null" disabled>
-        {{
-          apiStore.activeDataStatus == DataStatus.LOADING
-            ? $t('data-loading-text')
-            : $t('train-select-placeholder')
-        }}
-      </option>
-      <option :value="train.id" v-for="train in globalStore.activeTimetableTrains">
-        {{ train.driverName }} | {{ train.timetable?.category }} {{ train.trainNo }} [{{
-          getRegionNameById(train.region)
-        }}]
-      </option>
-    </select>
-
-    <!-- Local Storage Search -->
-    <input
-      type="text"
-      v-if="globalStore.viewMode == 'storage'"
-      v-model="globalStore.localTimetableSearch"
-      class="bg-zinc-800 p-1 rounded-md print:hidden w-full"
-      :placeholder="$t('train-search-placeholder')"
-    />
-
-    <!-- Journal Serach -->
-    <input
-      type="text"
-      v-else-if="globalStore.viewMode == 'journal'"
-      @change="fetchJournalTimetables"
-      v-model="globalStore.journalTimetableSearch"
-      :class="`bg-zinc-800 p-1 rounded-md print:hidden w-full ${
-        apiStore.connectionMode == 'offline' ? 'opacity-35' : ''
-      }`"
-      :disabled="
-        apiStore.journalDataStatus == DataStatus.LOADING || apiStore.connectionMode == 'offline'
-      "
-      :placeholder="$t('journal-search-placeholder')"
-    />
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
-import { useApiStore } from '../../stores/api.store';
-import { DataStatus } from '../../types/api.types';
-import { useGlobalStore } from '../../stores/global.store';
 import {
   PrinterIcon,
   MoonIcon,
@@ -126,12 +74,10 @@ import {
   CloudIcon,
   WifiIcon
 } from '@heroicons/vue/16/solid';
-import { getRegionNameById } from '../../utils/trainUtils';
-import type { TimetableData, ViewMode } from '../../types/common.types';
-import { watch } from 'vue';
+import { computed, watch } from 'vue';
+import { useGlobalStore } from '../../stores/global.store';
+import type { ViewMode, TimetableData } from '../../types/common.types';
 
-// Stores
-const apiStore = useApiStore();
 const globalStore = useGlobalStore();
 
 // Computed
@@ -154,14 +100,6 @@ watch(
 );
 
 // Methods
-function selectTrain() {
-  if (!apiStore.activeData) return;
-
-  globalStore.selectedActiveTrain =
-    globalStore.activeTimetableTrains.find((train) => train.id == globalStore.selectedTrainId) ??
-    null;
-}
-
 function toggleViewMode(viewMode: ViewMode) {
   globalStore.viewMode = viewMode;
 }
@@ -210,13 +148,9 @@ function openPrintingWindow() {
     document.title = `${globalStore.selectedActiveTrain.driverName} ; ${
       globalStore.selectedActiveTrain.timetable!.category
     } ${globalStore.selectedActiveTrain.trainNo}
-      ${globalStore.selectedActiveTrain.timetable?.route.replace('|', ' - ')} ; ${date}`;
+        ${globalStore.selectedActiveTrain.timetable?.route.replace('|', ' - ')} ; ${date}`;
   }
 
   window.print();
-}
-
-async function fetchJournalTimetables() {
-  apiStore.fetchJournalTimetables(globalStore.journalTimetableSearch);
 }
 </script>

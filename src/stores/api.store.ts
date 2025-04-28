@@ -4,16 +4,9 @@ import { defineStore } from 'pinia';
 import {
   DataStatus,
   type ActiveDataResponse,
-  type SceneriesDataResponse,
-  type JournalTimetablesShortResponse
+  type SceneriesDataResponse
 } from '../types/api.types';
-import type {
-  ActiveData,
-  JournalTimetableDetailed,
-  JournalTimetableShort,
-  SceneryData
-} from '../types/common.types';
-import { useGlobalStore } from './global.store';
+import type { ActiveData, JournalTimetableShort, SceneryData } from '../types/common.types';
 
 let activeDataInterval = -1;
 
@@ -58,7 +51,7 @@ export const useApiStore = defineStore('api', {
       }
 
       clearInterval(activeDataInterval);
-      
+
       activeDataInterval = setInterval(() => {
         this.fetchActiveData();
       }, 25000);
@@ -91,74 +84,6 @@ export const useApiStore = defineStore('api', {
 
         this.sceneryData = response;
       } catch (error) {
-        console.error(error);
-      }
-    },
-
-    async fetchJournalTimetables(searchValue: string) {
-      // if (searchValue.trim().length == 0) {
-      //   this.journalDataStatus = DataStatus.SUCCESS;
-      //   this.journalTimetablesData = null;
-
-      //   return;
-      // }
-
-      let searchObj: Record<string, any> = {};
-      const searchParams = searchValue.split(' ');
-
-      searchParams.forEach((param) => {
-        const [key, value] = param.split(':');
-
-        if (key == 'nick') searchObj['driverName'] = value;
-        else if (key == 'date') {
-          let dateFromStr = new Date(value).toISOString();
-
-          let dateTo = new Date(dateFromStr);
-          dateTo.setDate(dateTo.getDate() + 1);
-
-          searchObj['dateFrom'] = dateFromStr;
-          searchObj['dateTo'] = dateTo.toISOString();
-        } else if (key == 'from') searchObj['issuedFrom'] = value.replace(/_/g, ' ');
-        else if (key == 'to') searchObj['terminatingAt'] = value.replace(/_/g, ' ');
-      });
-
-      searchObj['hasStopsDetails'] = 1;
-      searchObj['returnType'] = 'short';
-
-      try {
-        this.journalDataStatus = DataStatus.LOADING;
-
-        const response = (
-          await this.client!.get<JournalTimetablesShortResponse>('/api/getTimetables', {
-            params: searchObj
-          })
-        ).data;
-
-        this.journalDataStatus = DataStatus.SUCCESS;
-        this.journalTimetablesData = response;
-      } catch (error) {
-        this.journalDataStatus = DataStatus.ERROR;
-        this.journalTimetablesData = null;
-        console.error(error);
-      }
-    },
-
-    async fetchJournalTimetableDetails(id: number) {
-      const globalStore = useGlobalStore();
-
-      try {
-        const response = (
-          await this.client!.get<JournalTimetableDetailed[]>('/api/getTimetables', {
-            params: {
-              timetableId: id,
-              hasStopsDetails: 1
-            }
-          })
-        ).data;
-
-        if (response.length > 0) globalStore.selectedJournalTimetable = response[0];
-      } catch (error) {
-        globalStore.selectedJournalTimetable = null;
         console.error(error);
       }
     }

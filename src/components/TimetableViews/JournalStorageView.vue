@@ -66,11 +66,29 @@
 
 <script setup lang="ts">
 import { useApiStore } from '../../stores/api.store';
+import { useGlobalStore } from '../../stores/global.store';
 import { DataStatus } from '../../types/api.types';
+import type { JournalTimetableDetailed } from '../../types/common.types';
 
 const apiStore = useApiStore();
+const globalStore = useGlobalStore();
 
-function fetchTimetableDetails(id: number) {
-  apiStore.fetchJournalTimetableDetails(id);
+async function fetchTimetableDetails(id: number) {
+  try {
+    const response = (
+      await apiStore.client!.get<JournalTimetableDetailed[]>('/api/getTimetables', {
+        params: {
+          timetableId: id,
+          hasStopsDetails: 1,
+          returnType: "detailed"
+        }
+      })
+    ).data;
+
+    if (response.length > 0) globalStore.selectedJournalTimetable = response[0];
+  } catch (error) {
+    globalStore.selectedJournalTimetable = null;
+    console.error(error);
+  }
 }
 </script>

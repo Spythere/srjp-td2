@@ -1,10 +1,5 @@
 export type ViewMode = 'active' | 'storage' | 'journal';
 
-export enum StorageMode {
-  LOCAL = 'local',
-  API = 'api'
-}
-
 export interface ActiveData {
   trains: ActiveTrain[];
   activeSceneries: ActiveScenery[];
@@ -228,7 +223,6 @@ export interface JournalTimetableDetailed extends JournalTimetableShort {
   createdAt: string;
   updatedAt: string;
   stockHistory: string[];
-  hidden: boolean;
   routeSceneries: string;
   checkpointArrivals: any[];
   checkpointDepartures: any[];
