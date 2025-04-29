@@ -1,7 +1,7 @@
 <template>
   <!-- Local  -->
-  <div class="my-2 print:hidden" v-if="globalStore.currentTimetableData?.savedTimestamp">
-    <div class="flex gap-2">
+  <div class="print:hidden" v-if="globalStore.currentTimetableData?.savedTimestamp">
+    <div class="flex gap-2 mt-1">
       <div class="flex items-center gap-2 bg-zinc-900 p-1 w-full">
         <div>
           <InfoIcon :size="20" />
@@ -25,14 +25,14 @@
       </div>
 
       <button
-        class="font-bold bg-zinc-900 p-1 hover:bg-zinc-800"
+        class="font-bold bg-zinc-900 p-1 hover:bg-zinc-800 rounded-md"
         @click="removeTimetable(globalStore.currentTimetableData.timetableId)"
       >
         <Trash2Icon />
       </button>
 
       <button
-        class="font-bold bg-zinc-900 p-1 hover:bg-zinc-800"
+        class="font-bold bg-zinc-900 p-1 hover:bg-zinc-800 rounded-md"
         @click="globalStore.selectedStorageTimetable = null"
       >
         <Undo2Icon />
@@ -41,8 +41,8 @@
   </div>
 
   <!-- Journal -->
-  <div class="my-2 print:hidden" v-else-if="globalStore.currentTimetableData?.journalCreatedAt">
-    <div class="flex gap-2">
+  <div class="print:hidden" v-else-if="globalStore.currentTimetableData?.journalCreatedAt">
+    <div class="flex gap-2 mt-1">
       <div class="flex items-center gap-2 bg-zinc-900 p-1 w-full">
         <div>
           <InfoIcon :size="20" />
@@ -64,7 +64,7 @@
       </div>
 
       <button
-        class="font-bold bg-zinc-900 p-1 hover:bg-zinc-800"
+        class="font-bold bg-zinc-900 p-1 hover:bg-zinc-800 rounded-md"
         @click="globalStore.selectedJournalTimetable = null"
       >
         <Undo2Icon />

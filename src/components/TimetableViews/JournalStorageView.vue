@@ -1,6 +1,7 @@
 <template>
   <div class="text-white">
-    <h2 class="font-bold p-2 bg-zinc-700 mb-3 text-2xl">
+    <h2 class="font-bold p-2 bg-zinc-700 mb-3 text-2xl flex items-center gap-2 justify-center flex-wrap">
+      <HistoryIcon :size="25" />
       {{ $t('journal-preview-title') }}
     </h2>
 
@@ -65,6 +66,7 @@
 </template>
 
 <script setup lang="ts">
+import { HistoryIcon } from 'lucide-vue-next';
 import { useApiStore } from '../../stores/api.store';
 import { useGlobalStore } from '../../stores/global.store';
 import { DataStatus } from '../../types/api.types';
@@ -80,7 +82,7 @@ async function fetchTimetableDetails(id: number) {
         params: {
           timetableId: id,
           hasStopsDetails: 1,
-          returnType: "detailed"
+          returnType: 'detailed'
         }
       })
     ).data;

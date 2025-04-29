@@ -1,5 +1,5 @@
 <template>
-  <div class="flex gap-2">
+  <div class="flex gap-2" v-if="globalStore.currentTimetableData == null">
     <div class="w-full">
       <input
         v-model="globalStore.localTimetableSearch"

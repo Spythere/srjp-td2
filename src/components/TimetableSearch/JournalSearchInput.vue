@@ -1,5 +1,5 @@
 <template>
-  <div class="flex gap-2 items-center">
+  <div class="flex gap-2 items-center" v-if="globalStore.currentTimetableData == null">
     <div class="flex gap-2 w-full">
       <input
         v-model="globalStore.journalTimetableSearch.driverName"

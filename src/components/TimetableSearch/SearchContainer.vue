@@ -1,5 +1,5 @@
 <template>
-  <div class="flex gap-2 flex-col mb-2 print:hidden">
+  <div class="flex gap-2 flex-col print:hidden">
     <!-- Top Actions & Modes -->
     <SearchModeActions />
 

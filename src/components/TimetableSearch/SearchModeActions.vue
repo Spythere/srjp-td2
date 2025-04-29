@@ -31,7 +31,7 @@
         }`"
         @click="toggleViewMode('journal')"
       >
-        <NotebookPenIcon />
+        <HistoryIcon />
       </button>
     </div>
 
@@ -71,8 +71,8 @@ import type { ViewMode, TimetableData } from '../../types/common.types';
 import {
   ArchiveIcon,
   FolderDownIcon,
+  HistoryIcon,
   MoonIcon,
-  NotebookPenIcon,
   PrinterIcon,
   SunIcon,
   WifiIcon
