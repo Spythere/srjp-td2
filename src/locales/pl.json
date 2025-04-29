@@ -35,7 +35,7 @@
   "delete-timetable-confirm": "Czy na pewno chcesz usunąć ten rozkład jazdy z archiwum?",
 
   "journal-preview-title": "DZIENNIK ROZKŁADÓW JAZDY",
-  "journal-empty-info": "Wpisz dane rozkładu korzystając z pola tekstowego powyżej - mogą nimi być: <br> id (#numer); nickname (nick:Spythere); data (date:11.01.2025); punkt startowy (from:Krnów)<br>W przypadku wielu rozkładów jazdy wyświetli się maks. 15 najnowszych.",
+  "journal-empty-info": "Wpisz dane rozkładu korzystając z pól tekstowych powyżej (co najmniej jednego).<br>W przypadku wielu rozkładów jazdy wyświetli się maks. 15 najnowszych.",
   "journal-driver-search-placeholder": "Maszynista / #ID",
   "journal-date-search-placeholder": "Data",
   "journal-route-search-placeholder": "Relacja",

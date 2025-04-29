@@ -35,7 +35,7 @@
   "delete-timetable-confirm": "Are you sure that you want to delete this timetable?",
 
   "journal-preview-title": "TIMETABLES JOURNAL",
-  "journal-empty-info": "Enter timetable details in the text field above - it may be: <br> id (#number); nickname (nick:Spythere); date (date:11.01.2025); starting point (from:Krnów)<br>Up to 15 newest timetables will be shown.",
+  "journal-empty-info": "Enter timetable details in the text fields above (use at least one field).<br>Up to 15 newest timetables will be shown.",
   "journal-search-placeholder": "nick:Spythere date:02.04.2025 from:Krnów to:Biała_Sudecka",
   "journal-preview-info": "Historical timetable {id} for user {driverName} from: {date}",
 
