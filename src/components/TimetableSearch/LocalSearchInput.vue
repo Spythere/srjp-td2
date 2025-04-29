@@ -15,14 +15,14 @@
         v-if="globalStore.viewMode == 'storage'"
         @click="clearSearch"
       >
-        <TrashIcon class="size-6" />
+        <Trash2Icon />
       </button>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { TrashIcon } from '@heroicons/vue/16/solid';
+import { Trash2Icon } from 'lucide-vue-next';
 import { useGlobalStore } from '../../stores/global.store';
 
 const globalStore = useGlobalStore();

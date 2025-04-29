@@ -937,11 +937,6 @@
   resolved "https://registry.yarnpkg.com/@esbuild/win32-x64/-/win32-x64-0.24.2.tgz#34aa0b52d0fbb1a654b596acfa595f0c7b77a77b"
   integrity sha512-7VTgWzgMGvup6aSqDPLiW5zHaxYJGTO4OokMjIlrCtf+VpEL+cXKtCvg723iguPYI5oaUNdS+/V7OU2gvXVWEg==
 
-"@heroicons/vue@^2.2.0":
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/@heroicons/vue/-/vue-2.2.0.tgz#d81f14eed448eec9859849ed63facd3f29bca2b3"
-  integrity sha512-G3dbSxoeEKqbi/DFalhRxJU4mTXJn7GwZ7ae8NuEQzd1bqdd0jAbdaBZlHPcvPD2xI1iGzNVB4k20Un2AguYPw==
-
 "@intlify/core-base@10.0.5":
   version "10.0.5"
   resolved "https://registry.yarnpkg.com/@intlify/core-base/-/core-base-10.0.5.tgz#c4d992381f8c3a50c79faf67be3404b399c3be28"
@@ -2594,6 +2589,11 @@ lru-cache@^5.1.1:
   integrity sha512-KpNARQA3Iwv+jTA0utUVVbrh+Jlrr1Fv0e56GGzAFOXN7dk/FviaDW8LHmK52DlcH4WP2n6gI8vN1aesBFgo9w==
   dependencies:
     yallist "^3.0.2"
+
+lucide-vue-next@^0.503.0:
+  version "0.503.0"
+  resolved "https://registry.yarnpkg.com/lucide-vue-next/-/lucide-vue-next-0.503.0.tgz#a66bd31fdf84d4ddc590d8a5cb518b5a7da849ec"
+  integrity sha512-3MrtHIBdh4dPCUZDLxQnvmQ17UzUnBYgezUSIo87Laais8hOz6qIPllp0iG/uS/UIzk7bJxyZRzoZTW/gLSr4A==
 
 magic-string@^0.25.0, magic-string@^0.25.7:
   version "0.25.9"

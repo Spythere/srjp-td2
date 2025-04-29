@@ -9,7 +9,7 @@
         }`"
         @click="toggleViewMode('active')"
       >
-        <WifiIcon class="size-6" />
+        <WifiIcon />
       </button>
 
       <button
@@ -20,7 +20,7 @@
         }`"
         @click="toggleViewMode('storage')"
       >
-        <ArchiveBoxArrowDownIcon class="size-6" />
+        <ArchiveIcon />
       </button>
 
       <button
@@ -31,14 +31,14 @@
         }`"
         @click="toggleViewMode('journal')"
       >
-        <CloudIcon class="size-6" />
+        <NotebookPenIcon />
       </button>
     </div>
 
     <div class="flex gap-2">
       <button class="bg-zinc-800 p-1 rounded-md hover:bg-zinc-700 self-end" @click="toggleDarkMode">
-        <MoonIcon v-if="globalStore.darkMode" class="text-white size-6" />
-        <SunIcon v-else class="text-white size-6" />
+        <MoonIcon v-if="globalStore.darkMode" />
+        <SunIcon v-else />
       </button>
 
       <button
@@ -46,7 +46,7 @@
         :disabled="globalStore.currentTimetableData == null"
         @click="openPrintingWindow"
       >
-        <PrinterIcon class="text-white size-6" />
+        <PrinterIcon />
       </button>
 
       <button
@@ -58,25 +58,25 @@
         }"
         @click="saveToStorage"
       >
-        <ArrowDownTrayIcon class="text-white size-6" />
+        <FolderDownIcon />
       </button>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import {
-  PrinterIcon,
-  MoonIcon,
-  SunIcon,
-  ArchiveBoxArrowDownIcon,
-  ArrowDownTrayIcon,
-  CloudIcon,
-  WifiIcon
-} from '@heroicons/vue/16/solid';
 import { computed, watch } from 'vue';
 import { useGlobalStore } from '../../stores/global.store';
 import type { ViewMode, TimetableData } from '../../types/common.types';
+import {
+  ArchiveIcon,
+  FolderDownIcon,
+  MoonIcon,
+  NotebookPenIcon,
+  PrinterIcon,
+  SunIcon,
+  WifiIcon
+} from 'lucide-vue-next';
 
 const globalStore = useGlobalStore();
 

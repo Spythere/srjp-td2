@@ -1,7 +1,10 @@
 <template>
   <div class="text-white">
     <div class="font-bold p-2 bg-zinc-700 mb-3">
-      <div class="text-2xl">{{ $t('storage-preview-title') }}</div>
+      <div class="text-2xl flex items-center gap-2 justify-center flex-wrap">
+        <ArchiveIcon :size="25" />
+        <span>{{ $t('storage-preview-title') }}</span>
+      </div>
     </div>
 
     <div
@@ -36,7 +39,7 @@
           class="bg-zinc-900 p-2 hover:bg-zinc-800"
           @click="removeTimetable(timetable.timetableId)"
         >
-          <TrashIcon class="size-6 text-white" />
+          <Trash2Icon />
         </button>
       </li>
     </ul>
@@ -48,7 +51,7 @@ import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useGlobalStore } from '../../stores/global.store';
 import type { TimetableData } from '../../types/common.types';
-import { TrashIcon } from '@heroicons/vue/16/solid';
+import { ArchiveIcon, Trash2Icon } from 'lucide-vue-next';
 
 const globalStore = useGlobalStore();
 const i18n = useI18n();

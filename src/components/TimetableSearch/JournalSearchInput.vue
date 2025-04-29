@@ -46,7 +46,7 @@
       v-if="globalStore.viewMode == 'journal'"
       @click="clearSearch"
     >
-      <TrashIcon class="size-6" />
+      <Trash2Icon />
     </button>
 
     <button
@@ -54,16 +54,16 @@
       v-if="globalStore.viewMode == 'journal'"
       @click="fetchJournalTimetables"
     >
-      <ArrowRightCircleIcon class="size-6" />
+      <SearchIcon />
     </button>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ArrowRightCircleIcon, TrashIcon } from '@heroicons/vue/16/solid';
 import { useApiStore } from '../../stores/api.store';
 import { useGlobalStore } from '../../stores/global.store';
 import { DataStatus, type JournalTimetablesShortResponse } from '../../types/api.types';
+import { SearchIcon, Trash2Icon } from 'lucide-vue-next';
 
 const globalStore = useGlobalStore();
 const apiStore = useApiStore();
