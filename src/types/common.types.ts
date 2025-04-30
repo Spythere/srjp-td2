@@ -149,6 +149,24 @@ export interface StopRow {
   stockMass: number;
 }
 
+export interface StopRowCZ {
+  pointName: string;
+  pointKm: string;
+  isMain: boolean;
+  stopTime: number;
+  stopType: string;
+  scheduledArrivalDate: Date | null;
+  scheduledDepartureDate: Date | null;
+  driveTime: number;
+  sceneryName: string;
+  arrivalSpeed: number;
+  departureSpeed: number;
+  headUnits: string[];
+  stockVmax: number;
+  stockLength: number;
+  stockMass: number;
+}
+
 export interface TimetablePathData {
   sceneryName: string;
   sceneryData: SceneryData | null;

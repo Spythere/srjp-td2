@@ -1,297 +1,311 @@
 <template>
-  <table class="table-fixed mt-2 w-full border-collapse" v-if="computedTimetableRows.length > 0">
-    <thead>
-      <tr>
-        <th width="40" class="border border-black dark:border-white">
-          {{ $t('headers.line_no') }}
-        </th>
-        <th width="100" class="border border-black dark:border-white">
-          {{ $t('headers.line_km') }}
-        </th>
-        <th width="35" class="border border-black dark:border-white">V<sub>P</sub></th>
-        <th width="35" class="border border-black dark:border-white">V<sub>L</sub></th>
-        <th width="200" class="border border-black dark:border-white">
-          {{ $t('headers.station') }}
-        </th>
-        <th width="100" class="border border-black dark:border-white">{{ $t('headers.time') }}</th>
-        <th width="50" class="border border-black dark:border-white text-xs p-0">
-          <table class="h-full w-full border-collapse">
-            <tbody>
-              <tr class="border-b border-b-black dark:border-b-white">
-                <td class="">{{ $t('headers.loco_1') }}</td>
-              </tr>
-              <tr class="border-b border-b-black dark:border-b-white">
-                <td>{{ $t('headers.loco_2') }}</td>
-              </tr>
-              <tr>
-                <td>{{ $t('headers.loco_3') }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </th>
-        <th width="55" class="border border-black dark:border-white text-xs relative">
-          <div class="absolute top-0 left-0 w-full h-full">
+  <div>
+    <h2 class="p-1 font-bold w-max">
+      {{ globalStore.currentTimetableData!.category }}
+      {{ globalStore.currentTimetableData!.trainNo }} {{ $t('headers.relation') }}
+      {{ globalStore.currentTimetableData!.route.replace('|', ' - ') }}
+    </h2>
+
+    <table class="table-fixed mt-2 w-full border-collapse" v-if="computedTimetableRows.length > 0">
+      <thead>
+        <tr>
+          <th width="40" class="border border-black dark:border-white">
+            {{ $t('headers.line_no') }}
+          </th>
+          <th width="100" class="border border-black dark:border-white">
+            {{ $t('headers.line_km') }}
+          </th>
+          <th width="35" class="border border-black dark:border-white">V<sub>P</sub></th>
+          <th width="35" class="border border-black dark:border-white">V<sub>L</sub></th>
+          <th width="200" class="border border-black dark:border-white">
+            {{ $t('headers.station') }}
+          </th>
+          <th width="100" class="border border-black dark:border-white">
+            {{ $t('headers.time') }}
+          </th>
+          <th width="50" class="border border-black dark:border-white text-xs p-0">
             <table class="h-full w-full border-collapse">
               <tbody>
                 <tr class="border-b border-b-black dark:border-b-white">
-                  <td>{{ $t('headers.mass') }}</td>
+                  <td class="">{{ $t('headers.loco_1') }}</td>
+                </tr>
+                <tr class="border-b border-b-black dark:border-b-white">
+                  <td>{{ $t('headers.loco_2') }}</td>
                 </tr>
                 <tr>
-                  <td>{{ $t('headers.length') }}</td>
+                  <td>{{ $t('headers.loco_3') }}</td>
                 </tr>
               </tbody>
             </table>
-          </div>
-        </th>
-        <th width="50" class="border border-black dark:border-white">{{ $t('headers.vmax') }}</th>
-      </tr>
-    </thead>
+          </th>
+          <th width="55" class="border border-black dark:border-white text-xs relative">
+            <div class="absolute top-0 left-0 w-full h-full">
+              <table class="h-full w-full border-collapse">
+                <tbody>
+                  <tr class="border-b border-b-black dark:border-b-white">
+                    <td>{{ $t('headers.mass') }}</td>
+                  </tr>
+                  <tr>
+                    <td>{{ $t('headers.length') }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </th>
+          <th width="50" class="border border-black dark:border-white">{{ $t('headers.vmax') }}</th>
+        </tr>
+      </thead>
 
-    <tbody>
-      <tr v-for="(row, i) in computedTimetableRows">
-        <!-- Line no. -->
-        <td
-          class="text-center align-top border-l border-l-black dark:border-l-white"
-          :class="{
-            'border-t border-t-black dark:border-t-white':
-              i != 0 && computedTimetableRows[i - 1].realLine != row.realLine,
-            'border-b border-b-black dark:border-b-white': i == computedTimetableRows.length - 1
-          }"
-        >
-          {{
-            i == 0 || computedTimetableRows[i - 1].realLine != row.realLine
-              ? row.realLine
-              : '&nbsp;'
-          }}
-        </td>
+      <tbody>
+        <tr v-for="(row, i) in computedTimetableRows">
+          <!-- Line no. -->
+          <td
+            class="text-center align-top border-l border-l-black dark:border-l-white"
+            :class="{
+              'border-t border-t-black dark:border-t-white':
+                i != 0 && computedTimetableRows[i - 1].realLine != row.realLine,
+              'border-b border-b-black dark:border-b-white': i == computedTimetableRows.length - 1
+            }"
+          >
+            {{
+              i == 0 || computedTimetableRows[i - 1].realLine != row.realLine
+                ? row.realLine
+                : '&nbsp;'
+            }}
+          </td>
 
-        <!-- Km -->
-        <td
-          class="border border-black dark:border-white border-t-1 border-b-1 relative p-0"
-          :class="{
-            'border-t-0':
-              i == 0 ||
-              (computedTimetableRows[i - 1].departureSpeed == row.arrivalSpeed &&
-                computedTimetableRows[i - 1].departureTracks == row.arrivalTracks &&
-                computedTimetableRows[i - 1].realLine == row.realLine),
-            'border-b-0': i != computedTimetableRows.length - 1
-          }"
-        >
-          <div class="absolute top-0 left-0 w-full h-full">
-            <table class="h-full w-full border-collapse">
-              <tbody>
-                <!-- Arrival Km -->
-                <tr
-                  :class="`align-top ${
-                    i == 0 ||
-                    (computedTimetableRows[i - 1].departureSpeed == row.arrivalSpeed &&
-                      computedTimetableRows[i - 1].departureTracks == row.arrivalTracks &&
-                      computedTimetableRows[i - 1].realLine == row.realLine)
-                      ? 'text-transparent'
-                      : 'text-inherit'
-                  }`"
-                >
-                  <td>{{ row.arrivalKm }}</td>
-                </tr>
-
-                <!-- Departure Km -->
-                <tr
-                  :class="{
-                    'border-black dark:border-white border-t align-top':
-                      row.arrivalTracks != row.departureTracks ||
-                      row.departureSpeed != row.arrivalSpeed,
-                    hidden:
-                      row.arrivalTracks == row.departureTracks &&
-                      row.departureSpeed == row.arrivalSpeed
-                  }"
-                >
-                  <td>{{ row.departureKm == '0.000' ? '' : row.departureKm }}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </td>
-
-        <!--  Vp, Vl -->
-        <td
-          class="text-center align-top p-0 border-l-black dark:border-l-white relative"
-          :class="{
-            'border-t border-t-black dark:border-t-white':
-              i != 0 && computedTimetableRows[i - 1].departureSpeed != row.arrivalSpeed,
-            'border-b border-b-black dark:border-b-white': i == computedTimetableRows.length - 1
-          }"
-          colspan="2"
-        >
-          <div class="absolute top-0 left-0 w-full h-full">
-            <table class="h-full w-full border-collapse">
-              <tbody>
-                <tr class="align-top">
-                  <td :colspan="row.arrivalTracks == 2 ? '1' : '2'" class="font-bold" width="35">
-                    {{
+          <!-- Km -->
+          <td
+            class="border border-black dark:border-white border-t-1 border-b-1 relative p-0"
+            :class="{
+              'border-t-0':
+                i == 0 ||
+                (computedTimetableRows[i - 1].departureSpeed == row.arrivalSpeed &&
+                  computedTimetableRows[i - 1].departureTracks == row.arrivalTracks &&
+                  computedTimetableRows[i - 1].realLine == row.realLine),
+              'border-b-0': i != computedTimetableRows.length - 1
+            }"
+          >
+            <div class="absolute top-0 left-0 w-full h-full">
+              <table class="h-full w-full border-collapse">
+                <tbody>
+                  <!-- Arrival Km -->
+                  <tr
+                    :class="`align-top ${
                       i == 0 ||
-                      computedTimetableRows[i - 1].departureSpeed != row.arrivalSpeed ||
-                      computedTimetableRows[i - 1].departureTracks != row.arrivalTracks
-                        ? row.arrivalSpeed
-                        : '&nbsp; '
-                    }}
-                  </td>
-
-                  <td
-                    v-if="row.arrivalTracks == 2"
-                    class="border-l border-l-black dark:border-l-white"
-                    width="35"
+                      (computedTimetableRows[i - 1].departureSpeed == row.arrivalSpeed &&
+                        computedTimetableRows[i - 1].departureTracks == row.arrivalTracks &&
+                        computedTimetableRows[i - 1].realLine == row.realLine)
+                        ? 'text-transparent'
+                        : 'text-inherit'
+                    }`"
                   >
-                    {{
-                      i == 0 ||
-                      computedTimetableRows[i - 1].departureSpeed != row.arrivalSpeed ||
-                      computedTimetableRows[i - 1].departureTracks != row.arrivalTracks
-                        ? row.arrivalSpeed
-                        : '&nbsp; '
-                    }}
-                  </td>
-                </tr>
+                    <td>{{ row.arrivalKm }}</td>
+                  </tr>
 
-                <tr
-                  :class="{
-                    'border-t border-t-black dark:border-t-white align-top':
-                      row.arrivalTracks != row.departureTracks ||
-                      row.departureSpeed != row.arrivalSpeed
-                  }"
-                >
-                  <td :colspan="row.departureTracks == 2 ? '1' : '2'" class="font-bold" width="35">
-                    {{
-                      row.departureSpeed != row.arrivalSpeed ||
-                      row.departureTracks != row.arrivalTracks
-                        ? row.departureSpeed
-                        : '&nbsp; '
-                    }}
-                  </td>
-
-                  <td
-                    v-if="row.departureTracks == 2"
-                    class="border-l border-l-black dark:border-l-white"
-                    width="35"
+                  <!-- Departure Km -->
+                  <tr
+                    :class="{
+                      'border-black dark:border-white border-t align-top':
+                        row.arrivalTracks != row.departureTracks ||
+                        row.departureSpeed != row.arrivalSpeed,
+                      hidden:
+                        row.arrivalTracks == row.departureTracks &&
+                        row.departureSpeed == row.arrivalSpeed
+                    }"
                   >
-                    {{
-                      row.departureSpeed != row.arrivalSpeed ||
-                      row.departureTracks != row.arrivalTracks
-                        ? row.departureSpeed
-                        : '&nbsp; '
-                    }}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </td>
+                    <td>{{ row.departureKm == '0.000' ? '' : row.departureKm }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </td>
 
-        <!-- Station -->
-        <td class="border border-black dark:border-white relative">
-          <div class="absolute top-0 left-0 w-full h-full">
-            <div class="flex flex-col h-full justify-between p-1">
-              <div :class="{ 'font-bold': row.isMain }">
-                {{ row.pointName }}
-                <span v-if="row.stopTime"> ; {{ row.stopType || 'pt' }}</span>
-              </div>
+          <!--  Vp, Vl -->
+          <td
+            class="text-center align-top p-0 border-l-black dark:border-l-white relative"
+            :class="{
+              'border-t border-t-black dark:border-t-white':
+                i != 0 && computedTimetableRows[i - 1].departureSpeed != row.arrivalSpeed,
+              'border-b border-b-black dark:border-b-white': i == computedTimetableRows.length - 1
+            }"
+            colspan="2"
+          >
+            <div class="absolute top-0 left-0 w-full h-full">
+              <table class="h-full w-full border-collapse">
+                <tbody>
+                  <tr class="align-top">
+                    <td :colspan="row.arrivalTracks == 2 ? '1' : '2'" class="font-bold" width="35">
+                      {{
+                        i == 0 ||
+                        computedTimetableRows[i - 1].departureSpeed != row.arrivalSpeed ||
+                        computedTimetableRows[i - 1].departureTracks != row.arrivalTracks
+                          ? row.arrivalSpeed
+                          : '&nbsp; '
+                      }}
+                    </td>
 
-              <div class="flex justify-between">
-                <span>{{ row.pointKm }}</span>
-                <span>{{ row.abbrevs.join(', ') }}</span>
+                    <td
+                      v-if="row.arrivalTracks == 2"
+                      class="border-l border-l-black dark:border-l-white"
+                      width="35"
+                    >
+                      {{
+                        i == 0 ||
+                        computedTimetableRows[i - 1].departureSpeed != row.arrivalSpeed ||
+                        computedTimetableRows[i - 1].departureTracks != row.arrivalTracks
+                          ? row.arrivalSpeed
+                          : '&nbsp; '
+                      }}
+                    </td>
+                  </tr>
+
+                  <tr
+                    :class="{
+                      'border-t border-t-black dark:border-t-white align-top':
+                        row.arrivalTracks != row.departureTracks ||
+                        row.departureSpeed != row.arrivalSpeed
+                    }"
+                  >
+                    <td
+                      :colspan="row.departureTracks == 2 ? '1' : '2'"
+                      class="font-bold"
+                      width="35"
+                    >
+                      {{
+                        row.departureSpeed != row.arrivalSpeed ||
+                        row.departureTracks != row.arrivalTracks
+                          ? row.departureSpeed
+                          : '&nbsp; '
+                      }}
+                    </td>
+
+                    <td
+                      v-if="row.departureTracks == 2"
+                      class="border-l border-l-black dark:border-l-white"
+                      width="35"
+                    >
+                      {{
+                        row.departureSpeed != row.arrivalSpeed ||
+                        row.departureTracks != row.arrivalTracks
+                          ? row.departureSpeed
+                          : '&nbsp; '
+                      }}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </td>
+
+          <!-- Station -->
+          <td class="border border-black dark:border-white relative">
+            <div class="absolute top-0 left-0 w-full h-full">
+              <div class="flex flex-col h-full justify-between p-1">
+                <div :class="{ 'font-bold': row.isMain }">
+                  {{ row.pointName }}
+                  <span v-if="row.stopTime"> ; {{ row.stopType || 'pt' }}</span>
+                </div>
+
+                <div class="flex justify-between">
+                  <span>{{ row.pointKm }}</span>
+                  <span>{{ row.abbrevs.join(', ') }}</span>
+                </div>
               </div>
             </div>
-          </div>
-        </td>
+          </td>
 
-        <!-- Time -->
-        <td class="p-0 border border-black dark:border-white relative">
-          <div class="absolute top-0 left-0 w-full h-full">
-            <table class="h-full w-full border-collapse">
-              <tbody>
-                <tr class="text-center align-top h-full">
-                  <td
-                    class="border-r-[1px] border-r-black dark:border-r-white"
-                    :class="{ 'font-bold': row.stopTime > 0 }"
-                  >
-                    {{
-                      (row.scheduledArrivalDate?.getTime() || 0) !=
-                      (row.scheduledDepartureDate?.getTime() || 0)
-                        ? row.scheduledArrivalDate?.toLocaleTimeString('pl-PL', {
-                            hour: '2-digit',
-                            minute: '2-digit'
-                          })
-                        : '|'
-                    }}
-                  </td>
-                  <td width="30">{{ row.driveTime ? Math.floor(row.driveTime / 60000) : '' }}</td>
-                </tr>
-                <tr class="text-center align-bottom h-full">
-                  <td
-                    class="border-r-[1px] border-r-black dark:border-r-white"
-                    :class="{ 'font-bold': row.stopTime > 0 }"
-                  >
-                    {{
-                      row.scheduledDepartureDate?.toLocaleTimeString('pl-PL', {
-                        hour: '2-digit',
-                        minute: '2-digit'
-                      })
-                    }}
-                  </td>
-                  <td width="30" class="font-bold">{{ row.stopTime || '' }}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </td>
+          <!-- Time -->
+          <td class="p-0 border border-black dark:border-white relative">
+            <div class="absolute top-0 left-0 w-full h-full">
+              <table class="h-full w-full border-collapse">
+                <tbody>
+                  <tr class="text-center align-top h-full">
+                    <td
+                      class="border-r-[1px] border-r-black dark:border-r-white"
+                      :class="{ 'font-bold': row.stopTime > 0 }"
+                    >
+                      {{
+                        (row.scheduledArrivalDate?.getTime() || 0) !=
+                        (row.scheduledDepartureDate?.getTime() || 0)
+                          ? row.scheduledArrivalDate?.toLocaleTimeString('pl-PL', {
+                              hour: '2-digit',
+                              minute: '2-digit'
+                            })
+                          : '|'
+                      }}
+                    </td>
+                    <td width="30">{{ row.driveTime ? Math.floor(row.driveTime / 60000) : '' }}</td>
+                  </tr>
+                  <tr class="text-center align-bottom h-full">
+                    <td
+                      class="border-r-[1px] border-r-black dark:border-r-white"
+                      :class="{ 'font-bold': row.stopTime > 0 }"
+                    >
+                      {{
+                        row.scheduledDepartureDate?.toLocaleTimeString('pl-PL', {
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        })
+                      }}
+                    </td>
+                    <td width="30" class="font-bold">{{ row.stopTime || '' }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </td>
 
-        <!-- Locos -->
-        <td
-          class="p-0 text-center border border-black dark:border-white relative h-24 text-sm"
-          :class="{ 'text-stone-400 ': i > 0 }"
-        >
-          <table class="h-full w-full border-collapse">
-            <tbody>
-              <tr class="border-b-[1px] border-b-black dark:border-b-white">
-                <td>{{ row.headUnits[0] }}</td>
-              </tr>
-              <tr class="border-b-[1px] border-b-black dark:border-b-white">
-                <td>{{ row.headUnits[1] ?? '&nbsp;' }}</td>
-              </tr>
-              <tr>
-                <td>{{ row.headUnits[2] ?? '&nbsp;' }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </td>
-
-        <!-- Load / Length -->
-        <td
-          class="p-0 text-center border border-black dark:border-white relative"
-          :class="{ 'text-stone-400 ': i > 0 }"
-        >
-          <div class="absolute top-0 left-0 w-full h-full">
+          <!-- Locos -->
+          <td
+            class="p-0 text-center border border-black dark:border-white relative h-24 text-sm"
+            :class="{ 'text-stone-400 ': i > 0 }"
+          >
             <table class="h-full w-full border-collapse">
               <tbody>
                 <tr class="border-b-[1px] border-b-black dark:border-b-white">
-                  <td>{{ row.stockMass }}</td>
+                  <td>{{ row.headUnits[0] }}</td>
+                </tr>
+                <tr class="border-b-[1px] border-b-black dark:border-b-white">
+                  <td>{{ row.headUnits[1] ?? '&nbsp;' }}</td>
                 </tr>
                 <tr>
-                  <td>{{ row.stockLength }}</td>
+                  <td>{{ row.headUnits[2] ?? '&nbsp;' }}</td>
                 </tr>
               </tbody>
             </table>
-          </div>
-        </td>
+          </td>
 
-        <!-- Vmax-->
-        <td
-          class="text-center border border-black dark:border-white"
-          :class="{ 'text-stone-400 ': i > 0 }"
-        >
-          {{ row.stockVmax }}
-        </td>
-      </tr>
-    </tbody>
-  </table>
+          <!-- Load / Length -->
+          <td
+            class="p-0 text-center border border-black dark:border-white relative"
+            :class="{ 'text-stone-400 ': i > 0 }"
+          >
+            <div class="absolute top-0 left-0 w-full h-full">
+              <table class="h-full w-full border-collapse">
+                <tbody>
+                  <tr class="border-b-[1px] border-b-black dark:border-b-white">
+                    <td>{{ row.stockMass }}</td>
+                  </tr>
+                  <tr>
+                    <td>{{ row.stockLength }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </td>
+
+          <!-- Vmax-->
+          <td
+            class="text-center border border-black dark:border-white"
+            :class="{ 'text-stone-400 ': i > 0 }"
+          >
+            {{ row.stockVmax }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </template>
 
 <script setup lang="ts">
