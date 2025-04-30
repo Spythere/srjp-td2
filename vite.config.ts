@@ -13,7 +13,7 @@ export default defineConfig({
         globPatterns: ['**/*.{js,css,html,png,svg,jpg,ico}'],
         cleanupOutdatedCaches: true
       },
-      devOptions: { enabled: true }
+      devOptions: { enabled: false, suppressWarnings: true }
     })
   ],
   server: {
