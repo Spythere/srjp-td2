@@ -6,7 +6,7 @@ import type {
   TimetableData,
   ViewMode
 } from '../types/common.types';
-import { unitNameCorrections } from '../utils/trainUtils';
+import { getHeadUnits } from '../utils/trainUtils';
 
 export const useGlobalStore = defineStore('global', {
   state: () => ({
@@ -77,15 +77,7 @@ export const useGlobalStore = defineStore('global', {
                 }`
             )
             .join('~~'),
-          headUnits: selectedTrain.stockString
-            .split(';')
-            .slice(0, 3)
-            .filter((s, i) => i == 0 || /-\d+$/.test(s))
-            .map((s) => {
-              const unitName = s.slice(0, s.indexOf('-'));
-
-              return unitNameCorrections[unitName] ?? unitName;
-            })
+          headUnits: getHeadUnits(selectedTrain.stockString)
         };
       } else if (this.viewMode == 'journal') {
         const selectedTimetable = this.selectedJournalTimetable;
@@ -108,15 +100,7 @@ export const useGlobalStore = defineStore('global', {
           trainMaxSpeed: selectedTimetable.trainMaxSpeed,
           timetableId: selectedTimetable.id,
           stopListString: selectedTimetable.stopListString,
-          headUnits: selectedTimetable.stockString
-            .split(';')
-            .slice(0, 3)
-            .filter((s, i) => i == 0 || /-\d+$/.test(s))
-            .map((s) => {
-              const unitName = s.slice(0, s.indexOf('-'));
-
-              return unitNameCorrections[unitName] ?? unitName;
-            })
+          headUnits: getHeadUnits(selectedTimetable.stockString)
         };
       } else {
         return this.selectedStorageTimetable;

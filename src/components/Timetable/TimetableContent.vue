@@ -63,12 +63,12 @@
             class="text-center align-top border-l border-l-black dark:border-l-white"
             :class="{
               'border-t border-t-black dark:border-t-white':
-                i != 0 && computedTimetableRows[i - 1].realLine != row.realLine,
+                row.lastRowRef != null && row.lastRowRef.realLine != row.realLine,
               'border-b border-b-black dark:border-b-white': i == computedTimetableRows.length - 1
             }"
           >
             {{
-              i == 0 || computedTimetableRows[i - 1].realLine != row.realLine
+              row.lastRowRef == null || row.lastRowRef.realLine != row.realLine
                 ? row.realLine
                 : '&nbsp;'
             }}
@@ -79,10 +79,10 @@
             class="border border-black dark:border-white border-t-1 border-b-1 relative p-0"
             :class="{
               'border-t-0':
-                i == 0 ||
-                (computedTimetableRows[i - 1].departureSpeed == row.arrivalSpeed &&
-                  computedTimetableRows[i - 1].departureTracks == row.arrivalTracks &&
-                  computedTimetableRows[i - 1].realLine == row.realLine),
+                row.lastRowRef == null ||
+                (row.lastRowRef.departureSpeed == row.arrivalSpeed &&
+                  row.lastRowRef.departureTracks == row.arrivalTracks &&
+                  row.lastRowRef.realLine == row.realLine),
               'border-b-0': i != computedTimetableRows.length - 1
             }"
           >
@@ -92,10 +92,10 @@
                   <!-- Arrival Km -->
                   <tr
                     :class="`align-top ${
-                      i == 0 ||
-                      (computedTimetableRows[i - 1].departureSpeed == row.arrivalSpeed &&
-                        computedTimetableRows[i - 1].departureTracks == row.arrivalTracks &&
-                        computedTimetableRows[i - 1].realLine == row.realLine)
+                      row.lastRowRef == null ||
+                      (row.lastRowRef.departureSpeed == row.arrivalSpeed &&
+                        row.lastRowRef.departureTracks == row.arrivalTracks &&
+                        row.lastRowRef.realLine == row.realLine)
                         ? 'text-transparent'
                         : 'text-inherit'
                     }`"
@@ -126,7 +126,7 @@
             class="text-center align-top p-0 border-l-black dark:border-l-white relative"
             :class="{
               'border-t border-t-black dark:border-t-white':
-                i != 0 && computedTimetableRows[i - 1].departureSpeed != row.arrivalSpeed,
+                row.lastRowRef != null && row.lastRowRef.departureSpeed != row.arrivalSpeed,
               'border-b border-b-black dark:border-b-white': i == computedTimetableRows.length - 1
             }"
             colspan="2"
@@ -137,9 +137,9 @@
                   <tr class="align-top">
                     <td :colspan="row.arrivalTracks == 2 ? '1' : '2'" class="font-bold" width="35">
                       {{
-                        i == 0 ||
-                        computedTimetableRows[i - 1].departureSpeed != row.arrivalSpeed ||
-                        computedTimetableRows[i - 1].departureTracks != row.arrivalTracks
+                        row.lastRowRef == null ||
+                        row.lastRowRef.departureSpeed != row.arrivalSpeed ||
+                        row.lastRowRef.departureTracks != row.arrivalTracks
                           ? row.arrivalSpeed
                           : '&nbsp; '
                       }}
@@ -151,9 +151,9 @@
                       width="35"
                     >
                       {{
-                        i == 0 ||
-                        computedTimetableRows[i - 1].departureSpeed != row.arrivalSpeed ||
-                        computedTimetableRows[i - 1].departureTracks != row.arrivalTracks
+                        row.lastRowRef == null ||
+                        row.lastRowRef.departureSpeed != row.arrivalSpeed ||
+                        row.lastRowRef.departureTracks != row.arrivalTracks
                           ? row.arrivalSpeed
                           : '&nbsp; '
                       }}
@@ -335,6 +335,8 @@ const computedTimetableRows = computed(() => {
 
   const stopRows: StopRow[] = [];
 
+  let lastRowRef: StopRow | null = null;
+
   let currentPathIndex = 0;
   let currentPath = timetablePath[0];
 
@@ -365,9 +367,6 @@ const computedTimetableRows = computed(() => {
 
   for (const stop of stopList) {
     if (stop.arrivalLine && stop.arrivalLine == currentPath.arrivalLine) {
-      // console.log('arrivalKm', arrivalKm);
-      // console.log('stopDistance', stop.stopDistance);
-
       if (arrivalKm >= stop.stopDistance)
         arrivalKm =
           (Number(stopRows[stopRows.length - 1].departureKm ?? '0') + stop.stopDistance) / 2;
@@ -441,7 +440,9 @@ const computedTimetableRows = computed(() => {
         headUnits: timetableData.headUnits,
         stockVmax,
         stockLength,
-        stockMass
+        stockMass,
+
+        lastRowRef
       };
 
       // console.debug(stop.stopNameRAW, stop.departureLine);
@@ -451,6 +452,7 @@ const computedTimetableRows = computed(() => {
       arrivalTracks = correctedDepartureTracks || arrivalTracks;
 
       if (stop.departureTimestamp) lastDepartureTimestamp = stop.departureTimestamp;
+      lastRowRef = rowData;
 
       stopRows.push(rowData);
     }

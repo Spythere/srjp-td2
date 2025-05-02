@@ -147,6 +147,8 @@ export interface StopRow {
   stockVmax: number;
   stockLength: number;
   stockMass: number;
+
+  lastRowRef: StopRow | null;
 }
 
 export interface StopRowCZ {
