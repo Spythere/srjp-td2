@@ -1,5 +1,5 @@
 <template>
-  <div class="text-white min-h-screen bg-zinc-950">
+  <div class="text-white min-h-screen bg-zinc-950 print:bg-white">
     <!-- PWA update prompt -->
     <transition name="slide-anim">
       <UpdatePrompt v-if="needRefresh" @onUpdateClick="updateApp()" />

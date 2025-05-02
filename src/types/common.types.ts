@@ -161,10 +161,15 @@ export interface StopRowCZ {
   sceneryName: string;
   arrivalSpeed: number;
   departureSpeed: number;
+  arrivalTracks: number;
+  departureTracks: number;
   headUnits: string[];
   stockVmax: number;
   stockLength: number;
   stockMass: number;
+
+  arrivalDateStr: string;
+  departureDateStr: string;
 }
 
 export interface TimetablePathData {

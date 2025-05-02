@@ -10,52 +10,61 @@
     </h3>
 
     <p class="mt-2 text-center">
-      Platí: {{ timetableDate.toLocaleDateString('pl-PL', { day: '2-digit' }) }}.{{
+      Kursuje: {{ timetableDate.toLocaleDateString('pl-PL', { day: '2-digit' }) }}.{{
         romanMonthDigits[timetableDate.getMonth()]
       }}.{{ timetableDate.toLocaleDateString('pl-PL', { year: 'numeric' }) }}
     </p>
 
     <p class="mt-2">
-      Elektrická lokomotiva ř. {{ globalStore.currentTimetableData!.headUnits[0] }}: normativ
-      hmotnosti: S {{ (globalStore.currentTimetableData!.mass / 1000).toFixed(0) }} tun.
+      Lokomotywa elektryczna {{ globalStore.currentTimetableData!.headUnits[0] }}, waga:
+      {{ (globalStore.currentTimetableData!.mass / 1000).toFixed(1) }} t, długość:
+      {{ globalStore.currentTimetableData!.length }} m
     </p>
 
-    <p>
-      Vlak brzděn {{ globalStore.currentTimetableData!.mass > 500000 ? 'II' : 'I' }} způsobem brzdění.
-    </p>
+    <p></p>
 
     <table class="table-fixed w-full border-collapse h-full">
       <thead>
         <tr>
           <!-- Name  -->
           <th
-            width="300"
+            width="250"
             class="font-normal border border-black dark:border-white border-l-transparent"
           >
-            1
+            <MapPinIcon :size="20" class="mx-auto" />
           </th>
 
           <!-- Info -->
-          <th width="50" class="font-normal border border-black dark:border-white">2</th>
+          <th width="50" class="font-normal border border-black dark:border-white">
+            <CircleAlertIcon :size="20" class="mx-auto" />
+          </th>
 
           <!-- Drive time -->
-          <th width="30" class="font-normal border border-black dark:border-white">3</th>
+          <th width="30" class="font-normal border border-black dark:border-white">
+            <TimerIcon :size="20" class="mx-auto" />
+          </th>
 
           <!-- Arrival -->
-          <th width="70" class="font-normal border border-black dark:border-white">5</th>
+          <th width="70" class="font-normal border border-black dark:border-white">
+            <CalendarArrowUpIcon :size="20" class="mx-auto" />
+          </th>
 
           <!-- Stop time -->
-          <th width="40" class="font-normal border border-black dark:border-white">6</th>
+          <th width="40" class="font-normal border border-black dark:border-white">
+            <HandIcon :size="20" class="mx-auto" />
+          </th>
 
           <!-- Departure -->
-          <th width="70" class="font-normal border border-black dark:border-white">7</th>
+          <th width="70" class="font-normal border border-black dark:border-white">
+            <CalendarArrowDownIcon :size="20" class="mx-auto" />
+          </th>
 
           <!-- vMax -->
           <th
             width="80"
             class="font-normal border border-black dark:border-white border-r-transparent"
           >
-            8
+            <CircleGaugeIcon :size="20" class="mx-auto" />
           </th>
         </tr>
       </thead>
@@ -63,7 +72,7 @@
       <tbody>
         <tr
           v-for="(row, i) in computedTimetableRows"
-          :class="{ 'bg-slate-100 dark:bg-zinc-900': i % 2 == 0 }"
+          :class="{ 'bg-slate-100 dark:bg-zinc-900 print:bg-gray-300': i % 2 == 0 }"
           class="leading-none"
         >
           <td class="px-2 font-thin text-nowrap overflow-hidden overflow-ellipsis">
@@ -87,23 +96,8 @@
           <td
             class="border border-black dark:border-white border-t-transparent border-b-transparent text-right font-bold px-2"
           >
-            <span v-if="row.stopType == 'pt'">+</span>
-            {{
-              row.scheduledArrivalDate
-                ?.toLocaleTimeString('pl-PL', {
-                  hour: 'numeric',
-                  minute: '2-digit'
-                })
-                .split(':')
-                .slice(
-                  i > 0 &&
-                    computedTimetableRows[i - 1].scheduledArrivalDate?.getHours() ==
-                      row.scheduledArrivalDate.getHours()
-                    ? 1
-                    : 0
-                )
-                .join(' ')
-            }}
+            <span v-if="row.stopType == 'pt'">+ </span>
+            <span> {{ row.arrivalDateStr }} </span>
           </td>
 
           <td
@@ -113,32 +107,30 @@
           </td>
 
           <td
-            class="border border-black dark:border-white border-t-transparent border-b-transparent text-right font-bold px-2"
+            class="border border-black dark:border-white border-t-transparent border-b-transparent text-right font-bold px-2 relative"
           >
-            {{
-              row.scheduledDepartureDate
-                ?.toLocaleTimeString('pl-PL', {
-                  hour: 'numeric',
-                  minute: '2-digit'
-                })
-                .split(':')
-                .slice(
-                  i > 0 &&
-                    computedTimetableRows[i - 1].scheduledDepartureDate?.getHours() ==
-                      row.scheduledDepartureDate.getHours()
-                    ? 1
-                    : 0
-                )
-                .join(' ')
-            }}
+            <span
+              class="absolute right-[-3px] border-r-[5px] border-black"
+              :class="{
+                'top-0 h-[calc(100%+1px)]':
+                  row.arrivalTracks == row.departureTracks && row.arrivalTracks == 2,
+                'top-0 h-[calc(50%+1px)]': row.arrivalTracks > row.departureTracks,
+                'top-1/2 h-[calc(50%+1px)]': row.arrivalTracks < row.departureTracks
+              }"
+            ></span>
+            {{ row.departureDateStr }}
           </td>
 
-          <td class="text-center font-bold">
-            <span
-              v-if="
+          <!--  v-if="
                 i == 0 || (i > 0 && computedTimetableRows[i - 1].departureSpeed != row.arrivalSpeed)
-              "
-              >{{ row.arrivalSpeed }}
+              " -->
+          <td class="text-center font-bold">
+            <span v-if="i == 0 || computedTimetableRows[i - 1].departureSpeed != row.arrivalSpeed">
+              {{ i == 0 ? row.departureSpeed : row.arrivalSpeed }}
+              <span v-if="row.arrivalSpeed != row.departureSpeed">
+                /
+                {{ row.departureSpeed }}
+              </span>
             </span>
           </td>
         </tr>
@@ -152,6 +144,18 @@ import { computed, ref } from 'vue';
 import { useGlobalStore } from '../../stores/global.store';
 import type { StopRowCZ, TimetablePathData } from '../../types/common.types';
 import { useApiStore } from '../../stores/api.store';
+import {
+  ArrowRightIcon,
+  CalendarArrowDownIcon,
+  CalendarArrowUpIcon,
+  CircleAlertIcon,
+  CircleGaugeIcon,
+  CircleHelpIcon,
+  HandIcon,
+  MapPinIcon,
+  TimerIcon,
+  UniversityIcon
+} from 'lucide-vue-next';
 
 const globalStore = useGlobalStore();
 const apiStore = useApiStore();
@@ -182,32 +186,39 @@ const computedTimetableRows = computed(() => {
   let lastDepartureTimestamp = 0;
 
   let arrivalSpeed = 0,
-    departureSpeed = 0;
+    departureSpeed = 0,
+    arrivalTracks = 0,
+    departureTracks = 2;
 
   if (currentPath.departureLineData) {
     departureSpeed = Math.min(currentPath.departureLineData.routeSpeed, stockVmax);
-
     arrivalSpeed = Math.min(currentPath.departureLineData.routeSpeed, stockVmax);
+
+    departureTracks = currentPath.departureLineData.routeTracks;
+    arrivalTracks = currentPath.departureLineData.routeTracks;
   }
 
   const stopList = parseStopListString(timetableData.stopListString);
 
   timetableDate.value = new Date(stopList[0].departureTimestamp);
 
-  for (const stop of stopList) {
+  stopList.forEach((stop, i) => {
     if (stop.arrivalLine && stop.arrivalLine == currentPath.arrivalLine) {
       if (currentPath.arrivalLineData) {
         arrivalSpeed = Math.min(currentPath.arrivalLineData.routeSpeed, stockVmax);
+        arrivalTracks = currentPath.arrivalLineData.routeTracks;
       }
 
       departureSpeed = arrivalSpeed;
+      departureTracks = arrivalTracks;
     }
 
     if (
       stop.mainStop ||
       (/^podg|po|pe$/.test(stop.stopNameRAW) && !/^sbl/i.test(stop.stopNameRAW))
     ) {
-      let correctedDepartureSpeed = 0;
+      let correctedDepartureSpeed = 0,
+        correctedDepartureTracks = 0;
 
       const internalRouteInfo = stop.departureLine
         ? currentPath.sceneryData?.routesInfo.find(
@@ -218,34 +229,76 @@ const computedTimetableRows = computed(() => {
       if (internalRouteInfo) {
         correctedDepartureSpeed = Math.min(internalRouteInfo.routeSpeed, stockVmax);
         departureSpeed = Math.min(internalRouteInfo.routeSpeed, stockVmax);
+        correctedDepartureTracks = internalRouteInfo.routeTracks;
+        departureTracks = internalRouteInfo.routeTracks;
 
         if (stopRows.length == 0) {
           arrivalSpeed = departureSpeed;
+          arrivalTracks = departureTracks;
         }
+      }
+
+      const scheduledArrivalDate = stop.arrivalTimestamp ? new Date(stop.arrivalTimestamp) : null;
+
+      const scheduledDepartureDate = stop.departureTimestamp
+        ? new Date(stop.departureTimestamp)
+        : null;
+
+      let arrivalDateStr =
+        scheduledArrivalDate?.toLocaleTimeString('pl-PL', {
+          hour: 'numeric',
+          minute: '2-digit'
+        }) ?? '';
+
+      let departureDateStr =
+        scheduledDepartureDate?.toLocaleTimeString('pl-PL', {
+          hour: 'numeric',
+          minute: '2-digit'
+        }) ?? '';
+
+      if (
+        stopRows.length > 0 &&
+        stopRows[stopRows.length - 1]?.scheduledArrivalDate?.getHours() ==
+          scheduledArrivalDate?.getHours()
+      ) {
+        arrivalDateStr = arrivalDateStr.split(':').slice(1).join(' ');
+      }
+
+      if (
+        stopRows[stopRows.length - 1]?.scheduledDepartureDate?.getHours() ==
+        scheduledDepartureDate?.getHours()
+      ) {
+        departureDateStr = departureDateStr.split(':').slice(1).join(' ');
       }
 
       let rowData: StopRowCZ = {
         isMain: stop.mainStop,
         pointKm: stop.stopDistance.toFixed(3),
         pointName: stop.stopNameRAW,
-        scheduledArrivalDate: stop.arrivalTimestamp ? new Date(stop.arrivalTimestamp) : null,
-        scheduledDepartureDate: stop.departureTimestamp ? new Date(stop.departureTimestamp) : null,
+        scheduledArrivalDate,
+        scheduledDepartureDate,
         stopTime: stop.stopTime ? (stop.departureTimestamp - stop.arrivalTimestamp) / 60000 : 0,
         stopType: stop.stopType,
         sceneryName: currentPath.sceneryName,
         driveTime: lastDepartureTimestamp ? stop.arrivalTimestamp - lastDepartureTimestamp : 0,
 
         arrivalSpeed: arrivalSpeed,
-
         departureSpeed: departureSpeed,
+
+        arrivalTracks,
+        departureTracks,
 
         headUnits: timetableData.headUnits,
         stockVmax,
         stockLength,
-        stockMass
+        stockMass,
+
+        arrivalDateStr,
+        departureDateStr
       };
 
       arrivalSpeed = correctedDepartureSpeed || arrivalSpeed;
+      arrivalTracks = correctedDepartureTracks || arrivalTracks;
 
       if (stop.departureTimestamp) lastDepartureTimestamp = stop.departureTimestamp;
 
@@ -256,6 +309,8 @@ const computedTimetableRows = computed(() => {
       // Reverse search for last scenery checkpoint
       if (currentPath.departureLineData) {
         for (let i = stopRows.length - 1; i >= 0; i--) {
+          stopRows[i].departureTracks = currentPath.departureLineData.routeTracks;
+
           stopRows[i].departureSpeed = Math.min(
             currentPath.departureLineData.routeSpeed,
             stockVmax
@@ -267,16 +322,19 @@ const computedTimetableRows = computed(() => {
               stockVmax
             );
 
+            stopRows[i].departureTracks = currentPath.departureLineData.routeTracks;
+
             break;
           }
 
           stopRows[i].arrivalSpeed = Math.min(currentPath.departureLineData.routeSpeed, stockVmax);
+          stopRows[i].arrivalTracks = currentPath.departureLineData.routeTracks;
         }
       }
 
       currentPath = timetablePath[++currentPathIndex];
     }
-  }
+  });
 
   let timeTo = Date.now();
 
@@ -328,7 +386,7 @@ function parseStopListString(stopsString: string) {
       arrivalLine,
       arrivalTimestamp: parseInt(arrivalTimestamp),
       stopNameRAW,
-      stopTime: stopTime ?? 0,
+      stopTime: Number(stopTime ?? 0),
       stopType: stopType ?? null,
       mainStop: isMainStop == 'true',
       stopDistance: parseFloat(stopDistance),
@@ -338,5 +396,3 @@ function parseStopListString(stopsString: string) {
   });
 }
 </script>
-
-<style scoped></style>
