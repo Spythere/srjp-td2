@@ -27,9 +27,23 @@
           class="bg-zinc-900 p-2 w-full cursor-pointer hover:bg-zinc-800 text-left"
           @click="selectTimetable(timetable)"
         >
-          <div class="text-zinc-300">
-            #{{ timetable.timetableId }} &bull;
-            {{ new Date(timetable.savedTimestamp!).toLocaleString() }}
+          <div class="text-zinc-300 flex gap-x-2 items-center flex-wrap">
+            <span>#{{ timetable.timetableId }}</span>
+            
+            <i class="flex items-center gap-1"><ArchiveIcon :size="18" :stroke-width="3" /> {{ new Date(timetable.savedTimestamp!).toLocaleString() }}</i>
+
+            <i
+              v-if="timetable.journalCreatedAt"
+              class="flex items-center gap-0.5"
+              :title="
+                $t('storage-journal-timetable-placeholder', {
+                  date: new Date(timetable.journalCreatedAt).toLocaleDateString('pl-PL')
+                })
+              "
+            >
+              <HistoryIcon :size="18" :stroke-width="3" />
+              {{ new Date(timetable.journalCreatedAt).toLocaleDateString('pl-PL') }}
+            </i>
           </div>
           <b>{{ timetable.driverName }} | {{ timetable.category }} {{ timetable.trainNo }}</b>
           {{ timetable.route.replace('|', ' > ') }}
@@ -51,7 +65,7 @@ import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useGlobalStore } from '../../stores/global.store';
 import type { TimetableData } from '../../types/common.types';
-import { ArchiveIcon, Trash2Icon } from 'lucide-vue-next';
+import { ArchiveIcon, HistoryIcon, Trash2Icon } from 'lucide-vue-next';
 
 const globalStore = useGlobalStore();
 const i18n = useI18n();

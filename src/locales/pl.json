@@ -32,6 +32,7 @@
   "storage-preview-empty": "Nie znaleziono żadnych wpisów dla podanych parametrów",
   "storage-preview-info": "Rozkład archiwalny {id} maszynisty {driverName} z dnia {date}",
   "storage-preview-button-text": "Powróć",
+  "storage-journal-timetable-placeholder": "Zapisany historyczny rozkład jazdy z dnia {date}",
   "delete-timetable-confirm": "Czy na pewno chcesz usunąć ten rozkład jazdy z archiwum?",
 
   "journal-preview-title": "DZIENNIK ROZKŁADÓW JAZDY",
