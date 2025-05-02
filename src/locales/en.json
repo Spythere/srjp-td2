@@ -36,7 +36,9 @@
 
   "journal-preview-title": "TIMETABLES JOURNAL",
   "journal-empty-info": "Enter timetable details in the text fields above (use at least one field).<br>Up to 15 newest timetables will be shown.",
-  "journal-search-placeholder": "nick:Spythere date:02.04.2025 from:Krnów to:Biała_Sudecka",
+  "journal-driver-search-placeholder": "Driver name / #ID",
+  "journal-date-search-placeholder": "Date",
+  "journal-route-search-placeholder": "Route",
   "journal-preview-info": "Historical timetable {id} for user {driverName} from: {date}",
 
   "journal-no-data": "No data for the current search! Check if the data you entered is correct.",

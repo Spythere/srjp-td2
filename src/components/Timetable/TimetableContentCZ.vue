@@ -145,23 +145,19 @@ import { useGlobalStore } from '../../stores/global.store';
 import type { StopRowCZ, TimetablePathData } from '../../types/common.types';
 import { useApiStore } from '../../stores/api.store';
 import {
-  ArrowRightIcon,
   CalendarArrowDownIcon,
   CalendarArrowUpIcon,
   CircleAlertIcon,
   CircleGaugeIcon,
-  CircleHelpIcon,
   HandIcon,
   MapPinIcon,
-  TimerIcon,
-  UniversityIcon
+  TimerIcon
 } from 'lucide-vue-next';
 
 const globalStore = useGlobalStore();
 const apiStore = useApiStore();
 
 const timetableDate = ref(new Date());
-const headUnit = ref('');
 
 const romanMonthDigits = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII'];
 
@@ -202,7 +198,7 @@ const computedTimetableRows = computed(() => {
 
   timetableDate.value = new Date(stopList[0].departureTimestamp);
 
-  stopList.forEach((stop, i) => {
+  stopList.forEach((stop) => {
     if (stop.arrivalLine && stop.arrivalLine == currentPath.arrivalLine) {
       if (currentPath.arrivalLineData) {
         arrivalSpeed = Math.min(currentPath.arrivalLineData.routeSpeed, stockVmax);

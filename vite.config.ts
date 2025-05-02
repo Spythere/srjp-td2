@@ -11,7 +11,17 @@ export default defineConfig({
       workbox: {
         disableDevLogs: true,
         globPatterns: ['**/*.{js,css,html,png,svg,jpg,ico}'],
-        cleanupOutdatedCaches: true
+        cleanupOutdatedCaches: true,
+        runtimeCaching: [
+          {
+            urlPattern: /^https:\/\/stacjownik.spythere.eu\/api\/getSceneries/i,
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'stacjownik-api-cache',
+              cacheableResponse: { statuses: [0, 200] }
+            }
+          }
+        ]
       },
       devOptions: { enabled: false, suppressWarnings: true }
     })
