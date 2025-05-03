@@ -6,7 +6,7 @@
     </transition>
 
     <!-- Content -->
-    <Navbar />
+    <Navbar v-if="!globalStore.fullscreenMode" />
     <MainContainer />
   </div>
 </template>

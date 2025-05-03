@@ -1,5 +1,5 @@
 <template>
-  <div class="flex justify-between gap-2">
+  <div class="flex justify-between gap-2" v-if="!globalStore.fullscreenMode">
     <div class="flex gap-2">
       <button
         :class="`p-1 rounded-md ${
@@ -36,9 +36,17 @@
     </div>
 
     <div class="flex gap-2">
-      <button class="bg-zinc-800 p-1 rounded-md hover:bg-zinc-700 self-end" @click="toggleDarkMode">
+      <button class="bg-zinc-800 p-1 rounded-md hover:bg-zinc-700" @click="toggleDarkMode">
         <MoonIcon v-if="globalStore.darkMode" />
         <SunIcon v-else />
+      </button>
+
+      <button
+        class="bg-zinc-800 p-1 rounded-md hover:bg-zinc-700 disabled:opacity-60 disabled:hover:bg-zinc-800"
+        @click="toggleFullscreenMode()"
+        :disabled="globalStore.currentTimetableData == null"
+      >
+        <FullscreenIcon :size="24" />
       </button>
 
       <button
@@ -62,6 +70,12 @@
       </button>
     </div>
   </div>
+
+  <div class="flex justify-end" v-else>
+    <button class="bg-zinc-800 p-1 rounded-md hover:bg-zinc-700 self-end" @click="toggleDarkMode">
+      <FullscreenIcon />
+    </button>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -71,6 +85,7 @@ import type { ViewMode, TimetableData } from '../../types/common.types';
 import {
   ArchiveIcon,
   FolderDownIcon,
+  FullscreenIcon,
   HistoryIcon,
   MoonIcon,
   PrinterIcon,
@@ -152,5 +167,9 @@ function openPrintingWindow() {
   }
 
   window.print();
+}
+
+function toggleFullscreenMode() {
+  globalStore.fullscreenMode = !globalStore.fullscreenMode;
 }
 </script>

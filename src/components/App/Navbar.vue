@@ -8,7 +8,10 @@
     </div>
 
     <div>
-      <button class="bg-slate-600 p-1 px-2 rounded-md hover:bg-slate-500 flex items-center" @click="changeLang()">
+      <button
+        class="bg-slate-600 p-1 px-2 rounded-md hover:bg-slate-500 flex items-center"
+        @click="changeLang()"
+      >
         <GlobeIcon :size="18" class="mr-2" /> {{ i18n.locale.value == 'pl' ? 'POL' : 'ENG' }}
       </button>
     </div>

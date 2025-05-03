@@ -11,6 +11,7 @@ import { getHeadUnits } from '../utils/trainUtils';
 export const useGlobalStore = defineStore('global', {
   state: () => ({
     darkMode: false,
+    fullscreenMode: false,
     viewMode: 'active' as ViewMode,
 
     selectedTrainId: null as string | null,
