@@ -6,6 +6,7 @@
     id="trains-select"
     class="bg-zinc-800 p-1 rounded-md print:hidden w-full"
     :disabled="apiStore.activeDataStatus != DataStatus.SUCCESS"
+    aria-label="Active train select"
   >
     <option :value="null" disabled>
       {{

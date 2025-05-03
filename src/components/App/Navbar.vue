@@ -1,7 +1,7 @@
 <template>
   <nav class="bg-zinc-900 w-full p-1 print:hidden flex justify-between items-center relative">
     <div class="flex items-center">
-      <img src="/favicon.svg" class="size-8 inline" />
+      <img src="/favicon.svg" class="size-8 inline" alt="SRJP logo" />
       <b class="ml-2 text-lg"
         >Rozkładownik TD2 <sup class="font-semibold text-zinc-300">{{ version }}</sup></b
       >

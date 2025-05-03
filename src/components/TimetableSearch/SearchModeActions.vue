@@ -1,5 +1,5 @@
 <template>
-  <div class="flex justify-between gap-2" v-if="!globalStore.fullscreenMode">
+  <div class="flex justify-between gap-2">
     <div class="flex gap-2">
       <button
         :class="`p-1 rounded-md ${
@@ -8,6 +8,7 @@
             : 'bg-zinc-800 hover:bg-zinc-700'
         }`"
         @click="toggleViewMode('active')"
+        aria-label="Active data view mode"
       >
         <WifiIcon />
       </button>
@@ -19,6 +20,7 @@
             : 'bg-zinc-800 hover:bg-zinc-700'
         }`"
         @click="toggleViewMode('storage')"
+        aria-label="Storage view mode"
       >
         <ArchiveIcon />
       </button>
@@ -30,13 +32,18 @@
             : 'bg-zinc-800 hover:bg-zinc-700'
         }`"
         @click="toggleViewMode('journal')"
+        aria-label="Journal view mode"
       >
         <HistoryIcon />
       </button>
     </div>
 
     <div class="flex gap-2">
-      <button class="bg-zinc-800 p-1 rounded-md hover:bg-zinc-700" @click="toggleDarkMode">
+      <button
+        class="bg-zinc-800 p-1 rounded-md hover:bg-zinc-700"
+        @click="toggleDarkMode"
+        aria-label="Dark mode toggle"
+      >
         <MoonIcon v-if="globalStore.darkMode" />
         <SunIcon v-else />
       </button>
@@ -45,6 +52,7 @@
         class="bg-zinc-800 p-1 rounded-md hover:bg-zinc-700 disabled:opacity-60 disabled:hover:bg-zinc-800"
         @click="toggleFullscreenMode()"
         :disabled="globalStore.currentTimetableData == null"
+        aria-label="Full screen toggle"
       >
         <FullscreenIcon :size="24" />
       </button>
@@ -53,6 +61,7 @@
         class="bg-zinc-800 p-1 rounded-md hover:bg-zinc-700 disabled:opacity-60 disabled:hover:bg-zinc-800"
         :disabled="globalStore.currentTimetableData == null"
         @click="openPrintingWindow"
+        aria-label="Print mode"
       >
         <PrinterIcon />
       </button>
@@ -65,16 +74,11 @@
           'bg-zinc-800 hover:bg-zinc-700': !isTimetableSaved
         }"
         @click="saveToStorage"
+        aria-label="Save timetable to storage"
       >
         <FolderDownIcon />
       </button>
     </div>
-  </div>
-
-  <div class="flex justify-end" v-else>
-    <button class="bg-zinc-800 p-1 rounded-md hover:bg-zinc-700 self-end" @click="toggleDarkMode">
-      <FullscreenIcon />
-    </button>
   </div>
 </template>
 

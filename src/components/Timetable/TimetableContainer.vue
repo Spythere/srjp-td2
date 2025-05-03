@@ -2,7 +2,7 @@
   <!-- Button closing fullscreen mode, relative to MainContainer -->
   <button
     v-if="globalStore.fullscreenMode"
-    class="absolute right-6 top-3 p-1 rounded-md bg-green-600 hover:bg-green-500 print:hidden"
+    class="absolute right-6 top-3 p-1 rounded-md bg-green-600 hover:bg-green-500 print:hidden z-50"
     @click="() => (globalStore.fullscreenMode = false)"
   >
     <Minimize2Icon :size="22" />
