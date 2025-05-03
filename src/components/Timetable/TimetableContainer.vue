@@ -1,15 +1,15 @@
 <template>
-  <!-- Timetable render based on current view mode -->
-  <CurrentTimetableView v-if="globalStore.currentTimetableData != null" />
-
   <!-- Button closing fullscreen mode, relative to MainContainer -->
   <button
     v-if="globalStore.fullscreenMode"
-    class="absolute right-6 top-3 p-1  rounded-md bg-green-600 hover:bg-green-500 print:hidden"
+    class="absolute right-6 top-3 p-1 rounded-md bg-green-600 hover:bg-green-500 print:hidden"
     @click="() => (globalStore.fullscreenMode = false)"
   >
     <Minimize2Icon :size="22" />
   </button>
+
+  <!-- Timetable render based on current view mode -->
+  <CurrentTimetableView v-if="globalStore.currentTimetableData != null" />
 
   <!-- If there is no timetable chosen -->
   <div class="overflow-auto text-center font-bold text-zinc-400 p-1 min-h-full" v-else>
