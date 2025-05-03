@@ -1,8 +1,14 @@
 import type { AxiosInstance } from 'axios';
 import axios from 'axios';
 import { defineStore } from 'pinia';
-import { DataStatus, type ActiveDataResponse, type SceneriesDataResponse } from '../types/api.types';
-import type { ActiveData, SceneryData } from '../types/common.types';
+import {
+  DataStatus,
+  type ActiveDataResponse,
+  type SceneriesDataResponse
+} from '../types/api.types';
+import type { ActiveData, JournalTimetableShort, SceneryData } from '../types/common.types';
+
+let activeDataInterval = -1;
 
 export const useApiStore = defineStore('api', {
   state() {
@@ -11,42 +17,47 @@ export const useApiStore = defineStore('api', {
 
       activeData: null as ActiveData | null,
       sceneryData: null as SceneryData[] | null,
+      journalTimetablesData: null as JournalTimetableShort[] | null,
 
       outdatedTimerId: -1,
       isActiveDataOutdated: false,
 
       activeDataStatus: DataStatus.LOADING,
+      journalDataStatus: DataStatus.SUCCESS,
+
+      connectionMode: 'online' as 'online' | 'offline'
     };
   },
 
   actions: {
     async setupAPIData() {
-      if (this.client != null) return;
+      if (this.client == null) {
+        let baseURL = 'https://stacjownik.spythere.eu';
 
-      let baseURL = 'https://stacjownik.spythere.eu';
+        switch (import.meta.env.VITE_API_MODE) {
+          case 'development':
+            baseURL = 'http://localhost:3001';
+            break;
+          case 'mocking':
+            baseURL = 'http://localhost:3123';
+            break;
+          default:
+            break;
+        }
 
-      switch (import.meta.env.VITE_API_MODE) {
-        case 'development':
-          baseURL = 'http://localhost:3001';
-          break;
-        case 'mocking':
-          baseURL = 'http://localhost:3123';
-          break;
-        default:
-          break;
+        this.client = axios.create({
+          baseURL
+        });
       }
 
-      this.client = axios.create({
-        baseURL,
-      });
+      clearInterval(activeDataInterval);
+
+      activeDataInterval = setInterval(() => {
+        this.fetchActiveData();
+      }, 25000);
 
       this.fetchSceneriesData();
       await this.fetchActiveData();
-
-
-      setInterval(() => {
-        this.fetchActiveData();
-      }, 25000);
     },
 
     async fetchActiveData() {
@@ -75,6 +86,6 @@ export const useApiStore = defineStore('api', {
       } catch (error) {
         console.error(error);
       }
-    },
-  },
+    }
+  }
 });

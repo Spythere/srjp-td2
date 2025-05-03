@@ -1,4 +1,4 @@
-export type ViewMode = 'active' | 'storage';
+export type ViewMode = 'active' | 'storage' | 'journal';
 
 export interface ActiveData {
   trains: ActiveTrain[];
@@ -147,6 +147,31 @@ export interface StopRow {
   stockVmax: number;
   stockLength: number;
   stockMass: number;
+
+  lastRowRef: StopRow | null;
+}
+
+export interface StopRowCZ {
+  pointName: string;
+  pointKm: string;
+  isMain: boolean;
+  stopTime: number;
+  stopType: string;
+  scheduledArrivalDate: Date | null;
+  scheduledDepartureDate: Date | null;
+  driveTime: number;
+  sceneryName: string;
+  arrivalSpeed: number;
+  departureSpeed: number;
+  arrivalTracks: number;
+  departureTracks: number;
+  headUnits: string[];
+  stockVmax: number;
+  stockLength: number;
+  stockMass: number;
+
+  arrivalDateStr: string;
+  departureDateStr: string;
 }
 
 export interface TimetablePathData {
@@ -223,7 +248,6 @@ export interface JournalTimetableDetailed extends JournalTimetableShort {
   createdAt: string;
   updatedAt: string;
   stockHistory: string[];
-  hidden: boolean;
   routeSceneries: string;
   checkpointArrivals: any[];
   checkpointDepartures: any[];
@@ -240,7 +264,7 @@ export interface JournalTimetableDetailed extends JournalTimetableShort {
   warningNotes: string;
   hasDangerousCargo: boolean;
   hasExtraDeliveries: boolean;
-  stopListString: any;
+  stopListString?: string;
 }
 
 export interface TimetableData {
@@ -260,4 +284,5 @@ export interface TimetableData {
   stopListString: string;
   headUnits: string[];
   savedTimestamp?: number;
+  journalCreatedAt?: number;
 }
