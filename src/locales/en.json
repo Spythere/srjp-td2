@@ -37,7 +37,7 @@
 
   "journal-preview-title": "TIMETABLES JOURNAL",
   "journal-empty-info": "Enter timetable details in the text fields above (use at least one field).<br>Up to 15 newest timetables will be shown.",
-  "journal-driver-search-placeholder": "Driver name / #ID",
+  "journal-driver-search-placeholder": "Driver",
   "journal-date-search-placeholder": "Date",
   "journal-route-search-placeholder": "Route",
   "journal-preview-info": "Historical timetable {id} for user {driverName} from: {date}",

@@ -37,7 +37,7 @@
 
   "journal-preview-title": "DZIENNIK ROZKŁADÓW JAZDY",
   "journal-empty-info": "Wpisz dane rozkładu korzystając z pól tekstowych powyżej (co najmniej jednego).<br>W przypadku wielu rozkładów jazdy wyświetli się maks. 15 najnowszych.",
-  "journal-driver-search-placeholder": "Maszynista / #ID",
+  "journal-driver-search-placeholder": "Maszynista",
   "journal-date-search-placeholder": "Data",
   "journal-route-search-placeholder": "Relacja",
   "journal-preview-info": "Rozkład historyczny {id} maszynisty {driverName} z dnia {date}",
