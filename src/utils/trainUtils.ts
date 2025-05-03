@@ -32,7 +32,7 @@ export function getHeadUnits(stockString: string) {
   const stockList = stockString.split(';').slice(0, 3);
 
   return stockList.reduce((acc, unitType, i) => {
-    if (i != 0 && !/-\d+$/.test(unitType)) return acc;
+    if (i != 0 && !/-\d{3,}$/.test(unitType)) return acc;
 
     const unitName = unitType.slice(0, unitType.indexOf('-'));
 
