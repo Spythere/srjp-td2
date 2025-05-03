@@ -16,7 +16,6 @@
 </template>
 
 <script setup lang="ts">
-import { Minimize2Icon } from 'lucide-vue-next';
 import { useGlobalStore } from '../../stores/global.store';
 import TimetableContent from '../Timetable/TimetableContent.vue';
 
