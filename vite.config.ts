@@ -14,9 +14,12 @@ export default defineConfig({
         cleanupOutdatedCaches: true,
         runtimeCaching: [
           {
-            urlPattern: /^https:\/\/stacjownik.spythere.eu\/api\/getSceneries/i,
+            urlPattern: /^https:\/\/stacjownik.spythere.eu\/api\/(getSceneries|getVehicles)/i,
             handler: 'NetworkFirst',
             options: {
+              expiration: {
+                maxAgeSeconds: 3600
+              },
               cacheName: 'stacjownik-api-cache',
               cacheableResponse: { statuses: [0, 200] }
             }

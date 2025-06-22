@@ -286,3 +286,47 @@ export interface TimetableData {
   savedTimestamp?: number;
   journalCreatedAt?: number;
 }
+
+export interface VehicleData {
+  id: number;
+  name: string;
+  type: string;
+  group: VehicleGroup;
+  cabinName?: string;
+  restrictions?: VehicleRestrictions;
+  simulatorVersion: string;
+}
+
+export interface VehicleRestrictions {
+  sponsorOnly?: number;
+  teamOnly?: boolean;
+}
+
+export interface VehicleGroup {
+  id: number;
+  name: string;
+  speed: number;
+  speedLoaded?: number;
+  speedLoco?: number;
+  length: number;
+  weight: number;
+  cargoTypes?: VehicleCargoType[];
+  locoProps?: VehicleLocoProps;
+  massSpeeds?: VehicleMassSpeeds;
+}
+
+export interface VehicleCargoType {
+  id: string;
+  weight: number;
+}
+
+export interface VehicleLocoProps {
+  coldStart: boolean;
+  doubleManned: boolean;
+}
+
+export interface VehicleMassSpeeds {
+  none: number;
+  cargo?: Record<string, number>;
+  passenger?: Record<string, number>;
+}

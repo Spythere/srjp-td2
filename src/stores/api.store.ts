@@ -4,9 +4,15 @@ import { defineStore } from 'pinia';
 import {
   DataStatus,
   type ActiveDataResponse,
-  type SceneriesDataResponse
+  type SceneriesDataResponse,
+  type VehiclesDataResponse
 } from '../types/api.types';
-import type { ActiveData, JournalTimetableShort, SceneryData } from '../types/common.types';
+import type {
+  ActiveData,
+  JournalTimetableShort,
+  SceneryData,
+  VehicleData
+} from '../types/common.types';
 
 let activeDataInterval = -1;
 
@@ -17,6 +23,7 @@ export const useApiStore = defineStore('api', {
 
       activeData: null as ActiveData | null,
       sceneryData: null as SceneryData[] | null,
+      vehiclesData: null as VehicleData[] | null,
       journalTimetablesData: null as JournalTimetableShort[] | null,
 
       outdatedTimerId: -1,
@@ -57,6 +64,8 @@ export const useApiStore = defineStore('api', {
       }, 25000);
 
       this.fetchSceneriesData();
+      this.fetchVehiclesData();
+
       await this.fetchActiveData();
     },
 
@@ -83,6 +92,16 @@ export const useApiStore = defineStore('api', {
         const response = (await this.client!.get<SceneriesDataResponse>('/api/getSceneries')).data;
 
         this.sceneryData = response;
+      } catch (error) {
+        console.error(error);
+      }
+    },
+
+    async fetchVehiclesData() {
+      try {
+        const response = (await this.client!.get<VehiclesDataResponse>('/api/getVehicles')).data;
+
+        this.vehiclesData = response;
       } catch (error) {
         console.error(error);
       }
