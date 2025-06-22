@@ -305,6 +305,28 @@
         </tr>
       </tbody>
     </table>
+
+    <div class="mt-2">
+      <b><u>Kursuje:</u></b>
+      <div>
+        - {{ parseTimetableRunDate(computedTimetableRows[0].scheduledDepartureDate!) }}
+        <span
+          v-if="computedTimetableRows[computedTimetableRows.length - 1].scheduledArrivalDate!.getDate() != computedTimetableRows[0].scheduledDepartureDate!.getDate()"
+        >
+          -
+          {{
+            parseTimetableRunDate(
+              computedTimetableRows[computedTimetableRows.length - 1].scheduledArrivalDate!
+            )
+          }}
+        </span>
+      </div>
+
+      <div v-if="timetableWarnings.length != 0">
+        <b><u>Uwagi do rozkładu:</u></b>
+        <div>- {{ timetableWarnings }}</div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -313,12 +335,21 @@ import { computed } from 'vue';
 import { useApiStore } from '../../stores/api.store';
 import { useGlobalStore } from '../../stores/global.store';
 import type { SceneryRoute, StopRow, TimetablePathData } from '../../types/common.types';
+import { parseTimetableRunDate } from '../../utils/dateUtils';
 
 const globalStore = useGlobalStore();
 const apiStore = useApiStore();
 
 // Tymczasowa tabelka z posterunkami APO
 const apoNames = ['Stary Kisielin, pe', 'Czerwony Dwór, pe', 'Szczejkowice, pe'];
+
+const timetableWarnings = computed(() => {
+  const timetableData = globalStore.currentTimetableData;
+
+  if (!timetableData) return '';
+
+  return timetableData.warningNotes;
+});
 
 const computedTimetableRows = computed(() => {
   const timetableData = globalStore.currentTimetableData;
