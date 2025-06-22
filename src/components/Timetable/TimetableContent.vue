@@ -285,7 +285,7 @@
               <table class="h-full w-full border-collapse">
                 <tbody>
                   <tr class="border-b-[1px] border-b-black dark:border-b-white">
-                    <td>{{ row.stockMass }}</td>
+                    <td>{{ Math.floor(row.stockMass / 1000) }}</td>
                   </tr>
                   <tr>
                     <td>{{ row.stockLength }}</td>
@@ -328,7 +328,7 @@ const computedTimetableRows = computed(() => {
   let timeFrom = Date.now();
 
   const stockVmax = timetableData.trainMaxSpeed,
-    stockMass = Math.floor(timetableData.mass / 1000),
+    stockMass = timetableData.mass,
     stockLength = timetableData.length;
 
   const timetablePath = parseTimetablePath(timetableData.path);

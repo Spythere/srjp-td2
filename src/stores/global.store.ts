@@ -7,6 +7,7 @@ import type {
   ViewMode
 } from '../types/common.types';
 import { getHeadUnits } from '../utils/trainUtils';
+import { useVehicleMixin } from '../mixins/useVehicleMixin';
 
 export const useGlobalStore = defineStore('global', {
   state: () => ({
@@ -48,6 +49,8 @@ export const useGlobalStore = defineStore('global', {
     },
 
     currentTimetableData(): TimetableData | null {
+      const vehicleUtils = useVehicleMixin();
+
       if (this.viewMode == 'active') {
         const selectedTrain = this.selectedActiveTrain;
 
@@ -55,7 +58,7 @@ export const useGlobalStore = defineStore('global', {
 
         return {
           trainNo: selectedTrain.trainNo,
-          mass: selectedTrain.mass,
+          mass: vehicleUtils.getLocoLoad(selectedTrain.mass, selectedTrain.stockString),
           length: selectedTrain.length,
           driverId: selectedTrain.driverId,
           driverName: selectedTrain.driverName,
@@ -88,7 +91,10 @@ export const useGlobalStore = defineStore('global', {
         return {
           journalCreatedAt: new Date(selectedTimetable.createdAt).getTime(),
           trainNo: selectedTimetable.trainNo,
-          mass: selectedTimetable.stockMass,
+          mass: vehicleUtils.getLocoLoad(
+            selectedTimetable.stockMass,
+            selectedTimetable.stockString
+          ),
           length: selectedTimetable.stockLength,
           driverId: selectedTimetable.driverId,
           driverName: selectedTimetable.driverName,
