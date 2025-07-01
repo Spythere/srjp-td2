@@ -80,7 +80,8 @@
             :class="{
               'border-t-0':
                 row.lastRowRef == null ||
-                (row.lastRowRef.departureSpeed == row.arrivalSpeed &&
+                (row.lastRowRef.departureSpeedL == row.arrivalSpeedL &&
+                  row.lastRowRef.departureSpeedP == row.arrivalSpeedP &&
                   row.lastRowRef.departureTracks == row.arrivalTracks &&
                   row.lastRowRef.realLine == row.realLine),
               'border-b-0': i != computedTimetableRows.length - 1
@@ -93,7 +94,8 @@
                   <tr
                     :class="`align-top ${
                       row.lastRowRef == null ||
-                      (row.lastRowRef.departureSpeed == row.arrivalSpeed &&
+                      (row.lastRowRef.departureSpeedL == row.arrivalSpeedL &&
+                        row.lastRowRef.departureSpeedP == row.arrivalSpeedP &&
                         row.lastRowRef.departureTracks == row.arrivalTracks &&
                         row.lastRowRef.realLine == row.realLine)
                         ? 'text-transparent'
@@ -108,10 +110,12 @@
                     :class="{
                       'border-black dark:border-white border-t align-top':
                         row.arrivalTracks != row.departureTracks ||
-                        row.departureSpeed != row.arrivalSpeed,
+                        row.departureSpeedL != row.arrivalSpeedL ||
+                        row.departureSpeedP != row.arrivalSpeedP,
                       hidden:
                         row.arrivalTracks == row.departureTracks &&
-                        row.departureSpeed == row.arrivalSpeed
+                        row.departureSpeedL == row.arrivalSpeedL &&
+                        row.departureSpeedP == row.arrivalSpeedP
                     }"
                   >
                     <td>{{ row.departureKm == '0.000' ? '' : row.departureKm }}</td>
@@ -126,7 +130,9 @@
             class="text-center align-top p-0 border-l-black dark:border-l-white relative"
             :class="{
               'border-t border-t-black dark:border-t-white':
-                row.lastRowRef != null && row.lastRowRef.departureSpeed != row.arrivalSpeed,
+                row.lastRowRef != null &&
+                row.lastRowRef.departureSpeedL != row.arrivalSpeedL &&
+                row.lastRowRef.departureSpeedP != row.arrivalSpeedP,
               'border-b border-b-black dark:border-b-white': i == computedTimetableRows.length - 1
             }"
             colspan="2"
@@ -138,9 +144,9 @@
                     <td :colspan="row.arrivalTracks == 2 ? '1' : '2'" class="font-bold" width="35">
                       {{
                         row.lastRowRef == null ||
-                        row.lastRowRef.departureSpeed != row.arrivalSpeed ||
+                        row.lastRowRef.departureSpeedP != row.arrivalSpeedP ||
                         row.lastRowRef.departureTracks != row.arrivalTracks
-                          ? row.arrivalSpeed
+                          ? row.arrivalSpeedP
                           : '&nbsp; '
                       }}
                     </td>
@@ -152,9 +158,9 @@
                     >
                       {{
                         row.lastRowRef == null ||
-                        row.lastRowRef.departureSpeed != row.arrivalSpeed ||
+                        row.lastRowRef.departureSpeedL != row.arrivalSpeedL ||
                         row.lastRowRef.departureTracks != row.arrivalTracks
-                          ? row.arrivalSpeed
+                          ? row.arrivalSpeedL
                           : '&nbsp; '
                       }}
                     </td>
@@ -164,7 +170,8 @@
                     :class="{
                       'border-t border-t-black dark:border-t-white align-top':
                         row.arrivalTracks != row.departureTracks ||
-                        row.departureSpeed != row.arrivalSpeed
+                        row.departureSpeedL != row.arrivalSpeedL ||
+                        row.departureSpeedP != row.arrivalSpeedP
                     }"
                   >
                     <td
@@ -173,9 +180,9 @@
                       width="35"
                     >
                       {{
-                        row.departureSpeed != row.arrivalSpeed ||
+                        row.departureSpeedP != row.arrivalSpeedP ||
                         row.departureTracks != row.arrivalTracks
-                          ? row.departureSpeed
+                          ? row.departureSpeedP
                           : '&nbsp; '
                       }}
                     </td>
@@ -186,9 +193,9 @@
                       width="35"
                     >
                       {{
-                        row.departureSpeed != row.arrivalSpeed ||
+                        row.departureSpeedL != row.arrivalSpeedL ||
                         row.departureTracks != row.arrivalTracks
-                          ? row.departureSpeed
+                          ? row.departureSpeedL
                           : '&nbsp; '
                       }}
                     </td>
@@ -373,20 +380,33 @@ const computedTimetableRows = computed(() => {
 
   let lastDepartureTimestamp = 0;
 
+  let arrivalSpeedL = 0,
+    arrivalSpeedP = 0;
+
+  let departureSpeedL = 0,
+    departureSpeedP = 0;
+
   let arrivalKm = 0,
-    arrivalSpeed = 0,
     arrivalTracks = 0,
-    departureSpeed = 0,
     departureTracks = 2,
     realLineNo = 0,
     abbrevs = [] as string[];
 
   if (currentPath.departureLineData) {
-    departureSpeed = Math.min(currentPath.departureLineData.routeSpeed, stockVmax);
+    departureSpeedL = Math.min(currentPath.departureLineData.routeSpeed, stockVmax);
+    departureSpeedP = currentPath.departureLineData.routeSpeedExit
+      ? Math.min(currentPath.departureLineData.routeSpeedExit, stockVmax)
+      : departureSpeedL;
+
+    // departureSpeed = Math.min(currentPath.departureLineData.routeSpeed, stockVmax);
     departureTracks = currentPath.departureLineData.routeTracks;
 
-    arrivalSpeed = Math.min(currentPath.departureLineData.routeSpeed, stockVmax);
-    arrivalTracks = currentPath.departureLineData.routeTracks;
+    // arrivalSpeed = departureSpeed;
+
+    arrivalSpeedL = departureSpeedL;
+    arrivalSpeedP = departureSpeedP;
+
+    arrivalTracks = departureTracks;
 
     realLineNo = currentPath.departureLineData?.realLineNo ?? 0;
     abbrevs = getAbbrevs(currentPath.departureLineData);
@@ -403,13 +423,19 @@ const computedTimetableRows = computed(() => {
           (Number(stopRows[stopRows.length - 1].departureKm ?? '0') + stop.stopDistance) / 2;
 
       if (currentPath.arrivalLineData) {
-        arrivalSpeed = Math.min(currentPath.arrivalLineData.routeSpeed, stockVmax);
+        arrivalSpeedP = Math.min(currentPath.arrivalLineData.routeSpeed, stockVmax);
+        arrivalSpeedL = currentPath.arrivalLineData.routeSpeedExit
+          ? Math.min(currentPath.arrivalLineData.routeSpeedExit, stockVmax)
+          : arrivalSpeedP;
+
         arrivalTracks = currentPath.arrivalLineData.routeTracks;
         realLineNo = currentPath.arrivalLineData.realLineNo ?? 0;
         abbrevs = getAbbrevs(currentPath.arrivalLineData);
       }
 
-      departureSpeed = arrivalSpeed;
+      departureSpeedL = arrivalSpeedL;
+      departureSpeedP = arrivalSpeedP;
+
       departureTracks = arrivalTracks;
     }
 
@@ -417,7 +443,8 @@ const computedTimetableRows = computed(() => {
       stop.mainStop ||
       (/^podg|po|pe$/.test(stop.stopNameRAW) && !/^sbl/i.test(stop.stopNameRAW))
     ) {
-      let correctedDepartureSpeed = 0,
+      let correctedDepartureSpeedL = 0,
+        correctedDepartureSpeedP = 0,
         correctedDepartureTracks = 0;
 
       const internalRouteInfo = stop.departureLine
@@ -427,8 +454,14 @@ const computedTimetableRows = computed(() => {
         : undefined;
 
       if (internalRouteInfo) {
-        correctedDepartureSpeed = Math.min(internalRouteInfo.routeSpeed, stockVmax);
-        departureSpeed = Math.min(internalRouteInfo.routeSpeed, stockVmax);
+        correctedDepartureSpeedL = Math.min(internalRouteInfo.routeSpeed, stockVmax);
+        correctedDepartureSpeedP = internalRouteInfo.routeSpeedExit
+          ? Math.min(internalRouteInfo.routeSpeedExit, stockVmax)
+          : correctedDepartureSpeedL;
+
+        departureSpeedL = correctedDepartureSpeedL;
+        departureSpeedP = correctedDepartureSpeedP;
+
         realLineNo = internalRouteInfo.realLineNo ?? realLineNo;
         abbrevs = getAbbrevs(internalRouteInfo);
 
@@ -436,7 +469,8 @@ const computedTimetableRows = computed(() => {
         departureTracks = internalRouteInfo.routeTracks;
 
         if (stopRows.length == 0) {
-          arrivalSpeed = departureSpeed;
+          arrivalSpeedL = departureSpeedL;
+          arrivalSpeedP = departureSpeedP;
           arrivalTracks = departureTracks;
         }
       }
@@ -462,10 +496,14 @@ const computedTimetableRows = computed(() => {
         arrivalKm: arrivalKm.toFixed(3),
         departureKm: stop.stopDistance.toFixed(3),
 
-        arrivalSpeed: arrivalSpeed,
+        arrivalSpeedL,
+        arrivalSpeedP,
+
         arrivalTracks: arrivalTracks,
 
-        departureSpeed: departureSpeed,
+        departureSpeedL,
+        departureSpeedP,
+
         departureTracks: departureTracks,
 
         headUnits: timetableData.headUnits,
@@ -479,7 +517,10 @@ const computedTimetableRows = computed(() => {
       // console.debug(stop.stopNameRAW, stop.departureLine);
 
       arrivalKm = stop.stopDistance;
-      arrivalSpeed = correctedDepartureSpeed || arrivalSpeed;
+
+      arrivalSpeedL = correctedDepartureSpeedL || arrivalSpeedL;
+      arrivalSpeedP = correctedDepartureSpeedP || arrivalSpeedP;
+
       arrivalTracks = correctedDepartureTracks || arrivalTracks;
 
       if (stop.departureTimestamp) lastDepartureTimestamp = stop.departureTimestamp;
@@ -508,17 +549,28 @@ const computedTimetableRows = computed(() => {
 
         for (let i = stopRows.length - 1; i >= 0; i--) {
           stopRows[i].departureTracks = currentPath.departureLineData.routeTracks;
-          stopRows[i].departureSpeed = Math.min(
+
+          stopRows[i].departureSpeedL = Math.min(
             currentPath.departureLineData.routeSpeed,
             stockVmax
           );
+
+          stopRows[i].departureSpeedP = currentPath.departureLineData.routeSpeedExit
+            ? Math.min(currentPath.departureLineData.routeSpeedExit, stockVmax)
+            : stopRows[i].departureSpeedL;
+
           stopRows[i].realLine = currentPath.departureLineData.realLineNo?.toString() ?? '';
 
           if (stopRows[i].isMain || stopRows[i].pointName.endsWith(', podg')) {
-            stopRows[i].departureSpeed = Math.min(
+            stopRows[i].departureSpeedL = Math.min(
               currentPath.departureLineData.routeSpeed,
               stockVmax
             );
+
+            stopRows[i].departureSpeedP = currentPath.departureLineData.routeSpeedExit
+              ? Math.min(currentPath.departureLineData.routeSpeedExit, stockVmax)
+              : stopRows[i].departureSpeedL;
+
             stopRows[i].departureTracks = currentPath.departureLineData.routeTracks;
 
             // console.log(
@@ -539,7 +591,10 @@ const computedTimetableRows = computed(() => {
             break;
           }
 
-          stopRows[i].arrivalSpeed = Math.min(currentPath.departureLineData.routeSpeed, stockVmax);
+          stopRows[i].arrivalSpeedP = Math.min(currentPath.departureLineData.routeSpeed, stockVmax);
+          stopRows[i].arrivalSpeedL = currentPath.departureLineData.routeSpeedExit
+            ? Math.min(currentPath.departureLineData.routeSpeedExit, stockVmax)
+            : stopRows[i].arrivalSpeedP;
           stopRows[i].arrivalTracks = currentPath.departureLineData.routeTracks;
         }
       }

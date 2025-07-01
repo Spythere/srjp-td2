@@ -119,6 +119,7 @@ export interface SceneryRoute {
   isInternal: boolean;
   isRouteSBL: boolean;
   routeSpeed: number;
+  routeSpeedExit?: number;
   routeLength: number;
   routeTracks: number;
   hidden?: boolean;
@@ -138,10 +139,12 @@ export interface StopRow {
   abbrevs: string[];
   sceneryName: string;
   arrivalKm: string;
-  arrivalSpeed: number;
+  arrivalSpeedL: number;
+  arrivalSpeedP: number;
   arrivalTracks: number;
   departureKm: string;
-  departureSpeed: number;
+  departureSpeedL: number;
+  departureSpeedP: number;
   departureTracks: number;
   headUnits: string[];
   stockVmax: number;
