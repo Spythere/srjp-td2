@@ -232,29 +232,46 @@
                       class="border-r-[1px] border-r-black dark:border-r-white"
                       :class="{ 'font-bold': row.stopTime > 0 }"
                     >
-                      {{
-                        (row.scheduledArrivalDate?.getTime() || 0) !=
-                        (row.scheduledDepartureDate?.getTime() || 0)
-                          ? row.scheduledArrivalDate?.toLocaleTimeString('pl-PL', {
-                              hour: '2-digit',
-                              minute: '2-digit'
-                            })
-                          : '|'
-                      }}
+                      <span
+                        v-if="
+                          (row.scheduledArrivalDate?.getTime() || 0) !=
+                          (row.scheduledDepartureDate?.getTime() || 0)
+                        "
+                      >
+                        {{
+                          row.scheduledArrivalDate?.toLocaleTimeString('pl-PL', {
+                            hour: '2-digit',
+                            minute: '2-digit'
+                          })
+                        }}<sup
+                          v-if="
+                            row.scheduledArrivalDate && row.scheduledArrivalDate.getSeconds() != 0
+                          "
+                          >{{ Math.floor((row.scheduledArrivalDate.getSeconds() / 60) * 10) }}</sup
+                        >
+                      </span>
+
+                      <span v-else> | </span>
                     </td>
-                    <td width="30">{{ row.driveTime ? Math.floor(row.driveTime / 60000) : '' }}</td>
+                    <td width="30">{{ row.driveTime > 0 ? row.driveTime / 60000 : '' }}</td>
                   </tr>
                   <tr class="text-center align-bottom h-full">
                     <td
                       class="border-r-[1px] border-r-black dark:border-r-white"
                       :class="{ 'font-bold': row.stopTime > 0 }"
                     >
-                      {{
+                      <span>{{
                         row.scheduledDepartureDate?.toLocaleTimeString('pl-PL', {
                           hour: '2-digit',
                           minute: '2-digit'
                         })
-                      }}
+                      }}</span>
+                      <sup
+                        v-if="
+                          row.scheduledDepartureDate && row.scheduledDepartureDate.getSeconds() != 0
+                        "
+                        >{{ Math.floor((row.scheduledDepartureDate.getSeconds() / 60) * 10) }}</sup
+                      >
                     </td>
                     <td width="30" class="font-bold">{{ row.stopTime || '' }}</td>
                   </tr>
