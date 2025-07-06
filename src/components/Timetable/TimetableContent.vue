@@ -60,18 +60,35 @@
         <tr v-for="(row, i) in computedTimetableRows">
           <!-- Line no. -->
           <td
-            class="text-center align-top border-l border-l-black dark:border-l-white"
+            class="text-center align-top border-l border-l-black dark:border-l-white relative"
             :class="{
               'border-t border-t-black dark:border-t-white':
-                row.lastRowRef != null && row.lastRowRef.realLine != row.realLine,
+                row.lastRowRef != null && row.lastRowRef.arrivalLineNumber != row.arrivalLineNumber,
               'border-b border-b-black dark:border-b-white': i == computedTimetableRows.length - 1
             }"
           >
-            {{
-              row.lastRowRef == null || row.lastRowRef.realLine != row.realLine
-                ? row.realLine
-                : '&nbsp;'
-            }}
+            <div class="absolute -top-[0.5px] left-0 w-full h-full">
+              <table class="h-full w-full border-collapse">
+                <tbody>
+                  <!-- Arrival Km -->
+                  <tr class="align-top">
+                    <td>
+                      {{
+                        row.lastRowRef == null ||
+                        row.lastRowRef.arrivalLineNumber != row.arrivalLineNumber
+                          ? row.arrivalLineNumber
+                          : '&nbsp;'
+                      }}
+                    </td>
+                  </tr>
+
+                  <!-- Departure Km -->
+                  <tr class="align-top">
+                    <!-- <td>{{ row.departureLineNumber != row.arrivalLineNumber ? row.departureLineNumber : '&nbsp;' }}</td> -->
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </td>
 
           <!-- Km -->
@@ -94,7 +111,7 @@
                           (row.lastRowRef.departureSpeedL == row.arrivalSpeedL &&
                             row.lastRowRef.departureSpeedP == row.arrivalSpeedP &&
                             row.lastRowRef.departureTracks == row.arrivalTracks &&
-                            row.lastRowRef.realLine == row.realLine)
+                            row.lastRowRef.arrivalLineNumber == row.arrivalLineNumber)
                       }"
                     >
                       {{ row.arrivalKm }}
@@ -412,7 +429,8 @@ const computedTimetableRows = computed(() => {
   let arrivalKm = 0,
     arrivalTracks = 0,
     departureTracks = 2,
-    realLineNo = 0,
+    arrivalLineNumber = 0,
+    departureLineNumber = 0,
     abbrevs = [] as string[];
 
   if (currentPath.departureLineData) {
@@ -421,17 +439,16 @@ const computedTimetableRows = computed(() => {
       ? Math.min(currentPath.departureLineData.routeSpeedExit, stockVmax)
       : departureSpeedL;
 
-    // departureSpeed = Math.min(currentPath.departureLineData.routeSpeed, stockVmax);
     departureTracks = currentPath.departureLineData.routeTracks;
-
-    // arrivalSpeed = departureSpeed;
 
     arrivalSpeedL = departureSpeedL;
     arrivalSpeedP = departureSpeedP;
 
     arrivalTracks = departureTracks;
 
-    realLineNo = currentPath.departureLineData?.realLineNo ?? 0;
+    departureLineNumber = currentPath.departureLineData?.realLineNo ?? 0;
+    arrivalLineNumber = departureLineNumber;
+
     abbrevs = getAbbrevs(currentPath.departureLineData);
   }
 
@@ -452,12 +469,13 @@ const computedTimetableRows = computed(() => {
           : arrivalSpeedP;
 
         arrivalTracks = currentPath.arrivalLineData.routeTracks;
-        realLineNo = currentPath.arrivalLineData.realLineNo ?? 0;
+        arrivalLineNumber = currentPath.arrivalLineData.realLineNo ?? 0;
         abbrevs = getAbbrevs(currentPath.arrivalLineData);
       }
 
       departureSpeedL = arrivalSpeedL;
       departureSpeedP = arrivalSpeedP;
+      departureLineNumber = arrivalLineNumber;
 
       departureTracks = arrivalTracks;
     }
@@ -485,7 +503,9 @@ const computedTimetableRows = computed(() => {
         departureSpeedL = correctedDepartureSpeedL;
         departureSpeedP = correctedDepartureSpeedP;
 
-        realLineNo = internalRouteInfo.realLineNo ?? realLineNo;
+        arrivalLineNumber = internalRouteInfo.realLineNo ?? arrivalLineNumber;
+        departureLineNumber = internalRouteInfo.realLineNo ?? departureLineNumber;
+
         abbrevs = getAbbrevs(internalRouteInfo);
 
         correctedDepartureTracks = internalRouteInfo.routeTracks;
@@ -495,6 +515,7 @@ const computedTimetableRows = computed(() => {
           arrivalSpeedL = departureSpeedL;
           arrivalSpeedP = departureSpeedP;
           arrivalTracks = departureTracks;
+          arrivalLineNumber = departureLineNumber;
         }
       }
 
@@ -511,7 +532,8 @@ const computedTimetableRows = computed(() => {
         stopTime: stop.stopTime ? (stop.departureTimestamp - stop.arrivalTimestamp) / 60000 : 0,
         stopType: stop.stopType,
         sceneryName: currentPath.sceneryName,
-        realLine: realLineNo == 0 ? '' : realLineNo.toString(),
+        arrivalLineNumber: arrivalLineNumber == 0 ? '' : arrivalLineNumber.toString(),
+        departureLineNumber: departureLineNumber == 0 ? '' : departureLineNumber.toString(),
         driveTime: lastDepartureTimestamp ? stop.arrivalTimestamp - lastDepartureTimestamp : 0,
 
         abbrevs: [...pointAbbrevs, ...abbrevs],
@@ -582,7 +604,8 @@ const computedTimetableRows = computed(() => {
             ? Math.min(currentPath.departureLineData.routeSpeedExit, stockVmax)
             : stopRows[i].departureSpeedL;
 
-          stopRows[i].realLine = currentPath.departureLineData.realLineNo?.toString() ?? '';
+          stopRows[i].arrivalLineNumber =
+            currentPath.departureLineData.realLineNo?.toString() ?? '';
 
           if (stopRows[i].isMain || stopRows[i].pointName.endsWith(', podg')) {
             stopRows[i].departureSpeedL = Math.min(
@@ -603,11 +626,6 @@ const computedTimetableRows = computed(() => {
             //   currentPath.departureLineData.routeLength,
             //   currentPath.departureLineData.isRouteSBL
             // );
-
-            /* 
-            if (currentPath.departureLineData.isRouteSBL)
-              arrivalKm = stop.stopDistance + (currentPath.departureLineData.routeSpeed <= 130 ? 1.0 : 2.0);
-            else */
 
             abbrevs = getAbbrevs(currentPath.departureLineData);
             stopRows[i].abbrevs = abbrevs;

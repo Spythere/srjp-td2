@@ -134,7 +134,8 @@ export interface StopRow {
   stopType: string;
   scheduledArrivalDate: Date | null;
   scheduledDepartureDate: Date | null;
-  realLine: string;
+  arrivalLineNumber: string;
+  departureLineNumber: string;
   driveTime: number;
   abbrevs: string[];
   sceneryName: string;
