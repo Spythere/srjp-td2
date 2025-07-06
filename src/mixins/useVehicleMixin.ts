@@ -12,11 +12,12 @@ export function useVehicleMixin() {
     const stockArray = stockString.split(';');
     const headUnitsNames = stockArray.slice(0, 3).filter((v) => /-\d{3,}$/.test(v));
 
-    if (headUnitsNames.length == 1 && stockArray.length == 1) return trainMass;
-
     const headVehicleData = apiStore.vehiclesData.find((v) => v.name == headUnitsNames[0]);
-
+    
     if (!headVehicleData) return trainMass;
+
+    // 0t load for loco only
+    if (headVehicleData.type.startsWith("loco") && stockArray.length == 1) return 0;
 
     return Math.min(trainMass, trainMass - headVehicleData.group.weight);
   }
