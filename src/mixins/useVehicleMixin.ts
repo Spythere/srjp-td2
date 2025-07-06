@@ -18,6 +18,7 @@ export function useVehicleMixin() {
 
     // 0t load for loco only
     if (headVehicleData.type.startsWith("loco") && stockArray.length == 1) return 0;
+    else if (headVehicleData.type.startsWith("unit")) return trainMass;
 
     return Math.min(trainMass, trainMass - headVehicleData.group.weight);
   }
