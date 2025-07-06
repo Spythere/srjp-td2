@@ -15,8 +15,8 @@
           <th width="100" class="border border-black dark:border-white">
             {{ $t('headers.line_km') }}
           </th>
-          <th width="35" class="border border-black dark:border-white">V<sub>P</sub></th>
-          <th width="35" class="border border-black dark:border-white">V<sub>L</sub></th>
+          <th width="40" class="border border-black dark:border-white">V<sub>P</sub></th>
+          <th width="40" class="border border-black dark:border-white">V<sub>L</sub></th>
           <th width="200" class="border border-black dark:border-white">
             {{ $t('headers.station') }}
           </th>
@@ -76,33 +76,29 @@
 
           <!-- Km -->
           <td
-            class="border border-black dark:border-white border-t-1 border-b-1 relative p-0"
+            class="border border-black dark:border-white border-t-0 border-b-1 relative p-0"
             :class="{
-              'border-t-0':
-                row.lastRowRef == null ||
-                (row.lastRowRef.departureSpeedL == row.arrivalSpeedL &&
-                  row.lastRowRef.departureSpeedP == row.arrivalSpeedP &&
-                  row.lastRowRef.departureTracks == row.arrivalTracks &&
-                  row.lastRowRef.realLine == row.realLine),
               'border-b-0': i != computedTimetableRows.length - 1
             }"
           >
-            <div class="absolute top-0 left-0 w-full h-full">
+            <div class="absolute -top-[0.5px] left-0 w-full h-full">
               <table class="h-full w-full border-collapse">
                 <tbody>
                   <!-- Arrival Km -->
-                  <tr
-                    :class="`align-top ${
-                      row.lastRowRef == null ||
-                      (row.lastRowRef.departureSpeedL == row.arrivalSpeedL &&
-                        row.lastRowRef.departureSpeedP == row.arrivalSpeedP &&
-                        row.lastRowRef.departureTracks == row.arrivalTracks &&
-                        row.lastRowRef.realLine == row.realLine)
-                        ? 'text-transparent'
-                        : 'text-inherit'
-                    }`"
-                  >
-                    <td>{{ row.arrivalKm }}</td>
+                  <tr>
+                    <td
+                      class="align-top border-t text-inherit"
+                      :class="{
+                        'border-t-0 text-transparent':
+                          row.lastRowRef == null ||
+                          (row.lastRowRef.departureSpeedL == row.arrivalSpeedL &&
+                            row.lastRowRef.departureSpeedP == row.arrivalSpeedP &&
+                            row.lastRowRef.departureTracks == row.arrivalTracks &&
+                            row.lastRowRef.realLine == row.realLine)
+                      }"
+                    >
+                      {{ row.arrivalKm }}
+                    </td>
                   </tr>
 
                   <!-- Departure Km -->
@@ -128,12 +124,12 @@
           <!--  Vp, Vl -->
           <td
             class="text-center align-top p-0 border-l-black dark:border-l-white relative"
-            :class="{ 
+            :class="{
               'border-b border-b-black dark:border-b-white': i == computedTimetableRows.length - 1
             }"
             colspan="2"
           >
-            <div class="absolute top-0 left-0 w-full h-full">
+            <div class="absolute -top-[0.5px] left-0 w-full h-full">
               <table class="h-full w-full border-collapse">
                 <tbody>
                   <tr class="align-top">
