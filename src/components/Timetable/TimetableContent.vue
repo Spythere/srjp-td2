@@ -128,11 +128,7 @@
           <!--  Vp, Vl -->
           <td
             class="text-center align-top p-0 border-l-black dark:border-l-white relative"
-            :class="{
-              'border-t border-t-black dark:border-t-white':
-                row.lastRowRef != null &&
-                row.lastRowRef.departureSpeedL != row.arrivalSpeedL &&
-                row.lastRowRef.departureSpeedP != row.arrivalSpeedP,
+            :class="{ 
               'border-b border-b-black dark:border-b-white': i == computedTimetableRows.length - 1
             }"
             colspan="2"
@@ -141,7 +137,16 @@
               <table class="h-full w-full border-collapse">
                 <tbody>
                   <tr class="align-top">
-                    <td :colspan="row.arrivalTracks == 2 ? '1' : '2'" class="font-bold" width="35">
+                    <td
+                      :colspan="row.arrivalTracks == 2 ? '1' : '2'"
+                      :class="{
+                        'border-t border-t-black dark:border-t-white':
+                          row.lastRowRef != null &&
+                          row.lastRowRef.departureSpeedP != row.arrivalSpeedP
+                      }"
+                      class="font-bold"
+                      width="35"
+                    >
                       {{
                         row.lastRowRef == null ||
                         row.lastRowRef.departureSpeedP != row.arrivalSpeedP ||
@@ -154,6 +159,11 @@
                     <td
                       v-if="row.arrivalTracks == 2"
                       class="border-l border-l-black dark:border-l-white"
+                      :class="{
+                        'border-t border-t-black dark:border-t-white':
+                          row.lastRowRef != null &&
+                          row.lastRowRef.departureSpeedL != row.arrivalSpeedL
+                      }"
                       width="35"
                     >
                       {{
