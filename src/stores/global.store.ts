@@ -35,7 +35,8 @@ export const useGlobalStore = defineStore('global', {
       route: ''
     },
 
-    showSettings: false
+    showSettings: false,
+    isMigrationInfoOpen: false
   }),
   getters: {
     activeTimetableTrains() {
