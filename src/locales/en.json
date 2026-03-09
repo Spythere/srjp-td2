@@ -11,7 +11,7 @@
   },
 
   "data-offline-mode": "You're currently using the offline mode of the SRJP app - server data is unavailable!",
-  
+
   "headers": {
     "line_no": "Line\nno.",
     "line_km": "Km",
@@ -24,6 +24,11 @@
     "length": "Train len.",
     "vmax": "Vmax",
     "relation": "Route"
+  },
+
+  "migrate-info": {
+    "line-1": "Rozkładownik is being moved to a new domain - {0}! You can still use the current website, but it will no longer be updated and will be shut down in the nearest future!",
+    "accept-btn": "ROGER THAT!"
   },
 
   "storage-empty-header": "ARCHIVED TIMETABLES SEARCH MODE",

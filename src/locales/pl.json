@@ -26,6 +26,11 @@
     "relation": "Relacja"
   },
 
+  "migrate-info": {
+    "line-1": "Rozkładownik zostaje przeniesiony na nową domenę - {0}! Możesz korzystać z obecnej strony, jednak nie będzie ona otrzymywać już aktualizacji i w przyszłości zostanie wyłączona!",
+    "accept-btn": "PRZYJĄŁEM!"
+  },
+
   "storage-empty-header": "TRYB WYSZUKIWANA ZAPISANYCH ROZKŁADÓW JAZDY",
   "storage-empty-info": "Użyj funkcji zapisu rozkładu jazdy, aby go tutaj wyświetlić.",
   "storage-preview-title": "ZAPISANE ROZKŁADY JAZDY",

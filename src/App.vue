@@ -5,9 +5,15 @@
       <UpdatePrompt v-if="needRefresh" @onUpdateClick="updateApp()" />
     </transition>
 
+    
     <!-- Content -->
     <Navbar v-if="!globalStore.fullscreenMode" />
     <MainContainer />
+    
+    <!-- Migrate Info -->
+    <transition name="slide-anim">
+      <MigrateInfo v-if="globalStore.isMigrationInfoOpen" />
+    </transition>
   </div>
 </template>
 
@@ -22,6 +28,7 @@ import { useGlobalStore } from './stores/global.store';
 import { useI18n } from 'vue-i18n';
 import { useRegisterSW } from 'virtual:pwa-register/vue';
 import { DataStatus } from './types/api.types';
+import MigrateInfo from './components/App/MigrateInfo.vue';
 
 const originalDocumentTitle = document.title;
 
@@ -34,6 +41,7 @@ const { needRefresh, updateServiceWorker } = useRegisterSW({ immediate: true });
 onMounted(async () => {
   setupLocale();
   setupDarkMode();
+  handleMigrationInfo();
   setupOfflineMode();
   loadStorageTimetables();
   setupAfterPrintClose();
@@ -111,5 +119,19 @@ function handleQueries() {
       globalStore.selectedActiveTrain = queryTrain;
     }
   }
+}
+
+function handleMigrationInfo() {
+  // Show only on old domain
+  if (location.hostname !== 'srjp-td2.web.app' && location.hostname != 'localhost') return;
+
+  const showInfo = localStorage.getItem('showMigrationInfo');
+
+  // Do not show if already acknowledged
+  if (showInfo === 'false') return;
+
+  setTimeout(() => {
+    globalStore.isMigrationInfoOpen = true;
+  }, 2000);
 }
 </script>
