@@ -6,7 +6,7 @@
       {{ globalStore.currentTimetableData!.route.replace('|', ' - ') }}
     </h2>
 
-    <table class="table-fixed mt-2 w-full border-collapse" v-if="computedTimetableRows.length > 0">
+    <table class="table-fixed mt-2 w-full border-collapse overflow-hidden" v-if="computedTimetableRows.length > 0">
       <thead>
         <tr>
           <th width="40" class="border border-black dark:border-white">
@@ -146,14 +146,9 @@
             }"
             colspan="2"
           >
-            <!-- Bold direction line -->
-            <div
-              class="absolute h-full top-0 -left-0.5 border-l-black dark:border-l-white print:border-l-black border-l-4"
-            ></div>
-
             <!-- Direction line arrow -->
             <div
-              class="absolute h-0 w-0 border-x-[5px] border-x-transparent border-t-[5px] -bottom-1 -left-[5px] z-30 border-t-black dark:border-t-white print:border-t-black"
+              class="absolute h-0 w-0 border-x-transparent border-x-[6px] -left-[4px] border-t-[25px] -bottom-[12px] z-30 border-t-black dark:border-t-white print:border-t-black"
               v-if="i == computedTimetableRows.length - 1"
             ></div>
 
@@ -162,13 +157,13 @@
                 <tbody>
                   <tr class="align-top">
                     <td
-                      :colspan="row.arrivalTracks == 2 ? '1' : '2'"
+                      class="font-bold border-l-4"
                       :class="{
                         'border-t border-t-black dark:border-t-white':
                           row.lastRowRef != null &&
                           row.lastRowRef.departureSpeedP != row.arrivalSpeedP
                       }"
-                      class="font-bold"
+                      :colspan="row.arrivalTracks == 2 ? '1' : '2'"
                       width="35"
                     >
                       {{
@@ -201,6 +196,7 @@
                   </tr>
 
                   <tr
+                    class="border-l-4"
                     :class="{
                       'border-t border-t-black dark:border-t-white align-top':
                         row.arrivalTracks != row.departureTracks ||
