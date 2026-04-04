@@ -6,7 +6,10 @@
       {{ globalStore.currentTimetableData!.route.replace('|', ' - ') }}
     </h2>
 
-    <table class="table-fixed mt-2 w-full border-collapse overflow-hidden" v-if="computedTimetableRows.length > 0">
+    <table
+      class="table-fixed mt-2 w-full border-collapse overflow-hidden"
+      v-if="computedTimetableRows.length > 0"
+    >
       <thead>
         <tr>
           <th width="40" class="border border-black dark:border-white">
@@ -157,7 +160,7 @@
                 <tbody>
                   <tr class="align-top">
                     <td
-                      class="font-bold border-l-4"
+                      class="font-bold border-l-4 border-l-black dark:border-l-white"
                       :class="{
                         'border-t border-t-black dark:border-t-white':
                           row.lastRowRef != null &&
@@ -196,7 +199,7 @@
                   </tr>
 
                   <tr
-                    class="border-l-4"
+                    class="border-l-4 border-l-black dark:border-l-white"
                     :class="{
                       'border-t border-t-black dark:border-t-white align-top':
                         row.arrivalTracks != row.departureTracks ||
