@@ -14,8 +14,8 @@ export default defineConfig({
         cleanupOutdatedCaches: true,
         runtimeCaching: [
           {
-            urlPattern: /^https:\/\/stacjownik.spythere.eu\/api\/(getSceneries|getVehicles)/i,
-            handler: 'NetworkFirst',
+            urlPattern: /^https:\/\/stacjownik.spythere.eu\/api\/(getSceneries|getVehiclesData)/i,
+            handler: 'StaleWhileRevalidate',
             options: {
               expiration: {
                 maxAgeSeconds: 3600

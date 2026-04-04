@@ -42,7 +42,7 @@ export const useApiStore = defineStore('api', {
       outdatedTimerId: -1,
       isActiveDataOutdated: false,
 
-      activeDataStatus: DataStatus.LOADING,
+      apiDataStatus: DataStatus.LOADING,
       journalDataStatus: DataStatus.SUCCESS,
 
       connectionMode: 'online' as 'online' | 'offline'
@@ -53,14 +53,24 @@ export const useApiStore = defineStore('api', {
     async setupAPIData() {
       clearInterval(activeDataInterval);
 
+      try {
+        this.apiDataStatus = DataStatus.LOADING;
+
+        await Promise.all([
+          this.fetchSceneriesData(),
+          this.fetchVehiclesData(),
+          this.fetchActiveData()
+        ]);
+
+        this.apiDataStatus = DataStatus.SUCCESS;
+      } catch (error) {
+        this.apiDataStatus = DataStatus.ERROR;
+        console.log('Data fetching error: ', error);
+      }
+
       activeDataInterval = setInterval(() => {
         this.fetchActiveData();
       }, 25000);
-
-      this.fetchSceneriesData();
-      this.fetchVehiclesData();
-
-      await this.fetchActiveData();
     },
 
     async fetchActiveData() {
@@ -68,7 +78,6 @@ export const useApiStore = defineStore('api', {
         const response = await this.client.get<ActiveDataResponse>('api/getActiveData');
 
         this.activeData = response;
-        this.activeDataStatus = DataStatus.SUCCESS;
         this.isActiveDataOutdated = false;
 
         if (this.outdatedTimerId != -1) clearTimeout(this.outdatedTimerId);
@@ -77,7 +86,7 @@ export const useApiStore = defineStore('api', {
           this.isActiveDataOutdated = true;
         }, 60000);
       } catch (error) {
-        console.error(error);
+        throw error;
       }
     },
 
@@ -87,17 +96,20 @@ export const useApiStore = defineStore('api', {
 
         this.sceneryData = response;
       } catch (error) {
-        console.error(error);
+        throw error;
       }
     },
 
     async fetchVehiclesData() {
       try {
-        const response = await this.client.get<VehiclesDataResponse>('api/getVehicles');
+        const response = await this.client.get<VehiclesDataResponse>('api/getVehiclesData');
 
-        this.vehiclesData = response;
+        this.vehiclesData = response.vehicles.map((v) => ({
+          ...v,
+          group: response.vehicleGroups.find((g) => g.id == v.vehicleGroupsId)!
+        }));
       } catch (error) {
-        console.error(error);
+        throw error;
       }
     }
   }

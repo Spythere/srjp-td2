@@ -298,7 +298,6 @@ export interface VehicleData {
   group: VehicleGroup;
   cabinName?: string;
   restrictions?: VehicleRestrictions;
-  simulatorVersion: string;
 }
 
 export interface VehicleRestrictions {
