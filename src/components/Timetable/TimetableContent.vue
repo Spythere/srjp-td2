@@ -146,6 +146,17 @@
             }"
             colspan="2"
           >
+            <!-- Bold direction line -->
+            <div
+              class="absolute h-full top-0 -left-0.5 border-l-black dark:border-l-white print:border-l-black border-l-4"
+            ></div>
+
+            <!-- Direction line arrow -->
+            <div
+              class="absolute h-0 w-0 border-x-[5px] border-x-transparent border-t-[5px] -bottom-1 -left-[5px] z-30 border-t-black dark:border-t-white print:border-t-black"
+              v-if="i == computedTimetableRows.length - 1"
+            ></div>
+
             <div class="absolute -top-[0.5px] left-0 w-full h-full">
               <table class="h-full w-full border-collapse">
                 <tbody>
@@ -358,7 +369,12 @@
       <div>
         - {{ parseTimetableRunDate(computedTimetableRows[0].scheduledDepartureDate!) }}
         <span
-          v-if="computedTimetableRows[computedTimetableRows.length - 1].scheduledArrivalDate!.getDate() != computedTimetableRows[0].scheduledDepartureDate!.getDate()"
+          v-if="
+            computedTimetableRows[
+              computedTimetableRows.length - 1
+            ].scheduledArrivalDate!.getDate() !=
+            computedTimetableRows[0].scheduledDepartureDate!.getDate()
+          "
         >
           -
           {{
@@ -658,10 +674,10 @@ function parseTimetablePath(path: string): TimetablePathData[] {
 
     const sceneryData = apiStore.sceneryData?.find((sc) => sc.name == sceneryName) ?? null;
     const arrivalLineData = arrivalLine
-      ? sceneryData?.routesInfo.find((rt) => rt.routeName == arrivalLine) ?? null
+      ? (sceneryData?.routesInfo.find((rt) => rt.routeName == arrivalLine) ?? null)
       : null;
     const departureLineData = departureLine
-      ? sceneryData?.routesInfo.find((rt) => rt.routeName == departureLine) ?? null
+      ? (sceneryData?.routesInfo.find((rt) => rt.routeName == departureLine) ?? null)
       : null;
 
     return {
