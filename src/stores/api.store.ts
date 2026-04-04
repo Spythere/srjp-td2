@@ -1,5 +1,3 @@
-import type { AxiosInstance } from 'axios';
-import axios from 'axios';
 import { defineStore } from 'pinia';
 import {
   DataStatus,
@@ -13,13 +11,28 @@ import type {
   SceneryData,
   VehicleData
 } from '../types/common.types';
+import { HttpClient } from '../http';
 
 let activeDataInterval = -1;
+
+// Base API URL
+let baseURL = 'https://stacjownik.spythere.eu';
+
+switch (import.meta.env.VITE_API_MODE) {
+  case 'development':
+    baseURL = 'http://localhost:3001';
+    break;
+  case 'mocking':
+    baseURL = 'http://localhost:3123';
+    break;
+  default:
+    break;
+}
 
 export const useApiStore = defineStore('api', {
   state() {
     return {
-      client: null as AxiosInstance | null,
+      client: new HttpClient(baseURL),
 
       activeData: null as ActiveData | null,
       sceneryData: null as SceneryData[] | null,
@@ -38,25 +51,6 @@ export const useApiStore = defineStore('api', {
 
   actions: {
     async setupAPIData() {
-      if (this.client == null) {
-        let baseURL = 'https://stacjownik.spythere.eu';
-
-        switch (import.meta.env.VITE_API_MODE) {
-          case 'development':
-            baseURL = 'http://localhost:3001';
-            break;
-          case 'mocking':
-            baseURL = 'http://localhost:3123';
-            break;
-          default:
-            break;
-        }
-
-        this.client = axios.create({
-          baseURL
-        });
-      }
-
       clearInterval(activeDataInterval);
 
       activeDataInterval = setInterval(() => {
@@ -71,7 +65,7 @@ export const useApiStore = defineStore('api', {
 
     async fetchActiveData() {
       try {
-        const response = (await this.client!.get<ActiveDataResponse>('/api/getActiveData')).data;
+        const response = await this.client.get<ActiveDataResponse>('api/getActiveData');
 
         this.activeData = response;
         this.activeDataStatus = DataStatus.SUCCESS;
@@ -89,7 +83,7 @@ export const useApiStore = defineStore('api', {
 
     async fetchSceneriesData() {
       try {
-        const response = (await this.client!.get<SceneriesDataResponse>('/api/getSceneries')).data;
+        const response = await this.client.get<SceneriesDataResponse>('api/getSceneries');
 
         this.sceneryData = response;
       } catch (error) {
@@ -99,7 +93,7 @@ export const useApiStore = defineStore('api', {
 
     async fetchVehiclesData() {
       try {
-        const response = (await this.client!.get<VehiclesDataResponse>('/api/getVehicles')).data;
+        const response = await this.client.get<VehiclesDataResponse>('api/getVehicles');
 
         this.vehiclesData = response;
       } catch (error) {

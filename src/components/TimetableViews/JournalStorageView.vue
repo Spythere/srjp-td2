@@ -1,6 +1,8 @@
 <template>
   <div class="text-white">
-    <h2 class="font-bold p-2 bg-zinc-700 mb-3 text-2xl flex items-center gap-2 justify-center flex-wrap">
+    <h2
+      class="font-bold p-2 bg-zinc-700 mb-3 text-2xl flex items-center gap-2 justify-center flex-wrap"
+    >
       <HistoryIcon :size="25" />
       {{ $t('journal-preview-title') }}
     </h2>
@@ -77,15 +79,10 @@ const globalStore = useGlobalStore();
 
 async function fetchTimetableDetails(id: number) {
   try {
-    const response = (
-      await apiStore.client!.get<JournalTimetableDetailed[]>('/api/getTimetables', {
-        params: {
-          timetableId: id,
-          hasStopsDetails: 1,
-          returnType: 'detailed'
-        }
-      })
-    ).data;
+    const response = await apiStore.client.get<JournalTimetableDetailed[]>('api/getTimetables', {
+      timetableId: id,
+      returnType: 'detailed'
+    });
 
     if (response.length > 0) globalStore.selectedJournalTimetable = response[0];
   } catch (error) {

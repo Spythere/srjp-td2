@@ -105,11 +105,10 @@ async function fetchJournalTimetables() {
   try {
     apiStore.journalDataStatus = DataStatus.LOADING;
 
-    const response = (
-      await apiStore.client!.get<JournalTimetablesShortResponse>('/api/getTimetables', {
-        params: fetchParams
-      })
-    ).data;
+    const response = await apiStore.client.get<JournalTimetablesShortResponse>(
+      'api/getTimetables',
+      fetchParams
+    );
 
     apiStore.journalDataStatus = DataStatus.SUCCESS;
     apiStore.journalTimetablesData = response;
