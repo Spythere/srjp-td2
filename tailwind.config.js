@@ -6,6 +6,6 @@ export default {
   },
   darkMode: 'selector',
   plugins: [],
-  purge: ['./index.html', './src/**/*.{vue,js,ts,jsx,tsx}'],
+  content: ['./index.html', './src/**/*.{vue,js,ts,jsx,tsx}'],
 }
 
