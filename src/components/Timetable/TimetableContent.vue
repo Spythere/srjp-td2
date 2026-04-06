@@ -110,14 +110,14 @@
                       class="align-top border-t text-inherit"
                       :class="{
                         'border-t-0 text-transparent':
-                          row.lastRowRef == null ||
-                          (row.lastRowRef.departureSpeedL == row.arrivalSpeedL &&
-                            row.lastRowRef.departureSpeedP == row.arrivalSpeedP &&
-                            row.lastRowRef.departureTracks == row.arrivalTracks &&
-                            row.lastRowRef.arrivalLineNumber == row.arrivalLineNumber)
+                          row.lastRowRef &&
+                          row.lastRowRef.departureSpeedL == row.arrivalSpeedL &&
+                          row.lastRowRef.departureSpeedP == row.arrivalSpeedP &&
+                          row.lastRowRef.departureTracks == row.arrivalTracks &&
+                          row.lastRowRef.arrivalLineNumber == row.arrivalLineNumber
                       }"
                     >
-                      {{ row.arrivalKm }}
+                      &nbsp;{{ row.arrivalKm }}
                     </td>
                   </tr>
 
@@ -134,7 +134,7 @@
                         row.departureSpeedP == row.arrivalSpeedP
                     }"
                   >
-                    <td>{{ row.departureKm == '0.000' ? '' : row.departureKm }}</td>
+                    <td>&nbsp;{{ row.departureKm }}</td>
                   </tr>
                 </tbody>
               </table>
