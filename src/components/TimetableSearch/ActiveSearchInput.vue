@@ -5,12 +5,12 @@
     name="trains"
     id="trains-select"
     class="bg-zinc-800 p-1 rounded-md print:hidden w-full"
-    :disabled="apiStore.activeDataStatus != DataStatus.SUCCESS"
+    :disabled="apiStore.apiDataStatus != DataStatus.SUCCESS"
     aria-label="Active train select"
   >
     <option :value="null" disabled>
       {{
-        apiStore.activeDataStatus == DataStatus.LOADING
+        apiStore.apiDataStatus == DataStatus.LOADING
           ? $t('data-loading-text')
           : $t('train-select-placeholder')
       }}

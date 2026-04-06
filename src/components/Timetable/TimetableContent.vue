@@ -6,7 +6,10 @@
       {{ globalStore.currentTimetableData!.route.replace('|', ' - ') }}
     </h2>
 
-    <table class="table-fixed mt-2 w-full border-collapse" v-if="computedTimetableRows.length > 0">
+    <table
+      class="table-fixed mt-2 w-full border-collapse overflow-hidden"
+      v-if="computedTimetableRows.length > 0"
+    >
       <thead>
         <tr>
           <th width="40" class="border border-black dark:border-white">
@@ -15,7 +18,7 @@
           <th width="100" class="border border-black dark:border-white">
             {{ $t('headers.line_km') }}
           </th>
-          <th width="40" class="border border-black dark:border-white">V<sub>P</sub></th>
+          <th width="42" class="border border-black dark:border-white">V<sub>P</sub></th>
           <th width="40" class="border border-black dark:border-white">V<sub>L</sub></th>
           <th width="200" class="border border-black dark:border-white">
             {{ $t('headers.station') }}
@@ -107,14 +110,14 @@
                       class="align-top border-t text-inherit"
                       :class="{
                         'border-t-0 text-transparent':
-                          row.lastRowRef == null ||
-                          (row.lastRowRef.departureSpeedL == row.arrivalSpeedL &&
-                            row.lastRowRef.departureSpeedP == row.arrivalSpeedP &&
-                            row.lastRowRef.departureTracks == row.arrivalTracks &&
-                            row.lastRowRef.arrivalLineNumber == row.arrivalLineNumber)
+                          row.lastRowRef &&
+                          row.lastRowRef.departureSpeedL == row.arrivalSpeedL &&
+                          row.lastRowRef.departureSpeedP == row.arrivalSpeedP &&
+                          row.lastRowRef.departureTracks == row.arrivalTracks &&
+                          row.lastRowRef.arrivalLineNumber == row.arrivalLineNumber
                       }"
                     >
-                      {{ row.arrivalKm }}
+                      &nbsp;{{ row.arrivalKm }}
                     </td>
                   </tr>
 
@@ -131,7 +134,7 @@
                         row.departureSpeedP == row.arrivalSpeedP
                     }"
                   >
-                    <td>{{ row.departureKm == '0.000' ? '' : row.departureKm }}</td>
+                    <td>&nbsp;{{ row.departureKm }}</td>
                   </tr>
                 </tbody>
               </table>
@@ -146,18 +149,24 @@
             }"
             colspan="2"
           >
+            <!-- Direction line arrow -->
+            <div
+              class="absolute h-0 w-0 border-x-transparent border-x-[6px] -left-[4px] border-t-[25px] -bottom-[12px] z-30 border-t-black dark:border-t-white print:border-t-black"
+              v-if="i == computedTimetableRows.length - 1"
+            ></div>
+
             <div class="absolute -top-[0.5px] left-0 w-full h-full">
               <table class="h-full w-full border-collapse">
                 <tbody>
                   <tr class="align-top">
                     <td
-                      :colspan="row.arrivalTracks == 2 ? '1' : '2'"
+                      class="font-bold border-l-4 border-l-black dark:border-l-white"
                       :class="{
                         'border-t border-t-black dark:border-t-white':
                           row.lastRowRef != null &&
                           row.lastRowRef.departureSpeedP != row.arrivalSpeedP
                       }"
-                      class="font-bold"
+                      :colspan="row.arrivalTracks == 2 ? '1' : '2'"
                       width="35"
                     >
                       {{
@@ -190,6 +199,7 @@
                   </tr>
 
                   <tr
+                    class="border-l-4 border-l-black dark:border-l-white"
                     :class="{
                       'border-t border-t-black dark:border-t-white align-top':
                         row.arrivalTracks != row.departureTracks ||
@@ -358,7 +368,12 @@
       <div>
         - {{ parseTimetableRunDate(computedTimetableRows[0].scheduledDepartureDate!) }}
         <span
-          v-if="computedTimetableRows[computedTimetableRows.length - 1].scheduledArrivalDate!.getDate() != computedTimetableRows[0].scheduledDepartureDate!.getDate()"
+          v-if="
+            computedTimetableRows[
+              computedTimetableRows.length - 1
+            ].scheduledArrivalDate!.getDate() !=
+            computedTimetableRows[0].scheduledDepartureDate!.getDate()
+          "
         >
           -
           {{
@@ -658,10 +673,10 @@ function parseTimetablePath(path: string): TimetablePathData[] {
 
     const sceneryData = apiStore.sceneryData?.find((sc) => sc.name == sceneryName) ?? null;
     const arrivalLineData = arrivalLine
-      ? sceneryData?.routesInfo.find((rt) => rt.routeName == arrivalLine) ?? null
+      ? (sceneryData?.routesInfo.find((rt) => rt.routeName == arrivalLine) ?? null)
       : null;
     const departureLineData = departureLine
-      ? sceneryData?.routesInfo.find((rt) => rt.routeName == departureLine) ?? null
+      ? (sceneryData?.routesInfo.find((rt) => rt.routeName == departureLine) ?? null)
       : null;
 
     return {

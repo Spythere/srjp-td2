@@ -1,12 +1,15 @@
-import type { ActiveData, JournalTimetableShort, SceneryData, VehicleData } from './common.types';
+import type {
+  ActiveData,
+  JournalTimetableShort,
+  SceneryData,
+  VehicleGroup,
+  VehicleRestrictions
+} from './common.types';
 
-export type ActiveDataResponse = ActiveData;
+/***
+ * API Data Status
+ * */
 
-export type SceneriesDataResponse = SceneryData[];
-
-export type JournalTimetablesShortResponse = JournalTimetableShort[];
-
-export type VehiclesDataResponse = VehicleData[];
 
 export enum DataStatus {
   'INIT' = -1,
@@ -14,3 +17,41 @@ export enum DataStatus {
   'SUCCESS' = 1,
   'ERROR' = 2
 }
+
+/***
+ * Active Data API
+ * */
+
+export type ActiveDataResponse = ActiveData;
+
+/***
+ * Sceneries API
+ * */
+
+export type SceneriesDataResponse = SceneryData[];
+
+/***
+ * Journal API
+ * */
+
+export type JournalTimetablesShortResponse = JournalTimetableShort[];
+
+/***
+ * Vehicles API
+ * */
+
+export interface VehiclesDataResponse {
+  vehicles: VehicleDataAPI[];
+  vehicleGroups: VehicleGroupAPI[];
+}
+
+export interface VehicleDataAPI {
+  id: number;
+  name: string;
+  type: string;
+  cabinName?: string;
+  restrictions?: VehicleRestrictions;
+  vehicleGroupsId: number;
+}
+
+export interface VehicleGroupAPI extends VehicleGroup {}
