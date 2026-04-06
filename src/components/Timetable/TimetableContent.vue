@@ -66,28 +66,31 @@
             class="text-center align-top border-l border-l-black dark:border-l-white relative"
             :class="{
               'border-t border-t-black dark:border-t-white':
-                row.lastRowRef != null && row.lastRowRef.arrivalLineNumber != row.arrivalLineNumber,
+                row.lastRowRef != null && row.lastRowRef.departureLineNumber != row.arrivalLineNumber,
               'border-b border-b-black dark:border-b-white': i == computedTimetableRows.length - 1
             }"
           >
             <div class="absolute -top-[0.5px] left-0 w-full h-full">
               <table class="h-full w-full border-collapse">
                 <tbody>
-                  <!-- Arrival Km -->
+                  <!-- Arrival Line -->
                   <tr class="align-top">
                     <td>
                       {{
                         row.lastRowRef == null ||
-                        row.lastRowRef.arrivalLineNumber != row.arrivalLineNumber
+                        row.lastRowRef.departureLineNumber != row.arrivalLineNumber
                           ? row.arrivalLineNumber
                           : '&nbsp;'
                       }}
                     </td>
                   </tr>
 
-                  <!-- Departure Km -->
+                  <!-- Departure Line -->
                   <tr class="align-top">
-                    <!-- <td>{{ row.departureLineNumber != row.arrivalLineNumber ? row.departureLineNumber : '&nbsp;' }}</td> -->
+                    <td v-if="row.departureLineNumber != row.arrivalLineNumber" class="border-t">
+                      {{ row.departureLineNumber }}
+                    </td>
+                    <td v-else>&nbsp;</td>
                   </tr>
                 </tbody>
               </table>
@@ -107,18 +110,23 @@
                   <!-- Arrival Km -->
                   <tr>
                     <td
-                      class="align-top border-t text-inherit"
-                      :class="{
-                        'border-t-0 text-transparent':
-                          row.lastRowRef &&
-                          row.lastRowRef.departureSpeedL == row.arrivalSpeedL &&
-                          row.lastRowRef.departureSpeedP == row.arrivalSpeedP &&
-                          row.lastRowRef.departureTracks == row.arrivalTracks &&
-                          row.lastRowRef.arrivalLineNumber == row.arrivalLineNumber
-                      }"
+                      class="align-top border-t"
+                      v-if="
+                        row.lastRowRef &&
+                        (row.lastRowRef.departureSpeedL != row.arrivalSpeedL ||
+                          row.lastRowRef.departureSpeedP != row.arrivalSpeedP ||
+                          row.lastRowRef.departureTracks != row.arrivalTracks ||
+                          row.lastRowRef.departureLineNumber != row.arrivalLineNumber)
+                      "
                     >
                       &nbsp;{{ row.arrivalKm }}
                     </td>
+
+                    <td class="align-top" v-else-if="row.lastRowRef == null">
+                      &nbsp;{{ row.arrivalKm }}
+                    </td>
+
+                    <td v-else>&nbsp;</td>
                   </tr>
 
                   <!-- Departure Km -->
@@ -127,11 +135,13 @@
                       'border-black dark:border-white border-t align-top':
                         row.arrivalTracks != row.departureTracks ||
                         row.departureSpeedL != row.arrivalSpeedL ||
-                        row.departureSpeedP != row.arrivalSpeedP,
+                        row.departureSpeedP != row.arrivalSpeedP ||
+                        row.departureLineNumber != row.arrivalLineNumber,
                       hidden:
                         row.arrivalTracks == row.departureTracks &&
                         row.departureSpeedL == row.arrivalSpeedL &&
-                        row.departureSpeedP == row.arrivalSpeedP
+                        row.departureSpeedP == row.arrivalSpeedP &&
+                        row.departureLineNumber == row.arrivalLineNumber
                     }"
                   >
                     <td>&nbsp;{{ row.departureKm }}</td>
@@ -580,7 +590,6 @@ const computedTimetableRows = computed(() => {
 
       arrivalSpeedL = correctedDepartureSpeedL || arrivalSpeedL;
       arrivalSpeedP = correctedDepartureSpeedP || arrivalSpeedP;
-
       arrivalTracks = correctedDepartureTracks || arrivalTracks;
 
       if (stop.departureTimestamp) lastDepartureTimestamp = stop.departureTimestamp;
@@ -619,7 +628,10 @@ const computedTimetableRows = computed(() => {
             ? Math.min(currentPath.departureLineData.routeSpeedExit, stockVmax)
             : stopRows[i].departureSpeedL;
 
-          stopRows[i].arrivalLineNumber =
+          // stopRows[i].arrivalLineNumber =
+          //   currentPath.departureLineData.realLineNo?.toString() ?? '';
+
+          stopRows[i].departureLineNumber =
             currentPath.departureLineData.realLineNo?.toString() ?? '';
 
           if (stopRows[i].isMain || stopRows[i].pointName.endsWith(', podg')) {
@@ -639,7 +651,8 @@ const computedTimetableRows = computed(() => {
             //   currentPath.sceneryName,
             //   stop.stopDistance,
             //   currentPath.departureLineData.routeLength,
-            //   currentPath.departureLineData.isRouteSBL
+            //   currentPath.departureLineData.isRouteSBL,
+            //   currentPath.departureLineData.realLineNo
             // );
 
             abbrevs = getAbbrevs(currentPath.departureLineData);
@@ -652,6 +665,8 @@ const computedTimetableRows = computed(() => {
             ? Math.min(currentPath.departureLineData.routeSpeedExit, stockVmax)
             : stopRows[i].arrivalSpeedP;
           stopRows[i].arrivalTracks = currentPath.departureLineData.routeTracks;
+          stopRows[i].arrivalLineNumber =
+            currentPath.departureLineData.realLineNo?.toString() ?? '';
         }
       }
 
