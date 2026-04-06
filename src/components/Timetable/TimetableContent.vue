@@ -18,7 +18,7 @@
           <th width="100" class="border border-black dark:border-white">
             {{ $t('headers.line_km') }}
           </th>
-          <th width="40" class="border border-black dark:border-white">V<sub>P</sub></th>
+          <th width="42" class="border border-black dark:border-white">V<sub>P</sub></th>
           <th width="40" class="border border-black dark:border-white">V<sub>L</sub></th>
           <th width="200" class="border border-black dark:border-white">
             {{ $t('headers.station') }}
