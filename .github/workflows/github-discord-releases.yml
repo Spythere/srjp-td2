@@ -13,5 +13,5 @@ jobs:
         with:
           webhook_url: '${{ secrets.WEBHOOK_URL }}'
           color: '10038562'
-          footer_title: 'Changelog - GeneraTOR'
+          footer_title: 'Changelog - Rozkładownik SRJP'
           footer_timestamp: true
